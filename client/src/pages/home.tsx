@@ -1,0 +1,182 @@
+import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import { Logo } from "@/components/logo";
+import { UpgradeModal } from "@/components/upgrade-modal";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowUp, Loader2 } from "lucide-react";
+import { optimizePrompt, getCreditsStatus } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
+
+export default function Home() {
+  const [, setLocation] = useLocation();
+  const [promptText, setPromptText] = useState("");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { toast } = useToast();
+
+  // Get credits status
+  const { data: creditsData } = useQuery({
+    queryKey: ["/api/credits"],
+    refetchInterval: 60000, // Refresh every minute
+  });
+
+  // Optimize prompt mutation
+  const optimizeMutation = useMutation({
+    mutationFn: optimizePrompt,
+    onSuccess: (data) => {
+      // Store the result in sessionStorage to pass to results page
+      sessionStorage.setItem("promptResult", JSON.stringify({
+        original: promptText,
+        optimized: data.optimizedPrompt,
+        improvement: data.improvement,
+      }));
+      
+      // Invalidate credits query to refresh count
+      queryClient.invalidateQueries({ queryKey: ["/api/credits"] });
+      
+      // Navigate to results
+      setLocation("/results");
+    },
+    onError: (error: any) => {
+      if (error.message?.includes("out_of_credits") || error.status === 429) {
+        setShowUpgradeModal(true);
+      } else if (error.message?.includes("rate_limit_exceeded")) {
+        toast({
+          title: "Rate Limit Exceeded",
+          description: "Please wait a moment before trying again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to optimize prompt. Please try again.",
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
+  const handleOptimize = () => {
+    if (!promptText.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a prompt to improve!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (creditsData?.creditsRemaining === 0) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
+    optimizeMutation.mutate({ originalPrompt: promptText.trim() });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleOptimize();
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Header with Logo */}
+      <header className="pt-12 pb-8">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <div className="flex justify-center items-center mb-4">
+            <Logo />
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4">
+            make prompts better
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Transform vague ideas into AI-ready prompts that get amazing results
+          </p>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col justify-center">
+        <div className="max-w-4xl mx-auto px-6 w-full">
+          
+          {/* Prompt Input */}
+          <Card className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-8">
+            <CardContent className="p-8">
+              <Textarea
+                placeholder="Enter what you want here..."
+                value={promptText}
+                onChange={(e) => setPromptText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full h-32 resize-none border-none focus:outline-none text-lg text-gray-700 placeholder-gray-400 focus-visible:ring-0"
+              />
+              
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <Button
+                  onClick={handleOptimize}
+                  disabled={optimizeMutation.isPending}
+                  className="flex-1 sm:flex-none bg-brand-primary text-white px-8 py-3 hover:bg-brand-secondary focus:ring-brand-primary"
+                >
+                  {optimizeMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <ArrowUp className="w-4 h-4 mr-2" />
+                  )}
+                  Improve
+                </Button>
+                <Button variant="outline" className="px-6 py-3">
+                  Templates
+                </Button>
+                <Button variant="outline" className="px-6 py-3">
+                  Learn
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Stats Bar */}
+          <Card className="bg-white rounded-xl border border-gray-200 mb-6">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-brand-primary">1,432</div>
+                  <div className="text-sm text-gray-600">Prompts improved today</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-brand-primary">71%</div>
+                  <div className="text-sm text-gray-600">Average improvement</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-brand-primary">4.8★</div>
+                  <div className="text-sm text-gray-600">User rating</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Credits Badge */}
+          <div className="text-center">
+            <Badge className="inline-flex items-center bg-green-50 text-green-700 px-4 py-2 border border-green-200 hover:bg-green-50">
+              <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+              {creditsData?.creditsRemaining ?? 3} free optimizations today
+            </Badge>
+          </div>
+        </div>
+      </main>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        creditsResetTime={creditsData?.resetsAt}
+      />
+    </div>
+  );
+}

@@ -1,0 +1,169 @@
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Copy, ExternalLink, Lightbulb, Sparkles } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface PromptResult {
+  original: string;
+  optimized: string;
+  improvement: number;
+}
+
+export default function Results() {
+  const [, setLocation] = useLocation();
+  const [result, setResult] = useState<PromptResult | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Get result from sessionStorage
+    const stored = sessionStorage.getItem("promptResult");
+    if (stored) {
+      setResult(JSON.parse(stored));
+    } else {
+      // If no result, redirect to home
+      setLocation("/");
+    }
+  }, [setLocation]);
+
+  const handleCopy = async () => {
+    if (!result) return;
+    
+    try {
+      await navigator.clipboard.writeText(result.optimized);
+      toast({
+        title: "Copied!",
+        description: "Optimized prompt copied to clipboard",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleOpenChatGPT = () => {
+    if (!result) return;
+    const encodedPrompt = encodeURIComponent(result.optimized);
+    window.open(`https://chat.openai.com/?q=${encodedPrompt}`, "_blank");
+  };
+
+  const handleOpenClaude = () => {
+    if (!result) return;
+    const encodedPrompt = encodeURIComponent(result.optimized);
+    window.open(`https://claude.ai/chat?q=${encodedPrompt}`, "_blank");
+  };
+
+  const handleOpenGemini = () => {
+    if (!result) return;
+    const encodedPrompt = encodeURIComponent(result.optimized);
+    window.open(`https://gemini.google.com/chat?q=${encodedPrompt}`, "_blank");
+  };
+
+  const handleTryAnother = () => {
+    sessionStorage.removeItem("promptResult");
+    setLocation("/");
+  };
+
+  if (!result) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-primary border-t-transparent mx-auto mb-4"></div>
+          <div className="text-gray-600">Loading results...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen py-12 bg-gray-50">
+      <div className="max-w-4xl mx-auto px-6">
+        
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Your Optimized Prompt is Ready!
+          </h1>
+          <Badge className="inline-flex items-center bg-brand-accent bg-opacity-10 text-brand-accent px-4 py-2 hover:bg-brand-accent hover:bg-opacity-10">
+            <Sparkles className="w-4 h-4 mr-1" />
+            {result.improvement}% more specific
+          </Badge>
+        </div>
+
+        {/* Prompt Comparison */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Original Prompt */}
+          <Card className="bg-gray-100">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-gray-900 mb-3">Original Prompt</h3>
+              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {result.original}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Optimized Prompt */}
+          <Card className="border-2 border-brand-primary">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-brand-primary mb-3">Optimized Prompt</h3>
+              <div className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+                {result.optimized}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <Button
+            onClick={handleCopy}
+            className="bg-brand-primary text-white hover:bg-brand-secondary focus:ring-brand-primary"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy
+          </Button>
+          <Button variant="outline" onClick={handleOpenChatGPT}>
+            Open in ChatGPT
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+          <Button variant="outline" onClick={handleOpenClaude}>
+            Open in Claude
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+          <Button variant="outline" onClick={handleOpenGemini}>
+            Open in Gemini
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+
+        {/* Tip */}
+        <Card className="bg-blue-50 border border-blue-200 mb-8">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <Lightbulb className="w-5 h-5 text-blue-500 mt-0.5" />
+              <div className="text-blue-800 text-sm">
+                <strong>Tip:</strong> This prompt works best with ChatGPT-4 or Claude for more detailed and nuanced responses.
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Try Another */}
+        <div className="text-center">
+          <Button
+            variant="outline"
+            onClick={handleTryAnother}
+            className="px-8 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            Try Another Prompt
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

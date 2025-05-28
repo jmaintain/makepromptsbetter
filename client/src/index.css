@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --background: 210 11% 98%; /* #F9FAFB */
+  --foreground: 210 11% 4%; /* #111827 */
+  --muted: 210 11% 96%; /* #F3F4F6 */
+  --muted-foreground: 210 6% 46%; /* #6B7280 */
+  --popover: 0 0% 100%; /* #FFFFFF */
+  --popover-foreground: 210 11% 4%; /* #111827 */
+  --card: 0 0% 100%; /* #FFFFFF */
+  --card-foreground: 210 11% 4%; /* #111827 */
+  --border: 210 11% 90%; /* #E5E7EB */
+  --input: 210 11% 90%; /* #E5E7EB */
+  --primary: 196 48% 32%; /* #2b6876 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --secondary: 210 11% 96%; /* #F3F4F6 */
+  --secondary-foreground: 210 11% 10%; /* #1F2937 */
+  --accent: 0 79% 70%; /* #ff6b6b */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+  --ring: 196 48% 32%; /* #2b6876 */
+  --radius: 0.75rem;
+  
+  /* Custom brand colors */
+  --brand-primary: 196 48% 32%; /* #2b6876 */
+  --brand-accent: 0 79% 70%; /* #ff6b6b */
+  --brand-secondary: 196 58% 22%; /* #1a4e5a */
+}
+
+.dark {
+  --background: 240 10% 4%; /* #0F172A */
+  --foreground: 0 0% 98%; /* #F8FAFC */
+  --muted: 240 6% 10%; /* #1E293B */
+  --muted-foreground: 240 5% 65%; /* #94A3B8 */
+  --popover: 240 10% 4%; /* #0F172A */
+  --popover-foreground: 0 0% 98%; /* #F8FAFC */
+  --card: 240 10% 4%; /* #0F172A */
+  --card-foreground: 0 0% 98%; /* #F8FAFC */
+  --border: 240 6% 20%; /* #334155 */
+  --input: 240 6% 20%; /* #334155 */
+  --primary: 196 48% 32%; /* #2b6876 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --secondary: 240 6% 10%; /* #1E293B */
+  --secondary-foreground: 0 0% 98%; /* #F8FAFC */
+  --accent: 0 79% 70%; /* #ff6b6b */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+  --ring: 196 48% 32%; /* #2b6876 */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-['Inter',sans-serif] antialiased;
+  }
+}
+
+/* Custom brand color utilities */
+.text-brand-primary {
+  color: hsl(var(--brand-primary));
+}
+
+.text-brand-accent {
+  color: hsl(var(--brand-accent));
+}
+
+.text-brand-secondary {
+  color: hsl(var(--brand-secondary));
+}
+
+.bg-brand-primary {
+  background-color: hsl(var(--brand-primary));
+}
+
+.bg-brand-accent {
+  background-color: hsl(var(--brand-accent));
+}
+
+.bg-brand-secondary {
+  background-color: hsl(var(--brand-secondary));
+}
+
+.border-brand-primary {
+  border-color: hsl(var(--brand-primary));
+}
+
+.hover\:bg-brand-secondary:hover {
+  background-color: hsl(var(--brand-secondary));
+}
+
+.hover\:text-brand-secondary:hover {
+  color: hsl(var(--brand-secondary));
+}
+
+/* Focus ring for accessibility */
+.focus\:ring-brand-primary:focus {
+  --tw-ring-color: hsl(var(--brand-primary));
+}
