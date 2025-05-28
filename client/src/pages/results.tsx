@@ -89,10 +89,10 @@ export default function Results() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Your Optimized Prompt is Ready!
           </h1>
-          <Badge className="inline-flex items-center bg-brand-accent bg-opacity-10 text-brand-accent px-4 py-2 border border-brand-accent border-opacity-20">
+          <div className="inline-flex items-center bg-brand-accent bg-opacity-10 text-brand-accent px-4 py-2 border border-brand-accent border-opacity-20 rounded-full font-medium">
             <Sparkles className="w-4 h-4 mr-1" />
             {result.improvement}% more specific
-          </Badge>
+          </div>
         </div>
 
         {/* Prompt Comparison */}
