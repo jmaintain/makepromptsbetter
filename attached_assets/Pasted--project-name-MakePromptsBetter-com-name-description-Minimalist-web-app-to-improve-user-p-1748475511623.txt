@@ -1,0 +1,117 @@
+<project>
+  <name>MakePromptsBetter.com</name>
+  <description>Minimalist web app to improve user prompts using OpenAI, with a free-tier token system and no login or prompt saving.</description>
+  
+  <tech_stack>
+    <frontend>
+      <language>HTML5</language>
+      <language>CSS3</language>
+      <language>JavaScript</language>
+      <styles>From "New Text Document.txt"</styles>
+    </frontend>
+    <backend>
+      <option>Node.js (Express)</option>
+      <option>Python (Flask)</option>
+    </backend>
+    <ai_integration>OpenAI API (GPT-3.5 or GPT-4)</ai_integration>
+    <token_tracking>
+      <method>Browser Cookie or Fingerprint</method>
+      <storage>In-memory or Redis</storage>
+    </token_tracking>
+  </tech_stack>
+
+  <features>
+    <feature id="1">
+      <name>Landing Page</name>
+      <elements>
+        <logo>3 stacked chevrons (#ff6b6b, #2b6876, #1a4e5a) + brand text (#2b6876)</logo>
+        <tagline>Transform vague ideas into AI-ready prompts that get amazing results</tagline>
+        <textarea placeholder="Enter what you want here...">e.g. Help me write a cover letter</textarea>
+        <button type="primary">↑ Improve</button>
+        <button type="secondary">Templates (placeholder)</button>
+        <button type="secondary">Learn (placeholder)</button>
+        <stats_bar>
+          <stat>Prompts improved today: 1,432</stat>
+          <stat>Average improvement: 71%</stat>
+          <stat>User rating: 4.8★</stat>
+        </stats_bar>
+        <credits_badge>3 free optimizations today</credits_badge>
+      </elements>
+    </feature>
+
+    <feature id="2">
+      <name>Results Page</name>
+      <elements>
+        <title>Your Optimized Prompt is Ready!</title>
+        <original_prompt_box />
+        <optimized_prompt_box />
+        <buttons>
+          <button>Copy</button>
+          <button>Open in ChatGPT →</button>
+          <button>Open in Claude →</button>
+          <button>Open in Gemini →</button>
+        </buttons>
+        <badge type="improvement">✨ 74% more specific</badge>
+        <tip>💡 This prompt works best with ChatGPT-4 or Claude...</tip>
+        <button>Try Another Prompt</button>
+      </elements>
+    </feature>
+
+    <feature id="3">
+      <name>Upgrade Modal</name>
+      <trigger>After 3 prompt optimizations</trigger>
+      <elements>
+        <title>You're out of free optimizations!</title>
+        <value_reinforcement>Your prompts were improved by an average of 71%</value_reinforcement>
+        <pricing_cards>
+          <card>Starter</card>
+          <card highlight="true">Pro</card>
+          <card>One-Time</card>
+        </pricing_cards>
+        <buttons>
+          <button>Choose Starter</button>
+          <button>Choose Pro</button>
+          <button>Buy Credits</button>
+        </buttons>
+        <footer>🔒 Secure payment by Stripe • 7-day money-back guarantee</footer>
+        <link>Maybe later – new credits in 18 hours</link>
+      </elements>
+    </feature>
+  </features>
+
+  <backend>
+    <endpoint>
+      <route>/api/optimize</route>
+      <method>POST</method>
+      <input>{ originalPrompt: string }</input>
+      <output>{ optimizedPrompt: string, improvement: string }</output>
+      <logic>
+        <step>Check if user has remaining credits</step>
+        <step>If yes, call OpenAI API with improvement prompt</step>
+        <step>Return improved prompt and fake improvement % (60–80%)</step>
+        <step>Decrement credit count</step>
+        <step>If no credits, return { error: "out_of_credits" }</step>
+      </logic>
+    </endpoint>
+    <token_system>
+      <credits_per_day>3</credits_per_day>
+      <tracking_method>Cookie or fingerprint</tracking_method>
+      <reset_time>Midnight UTC</reset_time>
+    </token_system>
+  </backend>
+
+  <exclusions>
+    <item>No user login system</item>
+    <item>No prompt saving</item>
+    <item>Templates and Learn pages are placeholders only</item>
+    <item>No AI chat system or integrated chat page</item>
+  </exclusions>
+
+  <success_criteria>
+    <item>User receives optimized prompt from input</item>
+    <item>Improved prompt is displayed with copy & launch buttons</item>
+    <item>Token limit enforced and resets daily</item>
+    <item>Upgrade modal displays after 3 uses</item>
+    <item>“Try Another Prompt” resets to landing page</item>
+  </success_criteria>
+</project>
