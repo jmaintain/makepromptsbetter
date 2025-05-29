@@ -1,5 +1,5 @@
 import { apiRequest } from "./queryClient";
-import type { OptimizePromptRequest, OptimizePromptResponse, CreditsStatus } from "@shared/schema";
+import type { OptimizePromptRequest, OptimizePromptResponse, CreditsStatus, RatePromptRequest, RatePromptResponse } from "@shared/schema";
 
 export async function optimizePrompt(request: OptimizePromptRequest): Promise<OptimizePromptResponse> {
   const response = await apiRequest("POST", "/api/optimize", request);
@@ -8,5 +8,10 @@ export async function optimizePrompt(request: OptimizePromptRequest): Promise<Op
 
 export async function getCreditsStatus(): Promise<CreditsStatus> {
   const response = await apiRequest("GET", "/api/credits");
+  return response.json();
+}
+
+export async function ratePrompt(request: RatePromptRequest): Promise<RatePromptResponse> {
+  const response = await apiRequest("POST", "/api/rate", request);
   return response.json();
 }

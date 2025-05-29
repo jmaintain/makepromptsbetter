@@ -105,3 +105,13 @@
 .focus\:ring-brand-primary:focus {
   --tw-ring-color: hsl(var(--brand-primary));
 }
+
+/* Rating light glow animation */
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+  }
+  to {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}

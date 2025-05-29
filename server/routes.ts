@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema } from "@shared/schema";
+import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema } from "@shared/schema";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -145,6 +145,57 @@ Use this context to transform not just what the user asked for, but HOW they wan
         return res.status(429).json({ error: "rate_limit_exceeded" });
       }
       res.status(500).json({ error: "Failed to optimize prompt" });
+    }
+  });
+
+  // Rate prompt endpoint
+  app.post("/api/rate", async (req, res) => {
+    try {
+      const { prompt } = ratePromptRequestSchema.parse(req.body);
+
+      // Call OpenAI API to rate the prompt
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `You are a prompt quality evaluator. Rate prompts on a scale of 1-10 based on clarity, specificity, actionability, and potential for generating high-quality responses.
+
+Rating criteria:
+- 9-10: Exceptionally clear, specific, actionable prompts with detailed context and clear success criteria
+- 7-8: Very good prompts that are clear and specific with good context
+- 5-6: Average prompts that are somewhat clear but may lack specificity or context
+- 3-4: Below average prompts that are vague or unclear
+- 1-2: Poor prompts that are very vague, confusing, or lack direction
+
+Provide a brief, helpful explanation for the rating that focuses on what makes the prompt effective or how it could be improved.
+
+Respond with JSON in this exact format: { "rating": number_between_1_and_10, "reason": "brief explanation for the rating" }`
+          },
+          {
+            role: "user",
+            content: `Please rate this prompt: "${prompt}"`
+          }
+        ],
+        response_format: { type: "json_object" },
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || "{}");
+      const rating = Math.max(1, Math.min(10, result.rating || 5));
+      const reason = result.reason || "Standard prompt quality";
+
+      const rateResponse = ratePromptResponseSchema.parse({
+        rating,
+        reason,
+      });
+
+      res.json(rateResponse);
+    } catch (error) {
+      console.error("Error rating prompt:", error);
+      if ((error as any).message?.includes("rate limit") || (error as any).status === 429) {
+        return res.status(429).json({ error: "rate_limit_exceeded" });
+      }
+      res.status(500).json({ error: "Failed to rate prompt" });
     }
   });
 

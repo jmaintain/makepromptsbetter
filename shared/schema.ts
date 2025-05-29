@@ -36,6 +36,17 @@ export const creditsStatusSchema = z.object({
   resetsAt: z.string(),
 });
 
+export const ratePromptRequestSchema = z.object({
+  prompt: z.string(),
+});
+
+export const ratePromptResponseSchema = z.object({
+  rating: z.number().min(1).max(10),
+  reason: z.string(),
+});
+
 export type OptimizePromptRequest = z.infer<typeof optimizePromptRequestSchema>;
 export type OptimizePromptResponse = z.infer<typeof optimizePromptResponseSchema>;
 export type CreditsStatus = z.infer<typeof creditsStatusSchema>;
+export type RatePromptRequest = z.infer<typeof ratePromptRequestSchema>;
+export type RatePromptResponse = z.infer<typeof ratePromptResponseSchema>;
