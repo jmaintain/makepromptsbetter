@@ -129,8 +129,21 @@ export default function Home() {
       setShowUpgradeModal(true);
       return;
     }
+    
+    const contextWordCount = getWordCount(contextText);
+    if (contextText && contextWordCount > 500) {
+      toast({
+        title: "Context too long",
+        description: `Please limit context to 500 words maximum. Current: ${contextWordCount} words.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
-    optimizeMutation.mutate({ originalPrompt: promptText.trim() });
+    optimizeMutation.mutate({ 
+      originalPrompt: promptText.trim(),
+      contextText: contextText.trim() || undefined
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -173,6 +186,81 @@ export default function Home() {
                 className="w-full h-32 resize-none border-none focus:outline-none text-lg text-gray-700 placeholder-gray-400 focus-visible:ring-0"
               />
               
+              {/* Context Section */}
+              <div className="border-t border-gray-100 mt-6 pt-6">
+                <Collapsible open={isContextOpen} onOpenChange={setIsContextOpen}>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="flex items-center gap-2 p-0 h-auto text-gray-600 hover:text-gray-900"
+                    >
+                      {isContextOpen ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                      Add context (optional)
+                      {contextText && (
+                        <Badge variant="secondary" className="ml-2">
+                          {getWordCount(contextText)} words
+                        </Badge>
+                      )}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-4">
+                    <div className="space-y-4">
+                      <div className="text-sm text-gray-600">
+                        Add additional context like resume details, job descriptions, or background information (max 500 words)
+                      </div>
+                      
+                      {/* File Upload */}
+                      <div className="flex gap-2">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".txt,text/plain"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center gap-2"
+                        >
+                          <Upload className="w-4 h-4" />
+                          Upload .txt file
+                        </Button>
+                        {contextText && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={clearContext}
+                            className="flex items-center gap-2"
+                          >
+                            <X className="w-4 h-4" />
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {/* Text Input */}
+                      <Textarea
+                        placeholder="Or paste your context text here..."
+                        value={contextText}
+                        onChange={(e) => setContextText(e.target.value)}
+                        className="min-h-[100px] text-sm"
+                      />
+                      
+                      {/* Word Count */}
+                      <div className="text-xs text-gray-500 text-right">
+                        {getWordCount(contextText)}/500 words
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
                 <Button
                   onClick={handleOptimize}
