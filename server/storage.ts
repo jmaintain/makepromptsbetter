@@ -14,6 +14,12 @@ export class MemStorage implements IStorage {
     this.currentId = 1;
   }
 
+  // Method to reset storage for development
+  reset() {
+    this.optimizations = new Map();
+    this.currentId = 1;
+  }
+
   async createPromptOptimization(insertOptimization: InsertPromptOptimization): Promise<PromptOptimization> {
     const id = this.currentId++;
     const optimization: PromptOptimization = {

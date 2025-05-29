@@ -23,6 +23,9 @@ function getCreditsResetTime(): Date {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Reset storage for development
+  storage.reset();
+  
   // Get user credits status
   app.get("/api/credits", async (req, res) => {
     try {
