@@ -29,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userFingerprint = generateUserFingerprint(req);
       const todaysOptimizations = await storage.getUserOptimizationsToday(userFingerprint);
       const creditsUsed = todaysOptimizations.length;
-      const creditsRemaining = Math.max(0, 3 - creditsUsed);
+      const creditsRemaining = Math.max(0, 20 - creditsUsed);
       const resetsAt = getCreditsResetTime().toISOString();
 
       const response = creditsStatusSchema.parse({
@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check credits
       const todaysOptimizations = await storage.getUserOptimizationsToday(userFingerprint);
-      if (todaysOptimizations.length >= 3) {
+      if (todaysOptimizations.length >= 20) {
         return res.status(429).json({ error: "out_of_credits" });
       }
 
