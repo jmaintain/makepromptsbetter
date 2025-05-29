@@ -172,7 +172,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col justify-center">
+      <main className="flex-1 flex flex-col">
         <div className="max-w-4xl mx-auto px-6 w-full">
           
           {/* Prompt Input */}
