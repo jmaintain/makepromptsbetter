@@ -315,16 +315,16 @@ export default function PromptSchool() {
             </CardContent>
           </Card>
 
-          {/* Using VCP */}
+          {/* Using MPB */}
           <Card className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-8">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-brand-primary">
-                Using VCP: Your Guide to Enhanced Prompts
+                Using MPB: Your Guide to Enhanced Prompts
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 mb-6">
-                VCP makes it easy to transform basic ideas into powerful, structured prompts. Our tool helps you master prompt engineering without needing to learn all the technical details yourself.
+                Make Prompts Better makes it easy to transform basic ideas into powerful, structured prompts. Our tool helps you master prompt engineering without needing to learn all the technical details yourself.
               </p>
               
               <div className="grid md:grid-cols-3 gap-6">
