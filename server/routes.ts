@@ -47,7 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Optimize prompt endpoint
   app.post("/api/optimize", async (req, res) => {
     try {
-      const { originalPrompt } = optimizePromptRequestSchema.parse(req.body);
+      const { originalPrompt, contextText } = optimizePromptRequestSchema.parse(req.body);
       const userFingerprint = generateUserFingerprint(req);
 
       // Check credits
@@ -58,6 +58,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Call OpenAI API to optimize the prompt
       // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      const contextMessage = contextText 
+        ? `\n\nAdditional context/knowledge to consider when optimizing:\n${contextText}`
+        : '';
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -73,12 +77,13 @@ Guidelines for optimization:
 - Specify tone, style, and length requirements
 - Include examples or bullet points for clarity
 - Make the prompt clear about what the AI should and shouldn't do
+- If additional context is provided, incorporate relevant details naturally into the optimized prompt
 
 Respond with JSON in this exact format: { "optimizedPrompt": "the improved prompt here", "improvement": number_between_60_and_80 }`
           },
           {
             role: "user",
-            content: `Please optimize this prompt: "${originalPrompt}"`
+            content: `Please optimize this prompt: "${originalPrompt}"${contextMessage}`
           }
         ],
         response_format: { type: "json_object" },
@@ -91,6 +96,7 @@ Respond with JSON in this exact format: { "optimizedPrompt": "the improved promp
       // Store the optimization
       await storage.createPromptOptimization({
         originalPrompt,
+        contextText,
         optimizedPrompt,
         improvement,
         userFingerprint,

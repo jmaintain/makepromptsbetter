@@ -5,6 +5,7 @@ import { z } from "zod";
 export const promptOptimizations = pgTable("prompt_optimizations", {
   id: serial("id").primaryKey(),
   originalPrompt: text("original_prompt").notNull(),
+  contextText: text("context_text"),
   optimizedPrompt: text("optimized_prompt").notNull(),
   improvement: integer("improvement").notNull(),
   userFingerprint: text("user_fingerprint").notNull(),
@@ -22,6 +23,7 @@ export type PromptOptimization = typeof promptOptimizations.$inferSelect;
 // Request/Response schemas
 export const optimizePromptRequestSchema = z.object({
   originalPrompt: z.string().min(1).max(2000),
+  contextText: z.string().max(3000).optional(), // ~500 words max
 });
 
 export const optimizePromptResponseSchema = z.object({

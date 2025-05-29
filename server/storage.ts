@@ -18,6 +18,7 @@ export class MemStorage implements IStorage {
     const id = this.currentId++;
     const optimization: PromptOptimization = {
       ...insertOptimization,
+      contextText: insertOptimization.contextText || null,
       id,
       createdAt: new Date(),
     };

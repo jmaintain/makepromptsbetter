@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Logo } from "@/components/logo";
@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUp, Loader2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ArrowUp, Loader2, ChevronDown, ChevronRight, Upload, X } from "lucide-react";
 import { optimizePrompt, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
@@ -15,7 +16,10 @@ import { queryClient } from "@/lib/queryClient";
 export default function Home() {
   const [, setLocation] = useLocation();
   const [promptText, setPromptText] = useState("");
+  const [contextText, setContextText] = useState("");
+  const [isContextOpen, setIsContextOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Get credits status
@@ -24,9 +28,60 @@ export default function Home() {
     refetchInterval: 60000, // Refresh every minute
   });
 
+  // Word count function
+  const getWordCount = (text: string) => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  // File upload handler
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.includes('text') && !file.name.endsWith('.txt')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a text file (.txt)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      const wordCount = getWordCount(content);
+      
+      if (wordCount > 500) {
+        toast({
+          title: "File too large",
+          description: `The file contains ${wordCount} words. Please limit to 500 words maximum.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setContextText(content);
+      setIsContextOpen(true);
+      toast({
+        title: "File uploaded successfully",
+        description: `Added ${wordCount} words of context`,
+      });
+    };
+    reader.readAsText(file);
+  };
+
+  // Clear context
+  const clearContext = () => {
+    setContextText("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   // Optimize prompt mutation
   const optimizeMutation = useMutation({
-    mutationFn: optimizePrompt,
+    mutationFn: (data: { originalPrompt: string; contextText?: string }) => optimizePrompt(data),
     onSuccess: (data) => {
       // Store the result in sessionStorage to pass to results page
       sessionStorage.setItem("promptResult", JSON.stringify({
