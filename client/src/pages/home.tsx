@@ -162,7 +162,7 @@ export default function Home() {
             <Logo />
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4 font-title">
             make prompts better
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
