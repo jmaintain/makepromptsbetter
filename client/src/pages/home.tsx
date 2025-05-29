@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Logo } from "@/components/logo";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { Button } from "@/components/ui/button";
@@ -274,9 +274,11 @@ export default function Home() {
                   )}
                   Improve
                 </Button>
-                <Button variant="outline" className="px-6 py-3">
-                  Learn
-                </Button>
+                <Link href="/prompt-school">
+                  <Button variant="outline" className="px-6 py-3">
+                    Learn
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
