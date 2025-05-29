@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, ExternalLink, Lightbulb, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RatingLight } from "@/components/rating-light";
+import { cleanMarkdown } from "@/lib/text-utils";
 
 interface PromptResult {
   original: string;
@@ -119,7 +120,7 @@ export default function Results() {
                 <RatingLight prompt={result.optimized} />
               </div>
               <div className="text-gray-900 leading-relaxed whitespace-pre-wrap">
-                {result.optimized}
+                {cleanMarkdown(result.optimized)}
               </div>
             </CardContent>
           </Card>
