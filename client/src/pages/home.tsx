@@ -176,7 +176,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6 w-full">
           
           {/* Prompt Input */}
-          <Card className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-8">
+          <Card className="bg-white rounded-2xl shadow-sm border border-gray-300 mb-8">
             <CardContent className="p-8">
               <Textarea
                 placeholder="Enter what you want here..."
