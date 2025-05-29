@@ -275,9 +275,6 @@ export default function Home() {
                   Improve
                 </Button>
                 <Button variant="outline" className="px-6 py-3">
-                  Templates
-                </Button>
-                <Button variant="outline" className="px-6 py-3">
                   Learn
                 </Button>
               </div>
@@ -290,15 +287,15 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
                   <div className="text-2xl font-bold text-brand-primary">1,432</div>
-                  <div className="text-sm text-gray-600">Prompts improved today</div>
+                  <div className="text-sm text-gray-600">Total prompts improved</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-brand-primary">71%</div>
                   <div className="text-sm text-gray-600">Average improvement</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-brand-primary">4.8★</div>
-                  <div className="text-sm text-gray-600">User rating</div>
+                  <div className="text-2xl font-bold text-brand-primary">20 Hours</div>
+                  <div className="text-sm text-gray-600">Saved with Better Prompts and counting</div>
                 </div>
               </div>
             </CardContent>
