@@ -165,7 +165,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4 font-title">
             make prompts better
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Transform vague ideas into AI-ready prompts that get amazing results
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function Home() {
                 value={promptText}
                 onChange={(e) => setPromptText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full h-32 resize-none border-none focus:outline-none text-lg text-gray-700 placeholder-gray-400 focus-visible:ring-0"
+                className="w-full h-32 resize-none border-none focus:outline-none text-xl text-gray-700 placeholder-gray-400 focus-visible:ring-0"
               />
               
               {/* Context Section */}
@@ -249,7 +249,7 @@ export default function Home() {
                         placeholder="Or paste your context text here..."
                         value={contextText}
                         onChange={(e) => setContextText(e.target.value)}
-                        className="min-h-[100px] text-sm"
+                        className="min-h-[100px] text-lg"
                       />
                       
                       {/* Word Count */}
