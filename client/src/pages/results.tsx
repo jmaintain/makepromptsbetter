@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Copy, ExternalLink, Lightbulb, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { RatingLight } from "@/components/rating-light";
 
 interface PromptResult {
   original: string;
@@ -100,7 +101,10 @@ export default function Results() {
           {/* Original Prompt */}
           <Card className="bg-gray-100">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Original Prompt</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-semibold text-gray-900">Original Prompt</h3>
+                <RatingLight prompt={result.original} />
+              </div>
               <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                 {result.original}
               </div>
@@ -110,7 +114,10 @@ export default function Results() {
           {/* Optimized Prompt */}
           <Card className="border-2 border-brand-primary">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-brand-primary mb-3">Optimized Prompt</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-semibold text-brand-primary">Optimized Prompt</h3>
+                <RatingLight prompt={result.optimized} />
+              </div>
               <div className="text-gray-900 leading-relaxed whitespace-pre-wrap">
                 {result.optimized}
               </div>
