@@ -286,7 +286,7 @@ export default function Home() {
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-brand-primary">1,432</div>
+                  <div className="text-2xl font-bold text-brand-primary">432</div>
                   <div className="text-sm text-gray-600">Total prompts improved</div>
                 </div>
                 <div>
@@ -295,7 +295,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-brand-primary">20 Hours</div>
-                  <div className="text-sm text-gray-600">Saved with Better Prompts and counting</div>
+                  <div className="text-sm text-gray-600">Saved because of Better Prompting</div>
                 </div>
               </div>
             </CardContent>
