@@ -58,16 +58,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Call OpenAI API to optimize the prompt
       // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      const contextMessage = contextText 
-        ? `\n\nAdditional context/knowledge to consider when optimizing:\n${contextText}`
-        : '';
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `You are a prompt enhancement tool that transforms simple ideas into AI-ready prompts that capture both functionality AND feeling. You help creators express the emotional and aesthetic dimensions of their projects—turning vague concepts into clear, effective instructions that deliver the exact result and vibe they seek.
+      
+      // Prepare the system message with context integration
+      let systemMessage = `You are a prompt enhancement tool that transforms simple ideas into AI-ready prompts that capture both functionality AND feeling. You help creators express the emotional and aesthetic dimensions of their projects—turning vague concepts into clear, effective instructions that deliver the exact result and vibe they seek.
 
 Your process:
 1. Capture the vibe: Identify emotional qualities, aesthetic direction, and sensory experience implied in the request
@@ -85,15 +78,27 @@ Guidelines:
 - Make prompts capture not just what needs to be made, but how it should feel when experienced
 - Prioritize clarity over completeness
 - Use language that bridges technical and emotional dimensions
-- If additional context is provided, incorporate relevant details naturally
+- When additional context is provided, integrate those specific insights and requirements directly into the enhanced prompt
 
-Your job is to turn what users say into what they mean—capturing not just what needs to be made, but how it should feel when experienced.
+Your job is to turn what users say into what they mean—capturing not just what needs to be made, but how it should feel when experienced.`;
 
-Respond with JSON in this exact format: { "optimizedPrompt": "the enhanced prompt here", "improvement": number_between_65_and_85 }`
+      // Add context-specific instructions if context is provided
+      if (contextText) {
+        systemMessage += `\n\nIMPORTANT: The user has provided additional context/knowledge that you MUST incorporate into your enhancement. Use this context to inform your understanding of the user's goals and integrate relevant insights directly into the optimized prompt:\n\n${contextText}`;
+      }
+
+      systemMessage += `\n\nRespond with JSON in this exact format: { "optimizedPrompt": "the enhanced prompt here", "improvement": number_between_65_and_85 }`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: systemMessage
           },
           {
             role: "user",
-            content: `Please enhance this prompt to capture both its functional and emotional dimensions: "${originalPrompt}"${contextMessage}`
+            content: `Please enhance this prompt to capture both its functional and emotional dimensions: "${originalPrompt}"`
           }
         ],
         response_format: { type: "json_object" },
