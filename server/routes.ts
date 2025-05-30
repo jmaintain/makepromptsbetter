@@ -124,7 +124,7 @@ Use this context to transform not just what the user asked for, but HOW they wan
       systemMessage += `\n\nRespond with JSON in this exact format: { "optimizedPrompt": "the enhanced prompt here", "improvement": number_between_65_and_85 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4.1-nano",
         messages: [
           {
             role: "system",
@@ -173,7 +173,7 @@ Use this context to transform not just what the user asked for, but HOW they wan
 
       // Call OpenAI API to rate the prompt
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4.1-nano",
         messages: [
           {
             role: "system",
