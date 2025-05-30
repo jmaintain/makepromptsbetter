@@ -79,6 +79,7 @@ Process:
    - Determine the balance between function and feeling
    - Analyze every nuance and implication within the request
    - Go beyond surface interpretation to uncover underlying intentions
+   - If context is provided, integrate it as foundational knowledge that shapes all subsequent analysis
 
 2. Translation Synthesis:
    - Convert abstract feelings into concrete implementation details
