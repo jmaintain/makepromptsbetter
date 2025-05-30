@@ -3,7 +3,8 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, ExternalLink, Lightbulb, Sparkles } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Copy, ExternalLink, Lightbulb, Sparkles, ChevronDown, ChevronRight, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RatingLight } from "@/components/rating-light";
 import { cleanMarkdown } from "@/lib/text-utils";
@@ -12,11 +13,13 @@ interface PromptResult {
   original: string;
   optimized: string;
   improvement: number;
+  contextText?: string | null;
 }
 
 export default function Results() {
   const [, setLocation] = useLocation();
   const [result, setResult] = useState<PromptResult | null>(null);
+  const [isContextOpen, setIsContextOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -125,6 +128,43 @@ export default function Results() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Context Section */}
+        {result.contextText && (
+          <Card className="mb-8">
+            <CardContent className="p-6">
+              <Collapsible open={isContextOpen} onOpenChange={setIsContextOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start"
+                  >
+                    {isContextOpen ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
+                    <FileText className="w-4 h-4" />
+                    Context Used
+                    <Badge variant="secondary" className="ml-2">
+                      {result.contextText.trim().split(/\s+/).filter(word => word.length > 0).length} words
+                    </Badge>
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-4">
+                  <div className="bg-gray-50 p-4 rounded-lg border">
+                    <div className="text-sm text-gray-600 mb-2">
+                      This context was used to enhance your prompt:
+                    </div>
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {result.contextText}
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Action Buttons */}
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">

@@ -88,6 +88,7 @@ export default function Home() {
         original: promptText,
         optimized: data.optimizedPrompt,
         improvement: data.improvement,
+        contextText: contextText.trim() || null,
       }));
       
       // Invalidate credits query to refresh count
