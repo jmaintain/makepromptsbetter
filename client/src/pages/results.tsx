@@ -107,8 +107,14 @@ export default function Results() {
   };
 
   const handleTryAnother = () => {
-    // Mark as copied to bypass warning since this is intentional navigation
-    setHasUserCopied(true);
+    if (!hasUserCopied) {
+      const shouldProceed = window.confirm(
+        "You haven't copied your optimized prompt yet. If you continue, you'll lose this result. Are you sure you want to try another prompt?"
+      );
+      if (!shouldProceed) {
+        return;
+      }
+    }
     sessionStorage.removeItem("promptResult");
     setLocation("/");
   };
