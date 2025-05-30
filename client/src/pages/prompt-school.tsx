@@ -209,7 +209,7 @@ Use a warm but respectful tone, similar to how I'm writing this request.`}
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 mb-6">
-                Claude 4 and modern AI models are incredibly good at following detailed instructions. Here's how to harness that:
+                Modern AI models are incredibly good at following detailed instructions. Here's how to harness that:
               </p>
               
               <div className="space-y-6">
@@ -599,7 +599,7 @@ Include: [specific elements like b-roll notes]`}
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 mb-4">
-                Modern AI models like Claude 4 are partners, not servants. They respond best when you:
+                Modern AI models are partners, not servants. They respond best when you:
               </p>
               <ul className="space-y-2 text-gray-700">
                 <li>• Provide clear context and goals</li>
