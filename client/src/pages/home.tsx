@@ -177,7 +177,7 @@ export default function Home() {
             make prompts better
           </h1>
           <p className="text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Transform vague ideas into AI-ready prompts that get amazing results
+            Say what you want. Get exactly what you mean.
           </p>
         </div>
       </header>
