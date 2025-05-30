@@ -278,11 +278,11 @@ export default function Results() {
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
           <Button variant="outline" onClick={handleOpenClaude}>
-            Open in Claude
+            Copy & Open Claude
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
           <Button variant="outline" onClick={handleOpenGemini}>
-            Open in Gemini
+            Copy & Open Gemini
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </div>
