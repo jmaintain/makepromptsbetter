@@ -19,7 +19,9 @@ export default function PromptSchool() {
                   Back
                 </Button>
               </Link>
-              <Logo />
+              <div className="w-8 h-8">
+                <Logo />
+              </div>
             </div>
           </div>
         </div>
