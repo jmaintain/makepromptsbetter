@@ -165,18 +165,18 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header with Logo */}
-      <header className="pt-12 pb-8">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="flex justify-center items-center mb-6">
-            <div className="w-20 h-20 md:w-24 md:h-24">
+      <header className="pt-6 sm:pt-12 pb-6 sm:pb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <div className="flex justify-center items-center mb-4 sm:mb-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
               <Logo />
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4 font-title">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-primary mb-3 sm:mb-4 font-title">
             make prompts better
           </h1>
-          <p className="text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-2">
             Say what you want. Get exactly what you mean.
           </p>
         </div>

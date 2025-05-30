@@ -167,12 +167,12 @@ export default function Results() {
   }
 
   return (
-    <div className="min-h-screen py-12 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6">
+    <div className="min-h-screen py-6 sm:py-12 bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Your Optimized Prompt is Ready!
           </h1>
           <div className="inline-flex items-center bg-brand-accent bg-opacity-10 text-red-700 px-4 py-2 border border-brand-accent border-opacity-20 rounded-full font-medium">
@@ -262,7 +262,7 @@ export default function Results() {
         )}
 
         {/* Action Buttons */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           <Button
             onClick={handleCopy}
             className={`${hasUserCopied 
