@@ -167,8 +167,10 @@ export default function Home() {
       {/* Header with Logo */}
       <header className="pt-12 pb-8">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="flex justify-center items-center mb-4">
-            <Logo />
+          <div className="flex justify-center items-center mb-6">
+            <div className="w-20 h-20 md:w-24 md:h-24">
+              <Logo />
+            </div>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4 font-title">

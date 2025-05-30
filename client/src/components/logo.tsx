@@ -5,7 +5,7 @@ export function Logo() {
     <img 
       src={logoPath} 
       alt="Prompt Optimizer Logo" 
-      className="w-8 h-8"
+      className="w-full h-full object-contain"
     />
   );
 }
