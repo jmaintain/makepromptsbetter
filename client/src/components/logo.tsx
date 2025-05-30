@@ -1,9 +1,11 @@
+import logoPath from "@assets/0f7224c8-cbce-498c-8fdd-f5f5211943ff_1748645493677.png";
+
 export function Logo() {
   return (
-    <div className="flex flex-col items-center space-y-1">
-      <div className="w-8 h-2 bg-brand-accent rounded-full transform rotate-12"></div>
-      <div className="w-8 h-2 bg-brand-primary rounded-full"></div>
-      <div className="w-8 h-2 bg-brand-secondary rounded-full transform -rotate-12"></div>
-    </div>
+    <img 
+      src={logoPath} 
+      alt="Prompt Optimizer Logo" 
+      className="w-8 h-8"
+    />
   );
 }
