@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ratePrompt } from "@/lib/api";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -78,6 +78,7 @@ export function RatingLight({ prompt, className }: RatingLightProps) {
           />
         </DialogTrigger>
         <DialogContent className="max-w-sm">
+          <DialogTitle className="sr-only">Prompt Quality Rating</DialogTitle>
           {ratingContent}
         </DialogContent>
       </Dialog>

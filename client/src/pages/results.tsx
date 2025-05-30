@@ -175,8 +175,8 @@ export default function Results() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Your Optimized Prompt is Ready!
           </h1>
-          <div className="inline-flex items-center bg-brand-accent bg-opacity-10 text-red-700 px-4 py-2 border border-brand-accent border-opacity-20 rounded-full font-medium">
-            <Sparkles className="w-4 h-4 mr-1 text-red-700" />
+          <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 border border-green-200 rounded-full font-medium">
+            <Sparkles className="w-4 h-4 mr-1 text-green-600" />
             {result.improvement}% more specific
           </div>
         </div>
