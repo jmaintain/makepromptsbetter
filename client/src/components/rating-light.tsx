@@ -25,9 +25,9 @@ export function RatingLight({ prompt, className }: RatingLightProps) {
 
   const getRatingGlow = (score?: number) => {
     if (!score) return "";
-    if (score >= 7) return "shadow-green-500/50";
-    if (score >= 4) return "shadow-yellow-500/50";
-    return "shadow-red-500/50";
+    if (score >= 7) return "shadow-sm shadow-green-500/30";
+    if (score >= 4) return "shadow-sm shadow-yellow-500/30";
+    return "shadow-sm shadow-red-500/30";
   };
 
   if (isLoading) {
@@ -42,15 +42,11 @@ export function RatingLight({ prompt, className }: RatingLightProps) {
         <TooltipTrigger asChild>
           <div
             className={cn(
-              "w-4 h-4 rounded-full transition-all duration-500 cursor-help",
+              "w-3 h-3 rounded-full transition-all duration-300 cursor-help flex-shrink-0",
               getRatingColor(rating?.rating),
-              rating?.rating && "shadow-lg animate-pulse",
               getRatingGlow(rating?.rating),
               className
             )}
-            style={{
-              animation: rating?.rating ? "glow 2s ease-in-out infinite alternate" : undefined,
-            }}
           />
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
