@@ -129,8 +129,26 @@ export default function Results() {
     }
   };
 
-  const handleOpenChatGPT = () => {
+  const handleOpenChatGPT = async () => {
     if (!result) return;
+    
+    // Copy to clipboard first for consistency and reliability
+    try {
+      await navigator.clipboard.writeText(result.optimized);
+      setHasUserCopied(true);
+      toast({
+        title: "Copied & Opening ChatGPT",
+        description: "Prompt copied to clipboard and opening ChatGPT.",
+      });
+    } catch (error) {
+      toast({
+        title: "Opening ChatGPT",
+        description: "Please copy your prompt manually and paste it in ChatGPT.",
+        variant: "destructive",
+      });
+    }
+    
+    // Open ChatGPT with URL parameter as fallback
     const encodedPrompt = encodeURIComponent(result.optimized);
     window.open(`https://chat.openai.com/?q=${encodedPrompt}`, "_blank");
   };
@@ -315,7 +333,7 @@ export default function Results() {
             {hasUserCopied ? 'Copied!' : 'Copy'}
           </Button>
           <Button variant="outline" onClick={handleOpenChatGPT}>
-            Open in ChatGPT
+            Copy & Open ChatGPT
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
           <Button variant="outline" onClick={handleOpenClaude}>
