@@ -8,6 +8,7 @@ import { Copy, ExternalLink, Lightbulb, Sparkles, ChevronDown, ChevronRight, Fil
 import { useToast } from "@/hooks/use-toast";
 import { RatingLight } from "@/components/rating-light";
 import { cleanMarkdown } from "@/lib/text-utils";
+import confetti from "canvas-confetti";
 
 interface PromptResult {
   original: string;
@@ -28,11 +29,50 @@ export default function Results() {
     const stored = sessionStorage.getItem("promptResult");
     if (stored) {
       setResult(JSON.parse(stored));
+      // Trigger confetti celebration when results load
+      triggerCelebrationConfetti();
     } else {
       // If no result, redirect to home
       setLocation("/");
     }
   }, [setLocation]);
+
+  const triggerCelebrationConfetti = () => {
+    // Main celebration burst
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+
+    // Side bursts for extra celebration
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0.1 }
+      });
+    }, 200);
+
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 0.9 }
+      });
+    }, 400);
+  };
+
+  const triggerCopyConfetti = () => {
+    confetti({
+      particleCount: 50,
+      spread: 45,
+      origin: { y: 0.7 },
+      colors: ['#10b981', '#059669', '#047857']
+    });
+  };
 
   // Add navigation warning when user hasn't copied the prompt
   useEffect(() => {
@@ -75,6 +115,7 @@ export default function Results() {
     try {
       await navigator.clipboard.writeText(result.optimized);
       setHasUserCopied(true);
+      triggerCopyConfetti();
       toast({
         title: "Copied!",
         description: "Optimized prompt copied to clipboard",
