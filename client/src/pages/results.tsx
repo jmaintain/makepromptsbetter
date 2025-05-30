@@ -20,6 +20,7 @@ export default function Results() {
   const [, setLocation] = useLocation();
   const [result, setResult] = useState<PromptResult | null>(null);
   const [isContextOpen, setIsContextOpen] = useState(false);
+  const [hasUserCopied, setHasUserCopied] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,11 +34,47 @@ export default function Results() {
     }
   }, [setLocation]);
 
+  // Add navigation warning when user hasn't copied the prompt
+  useEffect(() => {
+    if (!result || hasUserCopied) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "You haven't copied your optimized prompt yet. Are you sure you want to leave?";
+      return e.returnValue;
+    };
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (!hasUserCopied) {
+        const shouldLeave = window.confirm(
+          "You haven't copied your optimized prompt yet. Are you sure you want to leave this page?"
+        );
+        if (!shouldLeave) {
+          e.preventDefault();
+          // Push the current state back to prevent navigation
+          window.history.pushState(null, "", window.location.pathname);
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("popstate", handlePopState);
+
+    // Push a state to handle back button
+    window.history.pushState(null, "", window.location.pathname);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [result, hasUserCopied]);
+
   const handleCopy = async () => {
     if (!result) return;
     
     try {
       await navigator.clipboard.writeText(result.optimized);
+      setHasUserCopied(true);
       toast({
         title: "Copied!",
         description: "Optimized prompt copied to clipboard",
@@ -70,6 +107,8 @@ export default function Results() {
   };
 
   const handleTryAnother = () => {
+    // Mark as copied to bypass warning since this is intentional navigation
+    setHasUserCopied(true);
     sessionStorage.removeItem("promptResult");
     setLocation("/");
   };
@@ -166,14 +205,31 @@ export default function Results() {
           </Card>
         )}
 
+        {/* Safety Notice */}
+        {!hasUserCopied && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-white text-xs font-bold">!</span>
+              </div>
+              <div className="text-amber-800 text-sm">
+                <strong>Don't lose your optimized prompt!</strong> Copy it before leaving this page.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           <Button
             onClick={handleCopy}
-            className="bg-brand-primary text-white hover:bg-brand-secondary focus:ring-brand-primary"
+            className={`${hasUserCopied 
+              ? 'bg-green-600 hover:bg-green-700' 
+              : 'bg-brand-primary hover:bg-brand-secondary'
+            } text-white focus:ring-brand-primary`}
           >
             <Copy className="w-4 h-4 mr-2" />
-            Copy
+            {hasUserCopied ? 'Copied!' : 'Copy'}
           </Button>
           <Button variant="outline" onClick={handleOpenChatGPT}>
             Open in ChatGPT
