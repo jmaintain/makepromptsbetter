@@ -94,16 +94,52 @@ export default function Results() {
     window.open(`https://chat.openai.com/?q=${encodedPrompt}`, "_blank");
   };
 
-  const handleOpenClaude = () => {
+  const handleOpenClaude = async () => {
     if (!result) return;
-    const encodedPrompt = encodeURIComponent(result.optimized);
-    window.open(`https://claude.ai/chat?q=${encodedPrompt}`, "_blank");
+    
+    // Copy to clipboard first since Claude doesn't support URL parameters
+    try {
+      await navigator.clipboard.writeText(result.optimized);
+      setHasUserCopied(true);
+      toast({
+        title: "Copied & Opening Claude",
+        description: "Prompt copied to clipboard. Paste it in Claude when it opens.",
+      });
+      // Open Claude in a new tab
+      window.open(`https://claude.ai/chat`, "_blank");
+    } catch (error) {
+      // Fallback: just open Claude
+      window.open(`https://claude.ai/chat`, "_blank");
+      toast({
+        title: "Opening Claude",
+        description: "Please copy your prompt manually and paste it in Claude.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleOpenGemini = () => {
+  const handleOpenGemini = async () => {
     if (!result) return;
-    const encodedPrompt = encodeURIComponent(result.optimized);
-    window.open(`https://gemini.google.com/chat?q=${encodedPrompt}`, "_blank");
+    
+    // Copy to clipboard first since Gemini doesn't support URL parameters
+    try {
+      await navigator.clipboard.writeText(result.optimized);
+      setHasUserCopied(true);
+      toast({
+        title: "Copied & Opening Gemini",
+        description: "Prompt copied to clipboard. Paste it in Gemini when it opens.",
+      });
+      // Open Gemini in a new tab
+      window.open(`https://gemini.google.com/app`, "_blank");
+    } catch (error) {
+      // Fallback: just open Gemini
+      window.open(`https://gemini.google.com/app`, "_blank");
+      toast({
+        title: "Opening Gemini",
+        description: "Please copy your prompt manually and paste it in Gemini.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleTryAnother = () => {
