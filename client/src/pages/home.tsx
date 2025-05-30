@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Logo } from "@/components/logo";
@@ -20,7 +20,15 @@ export default function Home() {
   const [isContextOpen, setIsContextOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+
+  // Auto-focus the main text input when page loads
+  useEffect(() => {
+    if (promptInputRef.current) {
+      promptInputRef.current.focus();
+    }
+  }, []);
 
   // Get credits status
   const { data: creditsData } = useQuery({
@@ -180,6 +188,7 @@ export default function Home() {
           <Card className="bg-white rounded-2xl shadow-sm border border-gray-300 mb-8">
             <CardContent className="p-8">
               <Textarea
+                ref={promptInputRef}
                 placeholder="Enter what you want here..."
                 value={promptText}
                 onChange={(e) => setPromptText(e.target.value)}
