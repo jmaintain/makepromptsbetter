@@ -111,14 +111,30 @@ Generate a single, clean enhanced prompt following the template. No preamble, no
 
       // Add context-specific instructions if context is provided
       if (contextText) {
-        systemMessage += `\n\nCRITICAL CONTEXT PROVIDED: The user has shared important background information that must shape your entire optimization approach. This context contains key insights about their project, goals, constraints, or vision that should fundamentally inform how you enhance their prompt. 
+        systemMessage += `
 
-Analyze this context carefully and let it guide every aspect of your enhancement - from tone and style to specific features and requirements. The context may reveal unstated needs, brand identity, user problems to solve, or design philosophy that should be woven throughout the optimized prompt.
+🔥 CRITICAL: USER CONTEXT MUST DOMINATE YOUR OPTIMIZATION 🔥
 
-USER CONTEXT:
+The user has provided essential context that MUST be the primary driver of your optimization. This context is not optional background - it contains the core requirements, constraints, and vision that should fundamentally reshape the entire prompt.
+
+MANDATORY CONTEXT INTEGRATION RULES:
+1. Read the context first, identify ALL key requirements, constraints, and goals
+2. The optimized prompt MUST explicitly incorporate specific details from the context
+3. Transform the basic prompt to align with the context's tone, domain, and requirements
+4. Add specific terminology, methodologies, or approaches mentioned in the context
+5. Include any constraints, target audiences, or success criteria from the context
+6. The final prompt should feel like it was written by someone who fully understands the context
+
+USER CONTEXT (THIS IS YOUR PRIMARY GUIDANCE):
 ${contextText}
 
-Use this context to transform not just what the user asked for, but HOW they want it approached based on their shared background and goals.`;
+CONTEXT INTEGRATION CHECKLIST:
+- Does the optimized prompt reference specific details from the context?
+- Does it align with the domain/industry mentioned in the context?
+- Does it incorporate the user's stated goals and constraints?
+- Would someone reading just the optimized prompt understand the context's key points?
+
+The context should be so thoroughly integrated that the optimized prompt feels custom-built for this specific use case.`;
       }
 
       systemMessage += `\n\nRespond with JSON in this exact format: { "optimizedPrompt": "the enhanced prompt here", "improvement": number_between_65_and_85 }`;
@@ -132,7 +148,9 @@ Use this context to transform not just what the user asked for, but HOW they wan
           },
           {
             role: "user",
-            content: `Please enhance this prompt to capture both its functional and emotional dimensions: "${originalPrompt}"`
+            content: contextText 
+              ? `CONTEXT-DRIVEN OPTIMIZATION REQUIRED: Using the provided context as your primary guide, enhance this prompt: "${originalPrompt}". The optimization must clearly reflect and integrate the specific requirements, constraints, and goals outlined in the context.`
+              : `Please enhance this prompt to capture both its functional and emotional dimensions: "${originalPrompt}"`
           }
         ],
         response_format: { type: "json_object" },
