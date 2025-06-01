@@ -10,12 +10,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Copy, Target, Save, TestTube, RotateCcw, Sparkles } from "lucide-react";
+import { Copy, Target, Save, TestTube, RotateCcw, Sparkles, ArrowLeft } from "lucide-react";
 import { createPersona, enhancePersona, savePersona, testPersona, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { formatTimeUntilReset } from "@/lib/credits";
 import { cleanMarkdown } from "@/lib/text-utils";
+import { Link } from "wouter";
 import type { CreatePersonaResponse, EnhancePersonaRequest } from "@shared/schema";
 
 export default function PersonaBuilder() {
@@ -191,13 +192,21 @@ export default function PersonaBuilder() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              AI Persona Builder
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Create sophisticated AI personas in two phases: get immediate results, then enhance with targeted improvements.
-            </p>
+          <div className="mb-8">
+            <div className="flex items-center mb-6">
+              <Link href="/" className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                Back to Home
+              </Link>
+            </div>
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                AI Persona Builder
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Create sophisticated AI personas in two phases: get immediate results, then enhance with targeted improvements.
+              </p>
+            </div>
           </div>
 
           {!persona ? (
