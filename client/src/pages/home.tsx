@@ -300,11 +300,7 @@ export default function Home() {
                   )}
                   Improve
                 </Button>
-                <Link href="/prompt-school">
-                  <Button variant="outline" className="px-6 py-3">
-                    Learn
-                  </Button>
-                </Link>
+
               </div>
             </CardContent>
           </Card>
