@@ -208,7 +208,7 @@ export default function Home() {
       <header className="pt-6 sm:pt-12 pb-6 sm:pb-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-primary mb-3 sm:mb-4 font-title">
-            makepromptsbetter.com
+            makepromptsbetter
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-2">
             Say what you want. Get exactly what you mean.

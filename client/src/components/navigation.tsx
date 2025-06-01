@@ -65,7 +65,7 @@ export function Navigation() {
             <div className="w-8 h-8">
               <Logo />
             </div>
-            <span className="text-xl font-bold text-gray-900">makepromptsbetter.com</span>
+            <span className="text-xl font-bold text-gray-900">makepromptsbetter</span>
           </Link>
 
           {/* Navigation Links */}
