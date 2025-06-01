@@ -123,6 +123,14 @@ export default function Home() {
           description: "Please wait a moment before trying again.",
           variant: "destructive",
         });
+      } else if (error.message?.includes("word_limit_exceeded")) {
+        toast({
+          title: "Word Limit Exceeded",
+          description: error.message || "Your prompt exceeds the word limit for your current plan.",
+          variant: "destructive",
+        });
+      } else if (error.message?.includes("monthly_limit_exceeded")) {
+        setShowUpgradeModal(true);
       } else {
         toast({
           title: "Error",

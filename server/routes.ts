@@ -83,23 +83,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userId: string | null = null;
       
       if (req.isAuthenticated && req.isAuthenticated()) {
-        userId = req.user.claims.sub;
-        const userStats = await storage.getUserStats(userId);
-        
-        // Set word limit based on tier
-        switch (userStats.tier) {
-          case 'pro': wordLimit = 500; break;
-          case 'starter': wordLimit = 300; break;
-          default: wordLimit = 200; break;
-        }
+        const tempUserId = (req.user as any).claims.sub;
+        if (tempUserId) {
+          userId = tempUserId;
+          const userStats = await storage.getUserStats(userId);
+          
+          // Set word limit based on tier
+          switch (userStats.tier) {
+            case 'pro': wordLimit = 500; break;
+            case 'starter': wordLimit = 300; break;
+            default: wordLimit = 200; break;
+          }
 
-        // Check if user has exceeded monthly usage limit
-        const hasUsageLeft = await storage.checkUsageLimit(userId);
-        if (!hasUsageLeft) {
-          return res.status(429).json({ 
-            message: "monthly_limit_exceeded",
-            error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
-          });
+          // Check if user has exceeded monthly usage limit
+          const hasUsageLeft = await storage.checkUsageLimit(userId);
+          if (!hasUsageLeft) {
+            return res.status(429).json({ 
+              message: "monthly_limit_exceeded",
+              error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
+            });
+          }
         }
       }
 
@@ -231,6 +234,17 @@ The context should be so thoroughly integrated that the optimized prompt feels c
         improvement,
         userFingerprint,
       });
+
+      // Log usage for authenticated users to track monthly limits
+      if (userId) {
+        await storage.logUsage({
+          userId,
+          requestType: 'prompt_optimization',
+          inputTokens: wordCount, // approximate token count
+          outputTokens: optimizedPrompt.split(' ').length, // approximate token count
+          cost: '0.0001' // estimated cost
+        });
+      }
 
       const optimizeResponse = optimizePromptResponseSchema.parse({
         optimizedPrompt,
