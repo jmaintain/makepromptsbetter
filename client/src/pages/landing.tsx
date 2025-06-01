@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/logo";
 import { CheckCircle, Zap, Users, Shield } from "lucide-react";
 
 export default function Landing() {
@@ -9,10 +10,7 @@ export default function Landing() {
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-heading text-gray-900">makepromptsbetter</span>
-          </div>
+          <Logo />
           <Button onClick={() => window.location.href = '/api/login'}>
             Sign In
           </Button>
@@ -196,9 +194,8 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Zap className="h-6 w-6 text-blue-400" />
-            <span className="text-xl font-bold">PromptCraft</span>
+          <div className="flex items-center justify-center mb-4">
+            <Logo />
           </div>
           <p className="text-gray-400">
             Enhance your AI interactions with optimized prompts and custom personas.
