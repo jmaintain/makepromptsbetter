@@ -9,8 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Copy, Target, Save, TestTube, RotateCcw, Sparkles } from "lucide-react";
-import { createPersona, enhancePersona, getCreditsStatus } from "@/lib/api";
+import { createPersona, enhancePersona, savePersona, testPersona, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { formatTimeUntilReset } from "@/lib/credits";
@@ -23,6 +24,9 @@ export default function PersonaBuilder() {
   const [persona, setPersona] = useState<CreatePersonaResponse | null>(null);
   const [showEnhancement, setShowEnhancement] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [testPrompt, setTestPrompt] = useState("");
+  const [testResponse, setTestResponse] = useState("");
   const [enhancements, setEnhancements] = useState<EnhancePersonaRequest["enhancements"]>({});
   const { toast } = useToast();
 
@@ -75,6 +79,38 @@ export default function PersonaBuilder() {
     },
   });
 
+  const savePersonaMutation = useMutation({
+    mutationFn: (personaId: number) => savePersona(personaId),
+    onSuccess: (data) => {
+      toast({
+        title: "Persona saved!",
+        description: data.message,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to save persona",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const testPersonaMutation = useMutation({
+    mutationFn: ({ personaId, testPrompt }: { personaId: number; testPrompt: string }) => 
+      testPersona({ personaId, testPrompt }),
+    onSuccess: (data) => {
+      setTestResponse(data.response);
+    },
+    onError: () => {
+      toast({
+        title: "Failed to test persona",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = () => {
     if (input.trim().length < 10) {
       toast({
@@ -110,11 +146,33 @@ export default function PersonaBuilder() {
     }
   };
 
+  const handleSavePersona = () => {
+    if (!persona) return;
+    savePersonaMutation.mutate(persona.id);
+  };
+
+  const handleTestPersona = () => {
+    if (!persona) return;
+    setShowTestModal(true);
+    setTestResponse("");
+  };
+
+  const handleRunTest = () => {
+    if (!persona || !testPrompt.trim()) return;
+    testPersonaMutation.mutate({
+      personaId: persona.id,
+      testPrompt: testPrompt.trim(),
+    });
+  };
+
   const handleStartOver = () => {
     setInput("");
     setName("");
     setPersona(null);
     setShowEnhancement(false);
+    setShowTestModal(false);
+    setTestPrompt("");
+    setTestResponse("");
     setEnhancements({});
   };
 
@@ -267,12 +325,25 @@ export default function PersonaBuilder() {
                   Copy Persona
                 </Button>
                 
-                <Button variant="outline" disabled>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Persona
+                <Button 
+                  variant="outline" 
+                  onClick={handleSavePersona}
+                  disabled={savePersonaMutation.isPending}
+                >
+                  {savePersonaMutation.isPending ? (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Persona
+                    </>
+                  )}
                 </Button>
                 
-                <Button variant="outline" disabled>
+                <Button variant="outline" onClick={handleTestPersona}>
                   <TestTube className="mr-2 h-4 w-4" />
                   Test Persona
                 </Button>

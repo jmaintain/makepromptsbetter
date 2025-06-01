@@ -447,6 +447,62 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
+  // Save Persona
+  app.post("/api/personas/:id/save", async (req, res) => {
+    try {
+      const personaId = parseInt(req.params.id);
+      const userFingerprint = generateUserFingerprint(req);
+      
+      await storage.savePersona(personaId, userFingerprint);
+      
+      const saveResponse = savePersonaResponseSchema.parse({
+        success: true,
+        message: "Persona saved successfully!"
+      });
+      
+      res.json(saveResponse);
+    } catch (error) {
+      console.error("Save persona error:", error);
+      res.status(500).json({ error: "Failed to save persona" });
+    }
+  });
+
+  // Test Persona
+  app.post("/api/personas/test", async (req, res) => {
+    try {
+      const { personaId, testPrompt } = testPersonaRequestSchema.parse(req.body);
+      const userFingerprint = generateUserFingerprint(req);
+      
+      const persona = await storage.getPersona(personaId);
+      if (!persona || persona.userFingerprint !== userFingerprint) {
+        return res.status(404).json({ error: "Persona not found" });
+      }
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: persona.generatedPersona
+          },
+          {
+            role: "user",
+            content: testPrompt
+          }
+        ],
+      });
+
+      const testResponse = testPersonaResponseSchema.parse({
+        response: response.choices[0].message.content || "No response generated"
+      });
+
+      res.json(testResponse);
+    } catch (error) {
+      console.error("Test persona error:", error);
+      res.status(500).json({ error: "Failed to test persona" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
