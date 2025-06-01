@@ -3,14 +3,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Logo } from "@/components/logo";
 import { UpgradeModal } from "@/components/upgrade-modal";
+import { WordCounter } from "@/components/word-counter";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ArrowUp, Loader2, ChevronDown, ChevronRight, Upload, X } from "lucide-react";
+import { ArrowUp, Loader2, ChevronDown, ChevronRight, Upload, X, AlertTriangle } from "lucide-react";
 import { optimizePrompt, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { queryClient } from "@/lib/queryClient";
 
 export default function Home() {
@@ -22,6 +24,13 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Get user stats for word limits
+  const { data: userStats } = useQuery({
+    queryKey: ["/api/user/stats"],
+    enabled: !!user,
+  });
 
   // Auto-focus the main text input when page loads
   useEffect(() => {
@@ -124,11 +133,34 @@ export default function Home() {
     },
   });
 
+  // Get word limit based on tier
+  const getWordLimit = () => {
+    if (!userStats) return 200; // Default for non-authenticated users
+    switch (userStats.tier) {
+      case 'pro': return 500;
+      case 'starter': return 300;
+      default: return 200;
+    }
+  };
+
+  const wordLimit = getWordLimit();
+  const wordCount = promptText.trim() ? promptText.trim().split(/\s+/).length : 0;
+
   const handleOptimize = () => {
     if (!promptText.trim()) {
       toast({
         title: "Error",
         description: "Please enter a prompt to improve!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check word limit
+    if (wordCount > wordLimit) {
+      toast({
+        title: "Word Limit Exceeded",
+        description: `Your prompt has ${wordCount} words, but your ${userStats?.tier || 'free'} tier allows only ${wordLimit} words. Please shorten your prompt or upgrade your plan.`,
         variant: "destructive",
       });
       return;
@@ -211,6 +243,11 @@ export default function Home() {
                 onKeyDown={handleKeyDown}
                 className="w-full h-32 resize-none border-none focus:outline-none text-xl text-gray-700 placeholder-gray-400 focus-visible:ring-0"
               />
+              
+              {/* Word Counter */}
+              <div className="mt-3">
+                <WordCounter text={promptText} limit={wordLimit} />
+              </div>
               
               {/* Context Section */}
               <div className="border-t border-gray-100 mt-6 pt-6">

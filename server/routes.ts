@@ -72,11 +72,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Optimize prompt endpoint
+  // Optimize prompt endpoint with word limits and usage tracking
   app.post("/api/optimize", async (req, res) => {
     try {
       const { originalPrompt, contextText } = optimizePromptRequestSchema.parse(req.body);
       const userFingerprint = generateUserFingerprint(req);
+
+      // Check if user is authenticated for tier-based limits
+      let wordLimit = 200; // Default for unauthenticated users
+      let userId: string | null = null;
+      
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        userId = req.user.claims.sub;
+        const userStats = await storage.getUserStats(userId);
+        
+        // Set word limit based on tier
+        switch (userStats.tier) {
+          case 'pro': wordLimit = 500; break;
+          case 'starter': wordLimit = 300; break;
+          default: wordLimit = 200; break;
+        }
+
+        // Check if user has exceeded monthly usage limit
+        const hasUsageLeft = await storage.checkUsageLimit(userId);
+        if (!hasUsageLeft) {
+          return res.status(429).json({ 
+            message: "monthly_limit_exceeded",
+            error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
+          });
+        }
+      }
+
+      // Count words in the prompt
+      const wordCount = originalPrompt.trim() ? originalPrompt.trim().split(/\s+/).length : 0;
+      
+      // Enforce word limit
+      if (wordCount > wordLimit) {
+        return res.status(400).json({ 
+          message: "word_limit_exceeded",
+          error: `Your prompt has ${wordCount} words, but your tier allows only ${wordLimit} words. Please shorten your prompt or upgrade your plan.`,
+          wordCount,
+          wordLimit
+        });
+      }
 
       // Check credits
       const todaysOptimizations = await storage.getUserOptimizationsToday(userFingerprint);
