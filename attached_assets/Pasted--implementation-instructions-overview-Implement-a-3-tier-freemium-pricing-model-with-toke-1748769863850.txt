@@ -1,0 +1,201 @@
+<implementation_instructions>
+  <overview>
+    Implement a 3-tier freemium pricing model with token optimization controls and cost management features for the AI persona builder application.
+  </overview>
+
+  <pricing_structure>
+    <free_tier>
+      <name>Free</name>
+      <price>$0</price>
+      <monthly_prompts>5</monthly_prompts>
+      <features>
+        - Basic persona generation
+        - Limited prompt history (last 5)
+        - Community support only
+      </features>
+      <input_limit>200 words (≈300 tokens)</input_limit>
+      <response_limit>300 words</response_limit>
+    </free_tier>
+
+    <starter_tier>
+      <name>Starter</name>
+      <monthly_price>$4.99</monthly_price>
+      <annual_price>$49.99 (2 months free)</annual_price>
+      <monthly_prompts>100</monthly_prompts>
+      <features>
+        - All Free features
+        - Prompt School access
+        - Email support
+        - Export personas (plain text)
+      </features>
+      <input_limit>300 words (≈450 tokens)</input_limit>
+      <response_limit>500 words</response_limit>
+    </starter_tier>
+
+    <pro_tier>
+      <name>Pro</name>
+      <monthly_price>$14.99</monthly_price>
+      <annual_price>$149.99 (2 months free)</annual_price>
+      <monthly_prompts>500</monthly_prompts>
+      <features>
+        - All Starter features
+        - AI Persona Builder (full enhancement features)
+        - Save up to 25 personas
+        - Save up to 50 prompts
+        - Priority support
+        - Advanced export formats (JSON, XML)
+        - Usage analytics dashboard
+      </features>
+      <input_limit>500 words (≈750 tokens)</input_limit>
+      <response_limit>Unlimited</response_limit>
+    </pro_tier>
+  </pricing_structure>
+
+  <token_management_ui>
+    <character_counter>
+      <location>Below input textarea</location>
+      <display_format>"X/Y words used"</display_format>
+      <color_coding>
+        - Green: 0-80% of limit
+        - Yellow: 80-95% of limit  
+        - Red: 95-100% of limit
+      </color_coding>
+      <real_time_update>Update count as user types</real_time_update>
+    </character_counter>
+
+    <soft_limit_warning>
+      <trigger>At 80% of word limit</trigger>
+      <message>"You're approaching your input limit. Consider upgrading for longer prompts."</message>
+      <display>Yellow banner above input field</display>
+      <upgrade_button>Show tier-appropriate upgrade CTA</upgrade_button>
+    </soft_limit_warning>
+
+    <hard_cutoff>
+      <trigger>At 100% of word limit</trigger>
+      <action>Prevent further typing</action>
+      <message>"Input limit reached. Upgrade to [Next Tier] for longer prompts."</message>
+      <upgrade_modal>Show pricing comparison with current tier highlighted</upgrade_modal>
+    </hard_cutoff>
+
+    <smart_truncation>
+      <fallback_option>If user submits over-limit content</fallback_option>
+      <action>Truncate to limit + show warning</action>
+      <message>"Your prompt was shortened to fit your plan. Upgrade for full input length."</message>
+    </smart_truncation>
+  </token_management_ui>
+
+  <cost_control_systems>
+    <cache_system>
+      <cache_targets>
+        - System prompts (hybrid persona builder prompt)
+        - Common enhancement questions
+        - Frequently used persona templates
+      </cache_targets>
+      <cache_duration>24 hours for system prompts, 1 hour for user content</cache_duration>
+      <implementation>Use Redis or in-memory cache with TTL</implementation>
+    </cache_system>
+
+    <batch_processing>
+      <queue_system>Implement job queue for non-urgent requests</queue_system>
+      <batch_timing>Process batches every 30 seconds during peak hours, 10 seconds off-peak</batch_timing>
+      <priority_levels>
+        - Immediate: Pro tier users
+        - Standard: Starter tier users (30-second delay)
+        - Low: Free tier users (60-second delay)
+      </priority_levels>
+      <user_feedback>Show "Processing..." with estimated wait time</user_feedback>
+    </batch_processing>
+
+    <rate_limiting>
+      <request_limits>
+        - Free: 1 request per 2 minutes
+        - Starter: 1 request per 30 seconds  
+        - Pro: 1 request per 10 seconds
+      </request_limits>
+      <abuse_prevention>
+        - Block users exceeding 3x normal rate
+        - Temporary 15-minute cooldown for violations
+        - Track IP addresses for repeated abuse
+      </abuse_prevention>
+      <user_notification>
+        "Please wait X seconds before submitting another request"
+      </user_notification>
+    </rate_limiting>
+
+    <monthly_usage_tracking>
+      <reset_date>Same day each month as subscription started</reset_date>
+      <usage_display>Show prompts used/remaining in user dashboard</usage_display>
+      <approaching_limit>Warning at 80% and 95% of monthly allocation</approaching_limit>
+      <overage_handling>Block new requests, show upgrade prompt</overage_handling>
+    </monthly_usage_tracking>
+  </cost_control_systems>
+
+  <billing_integration>
+    <payment_processor>Stripe or similar</payment_processor>
+    <billing_cycles>
+      - Monthly: Charged on same date each month
+      - Annual: Charged once yearly with 2-month discount
+    </billing_cycles>
+    <proration>Handle mid-cycle upgrades with prorated billing</proration>
+    <cancellation>Immediate cancellation, service continues until period end</cancellation>
+  </billing_integration>
+
+  <user_experience_features>
+    <usage_dashboard>
+      <display_metrics>
+        - Prompts used this month
+        - Prompts remaining
+        - Saved personas count
+        - Account tier
+        - Next billing date
+      </display_metrics>
+      <upgrade_prompts>Show tier comparison when approaching limits</upgrade_prompts>
+    </usage_dashboard>
+
+    <referral_system>
+      <bonus_prompts>Give 5 bonus prompts for successful referrals</bonus_prompts>
+      <referral_tracking>Track via unique user codes</referral_tracking>
+      <limitations>Bonus prompts don't roll over to next month</limitations>
+    </referral_system>
+
+    <trial_features>
+      <new_user_bonus>Give new signups 10 prompts in first month (Free tier)</new_user_bonus>
+      <upgrade_incentives>Show "Try Pro free for 7 days" for Starter users</upgrade_incentives>
+    </trial_features>
+  </user_experience_features>
+
+  <technical_requirements>
+    <database_schema>
+      - Users table with tier, monthly_usage, limit_reset_date
+      - Usage_logs table for tracking requests and tokens
+      - Subscriptions table for billing management
+    </database_schema>
+
+    <api_endpoints>
+      - POST /api/generate-persona (with tier validation)
+      - GET /api/usage-stats (current month statistics)
+      - POST /api/upgrade-tier (handle billing integration)
+    </api_endpoints>
+
+    <monitoring>
+      - Track average tokens per request by tier
+      - Monitor monthly cost per user
+      - Alert if costs exceed revenue thresholds
+      - Usage analytics for pricing optimization
+    </monitoring>
+  </technical_requirements>
+
+  <success_metrics>
+    <conversion_targets>
+      - Free to Starter: 15% conversion rate
+      - Starter to Pro: 25% conversion rate
+      - Annual plan adoption: 30% of paid users
+    </conversion_targets>
+
+    <cost_optimization>
+      - Average cost per request under $0.05
+      - Monthly gross margin above 70%
+      - Support ticket volume under 5% of active users
+    </cost_optimization>
+  </success_metrics>
+</implementation_instructions>
