@@ -54,8 +54,13 @@ export class MemStorage implements IStorage {
   async createPersona(insertPersona: InsertPersona): Promise<Persona> {
     const id = this.currentPersonaId++;
     const persona: Persona = {
-      ...insertPersona,
       id,
+      name: insertPersona.name,
+      originalInput: insertPersona.originalInput,
+      generatedPersona: insertPersona.generatedPersona,
+      enhancementResponses: insertPersona.enhancementResponses || null,
+      userFingerprint: insertPersona.userFingerprint,
+      phase: insertPersona.phase || "1",
       createdAt: new Date(),
     };
     

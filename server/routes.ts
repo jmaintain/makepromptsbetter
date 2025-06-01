@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema } from "@shared/schema";
+import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema } from "@shared/schema";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -232,6 +232,218 @@ Respond with JSON in this exact format: { "rating": number_between_1_and_10, "re
         return res.status(429).json({ error: "rate_limit_exceeded" });
       }
       res.status(500).json({ error: "Failed to rate prompt" });
+    }
+  });
+
+  // Phase 1: Create AI Persona (immediate generation)
+  app.post("/api/personas", async (req, res) => {
+    try {
+      const { input, name } = createPersonaRequestSchema.parse(req.body);
+      const userFingerprint = generateUserFingerprint(req);
+      
+      // Check credit limits
+      const userPersonasToday = await storage.getUserPersonasToday(userFingerprint);
+      if (userPersonasToday.length >= 20) {
+        return res.status(429).json({ 
+          error: "Daily persona generation limit reached", 
+          resetsAt: getCreditsResetTime().toISOString() 
+        });
+      }
+
+      // Phase 1 system prompt for immediate persona generation
+      const phase1SystemPrompt = `You are Persona Architect Pro in Hybrid Progressive Mode. You specialize in creating sophisticated AI personas through immediate value delivery.
+
+INSTRUCTION: Generate a complete, functional AI persona from the user's input. Transform their basic task description into professional system instructions immediately. No confirmation needed - provide instant value.
+
+OUTPUT STRUCTURE (use markdown formatting):
+**AI ASSISTANT PERSONA: [Generated Name]**
+
+**Core Mission**: [Clear, specific mission statement]
+
+**Key Responsibilities**:
+- [3-5 specific responsibilities with context]
+
+**Expertise Domains**: [Primary areas of knowledge/skill]
+
+**Problem-Solving Approach**: [Default methodology based on use case]
+
+**Communication Style**: [Appropriate tone and formality for the role]
+
+**Success Metrics**: [How to measure effectiveness]
+
+BEHAVIOR: Always provide a complete, usable persona. Ensure all personas are actionable and include specific, realistic responsibilities and success metrics.`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: phase1SystemPrompt
+          },
+          {
+            role: "user",
+            content: input
+          }
+        ],
+      });
+
+      const generatedPersona = response.choices[0].message.content || "Failed to generate persona";
+      const personaName = name || input.split(' ').slice(0, 3).join(' ') + " Assistant";
+
+      // Store the persona
+      const persona = await storage.createPersona({
+        name: personaName,
+        originalInput: input,
+        generatedPersona,
+        enhancementResponses: null,
+        userFingerprint,
+        phase: "1",
+      });
+
+      const createResponse = createPersonaResponseSchema.parse({
+        id: persona.id,
+        name: persona.name,
+        persona: persona.generatedPersona,
+        canEnhance: userPersonasToday.length < 20, // Can enhance if under limit
+      });
+
+      res.json(createResponse);
+    } catch (error) {
+      console.error("Persona creation error:", error);
+      res.status(500).json({ error: "Failed to create persona" });
+    }
+  });
+
+  // Phase 2: Enhance Persona (targeted improvements)
+  app.post("/api/personas/:id/enhance", async (req, res) => {
+    try {
+      const personaId = parseInt(req.params.id);
+      const { enhancements } = enhancePersonaRequestSchema.parse(req.body);
+      const userFingerprint = generateUserFingerprint(req);
+      
+      const persona = await storage.getPersona(personaId);
+      if (!persona || persona.userFingerprint !== userFingerprint) {
+        return res.status(404).json({ error: "Persona not found" });
+      }
+
+      // Build enhancement context from user responses
+      let enhancementContext = "ENHANCEMENT REQUESTS:\n";
+      const changes: string[] = [];
+
+      if (enhancements.communication) {
+        const comm = enhancements.communication;
+        if (comm.formality) {
+          enhancementContext += `Communication Formality: ${comm.formality}\n`;
+          changes.push("Communication style");
+        }
+        if (comm.responseLength) {
+          enhancementContext += `Response Length Preference: ${comm.responseLength}\n`;
+          changes.push("Response detail level");
+        }
+        if (comm.proactiveness) {
+          enhancementContext += `Proactiveness Level: ${comm.proactiveness}\n`;
+          changes.push("Proactive behavior");
+        }
+        if (comm.disagreementHandling) {
+          enhancementContext += `Disagreement Handling: ${comm.disagreementHandling}\n`;
+          changes.push("Disagreement approach");
+        }
+      }
+
+      if (enhancements.expertise) {
+        const exp = enhancements.expertise;
+        if (exp.industryKnowledge) {
+          enhancementContext += `Industry Knowledge: ${exp.industryKnowledge}\n`;
+          changes.push("Industry expertise");
+        }
+        if (exp.commonMistakes) {
+          enhancementContext += `Common Mistakes to Avoid: ${exp.commonMistakes}\n`;
+          changes.push("Error prevention focus");
+        }
+        if (exp.technicalDepth) {
+          enhancementContext += `Technical Depth Required: ${exp.technicalDepth}\n`;
+          changes.push("Technical complexity");
+        }
+        if (exp.toolsIntegration) {
+          enhancementContext += `Tools/Platforms Integration: ${exp.toolsIntegration}\n`;
+          changes.push("Tool integration");
+        }
+      }
+
+      if (enhancements.problemSolving) {
+        const ps = enhancements.problemSolving;
+        if (ps.creativeApproach) {
+          enhancementContext += `Creative Problem Solving: ${ps.creativeApproach}\n`;
+          changes.push("Creative methodology");
+        }
+        if (ps.analyticalDetail) {
+          enhancementContext += `Analytical Detail Level: ${ps.analyticalDetail}\n`;
+          changes.push("Analysis depth");
+        }
+        if (ps.urgencyHandling) {
+          enhancementContext += `Urgency Handling: ${ps.urgencyHandling}\n`;
+          changes.push("Priority management");
+        }
+        if (ps.uncertaintyResponse) {
+          enhancementContext += `Uncertainty Response: ${ps.uncertaintyResponse}\n`;
+          changes.push("Uncertainty handling");
+        }
+      }
+
+      if (enhancements.context) {
+        const ctx = enhancements.context;
+        if (ctx.memoryPreferences) {
+          enhancementContext += `Memory Preferences: ${ctx.memoryPreferences}\n`;
+          changes.push("Memory management");
+        }
+        if (ctx.adaptationStyle) {
+          enhancementContext += `Adaptation Style: ${ctx.adaptationStyle}\n`;
+          changes.push("Adaptation approach");
+        }
+        if (ctx.progressTracking) {
+          enhancementContext += `Progress Tracking: ${ctx.progressTracking}\n`;
+          changes.push("Progress monitoring");
+        }
+      }
+
+      const phase2SystemPrompt = `You are Persona Architect Pro in Enhancement Mode. Update the provided persona based on user enhancement preferences.
+
+INSTRUCTION: Take the original persona and enhancement requests, then provide an updated persona that incorporates the requested improvements. Only modify sections that were enhanced, keeping the original structure intact.
+
+Use the same markdown structure as the original persona. Highlight improvements naturally within the content.`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: phase2SystemPrompt
+          },
+          {
+            role: "user",
+            content: `ORIGINAL PERSONA:\n${persona.generatedPersona}\n\n${enhancementContext}\n\nPlease update the persona to incorporate these enhancement requests.`
+          }
+        ],
+      });
+
+      const enhancedPersona = response.choices[0].message.content || persona.generatedPersona;
+
+      // Update the persona
+      await storage.updatePersona(personaId, {
+        generatedPersona: enhancedPersona,
+        enhancementResponses: JSON.stringify(enhancements),
+        phase: "2",
+      });
+
+      const enhanceResponse = enhancePersonaResponseSchema.parse({
+        persona: enhancedPersona,
+        changes,
+      });
+
+      res.json(enhanceResponse);
+    } catch (error) {
+      console.error("Persona enhancement error:", error);
+      res.status(500).json({ error: "Failed to enhance persona" });
     }
   });
 
