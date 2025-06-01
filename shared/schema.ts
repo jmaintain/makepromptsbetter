@@ -50,3 +50,71 @@ export type OptimizePromptResponse = z.infer<typeof optimizePromptResponseSchema
 export type CreditsStatus = z.infer<typeof creditsStatusSchema>;
 export type RatePromptRequest = z.infer<typeof ratePromptRequestSchema>;
 export type RatePromptResponse = z.infer<typeof ratePromptResponseSchema>;
+
+// Persona Builder schemas
+export const personas = pgTable("personas", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  originalInput: text("original_input").notNull(),
+  generatedPersona: text("generated_persona").notNull(),
+  enhancementResponses: text("enhancement_responses"), // JSON as text for simplicity
+  userFingerprint: text("user_fingerprint").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  phase: text("phase").notNull().default("1"), // "1" or "2"
+});
+
+export const insertPersonaSchema = createInsertSchema(personas);
+
+export type InsertPersona = z.infer<typeof insertPersonaSchema>;
+export type Persona = typeof personas.$inferSelect;
+
+export const createPersonaRequestSchema = z.object({
+  input: z.string().min(10).max(1000),
+  name: z.string().optional(),
+});
+
+export const createPersonaResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  persona: z.string(),
+  canEnhance: z.boolean(),
+});
+
+export const enhancePersonaRequestSchema = z.object({
+  personaId: z.number(),
+  enhancements: z.object({
+    communication: z.object({
+      formality: z.string().optional(),
+      responseLength: z.string().optional(),
+      proactiveness: z.string().optional(),
+      disagreementHandling: z.string().optional(),
+    }).optional(),
+    expertise: z.object({
+      industryKnowledge: z.string().optional(),
+      commonMistakes: z.string().optional(),
+      technicalDepth: z.string().optional(),
+      toolsIntegration: z.string().optional(),
+    }).optional(),
+    problemSolving: z.object({
+      creativeApproach: z.string().optional(),
+      analyticalDetail: z.string().optional(),
+      urgencyHandling: z.string().optional(),
+      uncertaintyResponse: z.string().optional(),
+    }).optional(),
+    context: z.object({
+      memoryPreferences: z.string().optional(),
+      adaptationStyle: z.string().optional(),
+      progressTracking: z.string().optional(),
+    }).optional(),
+  }),
+});
+
+export const enhancePersonaResponseSchema = z.object({
+  persona: z.string(),
+  changes: z.array(z.string()),
+});
+
+export type CreatePersonaRequest = z.infer<typeof createPersonaRequestSchema>;
+export type CreatePersonaResponse = z.infer<typeof createPersonaResponseSchema>;
+export type EnhancePersonaRequest = z.infer<typeof enhancePersonaRequestSchema>;
+export type EnhancePersonaResponse = z.infer<typeof enhancePersonaResponseSchema>;
