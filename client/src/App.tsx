@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { Layout } from "@/components/layout";
+import { PersonaBuilderRoute } from "@/components/persona-builder-route";
 import Home from "@/pages/home";
 import Landing from "@/pages/landing";
 import Settings from "@/pages/settings";
@@ -26,7 +27,7 @@ function Router() {
           <Route path="/settings" component={Settings} />
           <Route path="/results" component={Results} />
           <Route path="/prompt-school" component={PromptSchool} />
-          <Route path="/persona-builder" component={PersonaBuilder} />
+          <Route path="/persona-builder" component={PersonaBuilderRoute} />
         </Layout>
       )}
       <Route component={NotFound} />

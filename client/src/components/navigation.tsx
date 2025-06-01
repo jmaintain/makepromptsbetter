@@ -22,11 +22,20 @@ export function Navigation() {
     enabled: !!user,
   });
 
-  const navItems = [
-    { path: "/", label: "Home" },
-    { path: "/prompt-school", label: "Prompt School" },
-    { path: "/persona-builder", label: "Persona Builder" },
-  ];
+  const getNavItems = () => {
+    const baseItems = [
+      { path: "/", label: "Home" },
+      { path: "/prompt-school", label: "Prompt School", tier: "starter" },
+    ];
+    
+    if (userStats?.tier === 'pro') {
+      baseItems.push({ path: "/persona-builder", label: "Persona Builder", tier: "pro" });
+    }
+    
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
 
   const getUserInitials = () => {
     if (user?.firstName && user?.lastName) {
@@ -71,6 +80,18 @@ export function Navigation() {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Pro upgrade hint */}
+            {userStats?.tier !== 'pro' && (
+              <div className="relative group">
+                <span className="text-sm font-medium text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
+                  Persona Builder
+                </span>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Upgrade to Pro to unlock
+                </div>
+              </div>
+            )}
           </nav>
 
           {/* User Menu */}
