@@ -1,14 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bot, Calendar, TestTube, Trash2, Edit, Copy } from "lucide-react";
+import { Bot, Calendar, TestTube, Trash2, Edit, Copy, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { testPersona } from "@/lib/api";
+import { cleanMarkdown } from "@/lib/text-utils";
 
 interface SavedAssistant {
   id: number;
@@ -32,6 +34,21 @@ export default function MyAssistants() {
     enabled: !!user,
   });
 
+  const testPersonaMutation = useMutation({
+    mutationFn: ({ personaId, testPrompt }: { personaId: number; testPrompt: string }) => 
+      testPersona({ personaId, testPrompt }),
+    onSuccess: (data) => {
+      setTestResponse(data.response);
+    },
+    onError: () => {
+      toast({
+        title: "Failed to test assistant",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleCopyPersona = (persona: string) => {
     navigator.clipboard.writeText(persona);
     toast({
@@ -45,6 +62,14 @@ export default function MyAssistants() {
     setShowTestModal(true);
     setTestPrompt("");
     setTestResponse("");
+  };
+
+  const handleRunTest = () => {
+    if (!selectedAssistant || !testPrompt.trim()) return;
+    testPersonaMutation.mutate({
+      personaId: selectedAssistant.id,
+      testPrompt: testPrompt.trim(),
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -183,9 +208,65 @@ export default function MyAssistants() {
                 className="mt-2"
               />
             </div>
-            <Button className="w-full" disabled>
-              Test Assistant
+            <Button 
+              className="w-full"
+              onClick={handleRunTest}
+              disabled={testPersonaMutation.isPending || !testPrompt.trim()}
+            >
+              {testPersonaMutation.isPending ? (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                  Testing Assistant...
+                </>
+              ) : (
+                <>
+                  <TestTube className="mr-2 h-4 w-4" />
+                  Run Test
+                </>
+              )}
             </Button>
+
+            {testResponse && (
+              <div className="mt-4">
+                <Label>Assistant Response:</Label>
+                <div className="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border">
+                  <div 
+                    className="whitespace-pre-wrap text-sm prose prose-gray dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ 
+                      __html: cleanMarkdown(testResponse).replace(/\n/g, '<br/>') 
+                    }}
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => navigator.clipboard.writeText(testResponse)}
+                  className="mt-2"
+                  size="sm"
+                >
+                  <Copy className="mr-2 h-3 w-3" />
+                  Copy Response
+                </Button>
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-end pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setTestPrompt("");
+                  setTestResponse("");
+                }}
+                disabled={testPersonaMutation.isPending}
+              >
+                Clear
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowTestModal(false)}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
