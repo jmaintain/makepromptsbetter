@@ -10,13 +10,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Copy, Target, Save, TestTube, RotateCcw, Sparkles, ArrowLeft } from "lucide-react";
+import { Copy, Target, Save, TestTube, RotateCcw, Sparkles, ArrowLeft, HelpCircle } from "lucide-react";
 import { createPersona, enhancePersona, savePersona, testPersona, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { formatTimeUntilReset } from "@/lib/credits";
 import { cleanMarkdown } from "@/lib/text-utils";
 import { Link } from "wouter";
+import { PersonaUsageGuide } from "@/components/persona-usage-guide";
 import type { CreatePersonaResponse, EnhancePersonaRequest } from "@shared/schema";
 
 export default function PersonaBuilder() {
@@ -26,6 +27,7 @@ export default function PersonaBuilder() {
   const [showEnhancement, setShowEnhancement] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showTestModal, setShowTestModal] = useState(false);
+  const [showUsageGuide, setShowUsageGuide] = useState(false);
   const [testPrompt, setTestPrompt] = useState("");
   const [testResponse, setTestResponse] = useState("");
   const [enhancements, setEnhancements] = useState<EnhancePersonaRequest["enhancements"]>({});
@@ -193,19 +195,52 @@ export default function PersonaBuilder() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
               <Link href="/" className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 Back to Home
               </Link>
+              <Button
+                variant="outline"
+                onClick={() => setShowUsageGuide(true)}
+                className="inline-flex items-center"
+              >
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Usage Guide & FAQ
+              </Button>
             </div>
             <div className="text-center">
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 AI Persona Builder
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
                 Create sophisticated AI personas in two phases: get immediate results, then enhance with targeted improvements.
               </p>
+              
+              {/* Why Use Personas Description */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 max-w-3xl mx-auto">
+                <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+                  Why Create an AI Persona?
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800 dark:text-blue-200">
+                  <div className="flex items-start space-x-2">
+                    <Target className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <span><strong>Consistent Results:</strong> No more explaining your needs every time - your persona remembers your preferences and working style.</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Sparkles className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <span><strong>Specialized Knowledge:</strong> Tap into specific expertise areas for more relevant and accurate assistance.</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Save className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <span><strong>Save Time:</strong> Skip the setup - your persona contains all the context AI needs to help you effectively.</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Copy className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <span><strong>Quality Standards:</strong> Ensure AI follows your preferred communication style across all interactions.</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -663,6 +698,11 @@ export default function PersonaBuilder() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <PersonaUsageGuide 
+        open={showUsageGuide} 
+        onOpenChange={setShowUsageGuide}
+      />
     </div>
   );
 }
