@@ -313,10 +313,11 @@ Respond with JSON in this exact format: { "rating": number_between_1_and_10, "re
   });
 
   // Phase 1: Create AI Assistant (immediate generation)
-  app.post("/api/ai-assistants", async (req, res) => {
+  app.post("/api/ai-assistants", isAuthenticated, async (req: any, res) => {
     try {
       const { input, name } = createPersonaRequestSchema.parse(req.body);
-      const userFingerprint = generateUserFingerprint(req);
+      const userId = req.user.claims.sub;
+      const userFingerprint = userId; // Use authenticated user ID as fingerprint
       
       // Check credit limits
       const userPersonasToday = await storage.getUserPersonasToday(userFingerprint);
@@ -392,14 +393,14 @@ BEHAVIOR: Always provide a complete, usable persona. Ensure all personas are act
   });
 
   // Phase 2: Enhance AI Assistant (targeted improvements)
-  app.post("/api/ai-assistants/:id/enhance", async (req, res) => {
+  app.post("/api/ai-assistants/:id/enhance", isAuthenticated, async (req: any, res) => {
     try {
       const personaId = parseInt(req.params.id);
       const { enhancements } = enhancePersonaRequestSchema.parse(req.body);
-      const userFingerprint = generateUserFingerprint(req);
+      const userId = req.user.claims.sub;
       
       const persona = await storage.getPersona(personaId);
-      if (!persona || persona.userFingerprint !== userFingerprint) {
+      if (!persona || persona.userFingerprint !== userId) {
         return res.status(404).json({ error: "Persona not found" });
       }
 
@@ -525,12 +526,12 @@ Use the same markdown structure as the original persona. Highlight improvements 
   });
 
   // Save AI Assistant
-  app.post("/api/ai-assistants/:id/save", async (req, res) => {
+  app.post("/api/ai-assistants/:id/save", isAuthenticated, async (req: any, res) => {
     try {
       const personaId = parseInt(req.params.id);
-      const userFingerprint = generateUserFingerprint(req);
+      const userId = req.user.claims.sub;
       
-      await storage.savePersona(personaId, userFingerprint);
+      await storage.savePersona(personaId, userId);
       
       const saveResponse = savePersonaResponseSchema.parse({
         success: true,
@@ -545,13 +546,14 @@ Use the same markdown structure as the original persona. Highlight improvements 
   });
 
   // Test AI Assistant
-  app.post("/api/ai-assistants/test", async (req, res) => {
+  app.post("/api/ai-assistants/test", isAuthenticated, async (req: any, res) => {
     try {
       const { personaId, testPrompt } = testPersonaRequestSchema.parse(req.body);
+      const userId = req.user.claims.sub;
       const userFingerprint = generateUserFingerprint(req);
       
       const persona = await storage.getPersona(personaId);
-      if (!persona || persona.userFingerprint !== userFingerprint) {
+      if (!persona || persona.userFingerprint !== userId) {
         return res.status(404).json({ error: "Persona not found" });
       }
 
