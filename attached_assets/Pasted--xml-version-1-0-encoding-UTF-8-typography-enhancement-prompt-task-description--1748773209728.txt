@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typography_enhancement_prompt>
+  <task>
+    <description>Improve the typography and readability of the MakePromptsBetter web application. Implement the following font and spacing changes to enhance user experience while maintaining the clean, professional aesthetic.</description>
+  </task>
+
+  <font_specifications>
+    <heading_font>
+      <name>Inter</name>
+      <fallback>-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</fallback>
+      <weight>600-700</weight>
+      <usage>
+        <element>Main "makepromptsbetter" title</element>
+        <element>Section headers: "Save Hours", "Get Better Results", "Learn While You Use"</element>
+        <element>All H1, H2 elements</element>
+      </usage>
+    </heading_font>
+
+    <body_font>
+      <name>Source Sans Pro</name>
+      <fallback>-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</fallback>
+      <weight>400 (regular), 500 (emphasis)</weight>
+      <usage>
+        <element>All descriptive text and paragraphs</element>
+        <element>Feature descriptions</element>
+        <element>Tagline: "Say what you want. Get exactly what you mean."</element>
+      </usage>
+    </body_font>
+
+    <code_font>
+      <name>JetBrains Mono</name>
+      <fallback>'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace</fallback>
+      <weight>400</weight>
+      <usage>
+        <element>Main input textarea</element>
+        <element>Before/after example boxes</element>
+        <element>Any code snippets or monospace text</element>
+      </usage>
+    </code_font>
+  </font_specifications>
+
+  <typography_rules>
+    <font_sizes>
+      <main_title>2.5rem (40px)</main_title>
+      <tagline>1.25rem (20px)</tagline>
+      <section_headers>1.75rem (28px)</section_headers>
+      <body_text>1rem (16px)</body_text>
+      <small_text>0.875rem (14px)</small_text>
+      <code_text>0.9rem (14.4px)</code_text>
+    </font_sizes>
+
+    <line_heights>
+      <headings>1.2</headings>
+      <body_text>1.6</body_text>
+      <code_text>1.5</code_text>
+    </line_heights>
+
+    <spacing_improvements>
+      <example_boxes>Add 1.5rem (24px) padding inside before/after example boxes</example_boxes>
+      <section_margins>Increase margin between feature sections to 3rem (48px)</section_margins>
+      <input_padding>Add 0.5rem (8px) more padding around main input textarea</input_padding>
+      <title_spacing>Increase letter-spacing for main title to 0.02em</title_spacing>
+    </spacing_improvements>
+  </typography_rules>
+
+  <implementation_steps>
+    <step priority="1">
+      <action>Import Fonts</action>
+      <details>Add Google Fonts imports for Inter, Source Sans Pro, and JetBrains Mono</details>
+    </step>
+    <step priority="2">
+      <action>Create CSS Variables</action>
+      <details>Establish CSS custom properties for consistent font usage across components</details>
+      <example>
+        :root {
+          --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          --font-body: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+          --font-code: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+        }
+      </example>
+    </step>
+    <step priority="3">
+      <action>Responsive Scaling</action>
+      <details>Ensure fonts scale appropriately on mobile (reduce by 10-15%)</details>
+    </step>
+    <step priority="4">
+      <action>Accessibility</action>
+      <details>Maintain minimum contrast ratios and ensure text remains readable at 200% zoom</details>
+    </step>
+    <step priority="5">
+      <action>Performance</action>
+      <details>Use font-display: swap for faster loading</details>
+    </step>
+  </implementation_steps>
+
+  <execution_priority>
+    <phase order="1">Implement font changes for main title and tagline first</phase>
+    <phase order="2">Update body text fonts and line heights</phase>
+    <phase order="3">Apply code font to input areas and examples</phase>
+    <phase order="4">Adjust spacing and padding</phase>
+    <phase order="5">Test across different devices and browsers</phase>
+  </execution_priority>
+
+  <expected_outcome>
+    <description>The updated typography should feel more polished and professional while improving readability, especially for longer text blocks and code examples. The Inter headings will give a modern tech feel, Source Sans Pro will make body text more comfortable to read, and JetBrains Mono will make code examples clearer and more professional.</description>
+  </expected_outcome>
+</typography_enhancement_prompt>
