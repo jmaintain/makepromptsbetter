@@ -1,0 +1,151 @@
+<implementation_guide>
+  <overview>
+    Implement a two-phase AI persona builder with immediate value delivery and optional enhancement. Phase 1 generates complete personas from minimal input. Phase 2 offers targeted improvements through smart questions.
+  </overview>
+
+  <user_flow>
+    <step_1>User enters basic request in text field ("Help me write marketing copy")</step_1>
+    <step_2>System immediately generates complete persona using Phase 1 prompt</step_2>
+    <step_3>Display persona result with enhancement option button</step_3>
+    <step_4>If user clicks enhancement, show targeted follow-up questions</step_4>
+    <step_5>Update persona sections based on user responses</step_5>
+  </user_flow>
+
+  <technical_requirements>
+    <phase_1_implementation>
+      <trigger>User submits initial text input</trigger>
+      <action>Send user input to AI with Phase 1 system prompt</action>
+      <response>Display complete persona immediately - no loading states or "generating..." messages</response>
+      <ui_elements>
+        - Show generated persona in formatted display
+        - Add "🎯 Want better results?" enhancement button
+        - Include "Save Persona" and "Test Persona" options
+      </ui_elements>
+    </phase_1_implementation>
+
+    <phase_2_implementation>
+      <trigger>User clicks enhancement button</trigger>
+      <action>Display enhancement categories as collapsible sections</action>
+      <question_display>
+        - Show 4 enhancement categories: Communication, Expertise, Problem-Solving, Context
+        - Each category has 2-4 targeted questions
+        - Use dropdown/radio buttons for structured answers
+        - Allow "Skip" option for each question
+      </question_display>
+      <update_mechanism>
+        - Send original persona + user enhancement answers to AI
+        - Update only the modified sections of persona
+        - Highlight what changed with visual indicators
+      </update_mechanism>
+    </phase_2_implementation>
+  </technical_requirements>
+
+  <ui_component_structure>
+    <initial_form>
+      <input_field>
+        - Large textarea with placeholder: "Describe what you want your AI assistant to do..."
+        - Character counter (recommend 50-500 characters)
+        - Example suggestions below field
+      </input_field>
+      <name_field>
+        - Text input: "What should we call it?" 
+        - Auto-generate suggestions based on input
+        - Optional field with smart defaults
+      </name_field>
+      <submit_button>
+        - Primary action: "Generate Persona"
+        - No confirmation dialogs
+      </submit_button>
+    </initial_form>
+
+    <results_display>
+      <persona_output>
+        - Formatted markdown display of generated persona
+        - Copy-to-clipboard functionality
+        - Export options (plain text, JSON)
+      </persona_output>
+      <action_buttons>
+        - "🎯 Make it Better" (enhancement trigger)
+        - "💾 Save Persona" 
+        - "🧪 Test Persona" (premium feature)
+        - "🔄 Start Over"
+      </action_buttons>
+    </results_display>
+
+    <enhancement_panel>
+      <category_sections>
+        - Collapsible accordions for each category
+        - Visual progress indicator
+        - "Apply Changes" button at bottom
+        - Option to "Skip All" and use basic version
+      </category_sections>
+    </enhancement_panel>
+  </ui_component_structure>
+
+  <ai_integration_points>
+    <phase_1_call>
+      <system_prompt>Use the Phase 1 system prompt from hybrid_persona_prompt.xml</system_prompt>
+      <user_input>Raw user description of their needs</user_input>
+      <expected_output>Complete persona in structured markdown format</expected_output>
+      <error_handling>If generation fails, provide fallback template with user input integrated</error_handling>
+    </phase_1_call>
+
+    <phase_2_call>
+      <system_prompt>Use Phase 2 enhancement prompt with original persona context</system_prompt>
+      <user_input>Original persona + selected enhancement answers</user_input>
+      <expected_output>Updated persona sections with improvements highlighted</expected_output>
+      <optimization>Only send answered questions, not empty responses</optimization>
+    </phase_2_call>
+  </ai_integration_points>
+
+  <premium_tier_hooks>
+    <basic_tier_limits>
+      - 3 persona generations per month
+      - Phase 1 only (no enhancements)
+      - Basic export options
+    </basic_tier_limits>
+    
+    <premium_tier_features>
+      - Unlimited generations
+      - Full Phase 2 enhancement access
+      - Persona testing suite
+      - Save/organize persona library
+      - Advanced export formats
+    </premium_tier_features>
+
+    <upgrade_prompts>
+      - Show after user completes 3 basic generations
+      - Display when user tries to access enhancement features
+      - Highlight value: "Get 10x better personas with enhancement questions"
+    </upgrade_prompts>
+  </premium_tier_hooks>
+
+  <data_storage_requirements>
+    <user_personas>
+      - Store original input, generated persona, enhancement responses
+      - Track usage analytics (generation count, enhancement usage)
+      - Version control for persona iterations
+    </user_personas>
+    
+    <performance_metrics>
+      - Time to generate (should be <3 seconds for Phase 1)
+      - User satisfaction ratings
+      - Enhancement adoption rates
+      - Conversion to premium tier
+    </performance_metrics>
+  </data_storage_requirements>
+
+  <success_criteria>
+    <user_experience>
+      - User gets valuable result in under 10 seconds
+      - Enhancement process takes <2 minutes
+      - Clear value progression from basic to premium
+    </user_experience>
+    
+    <business_metrics>
+      - 70%+ users complete Phase 1 successfully
+      - 30%+ try enhancement features
+      - 15%+ convert to premium after enhancement trial
+    </business_metrics>
+  </success_criteria>
+</implementation_guide>
