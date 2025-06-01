@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -30,6 +30,11 @@
   --brand-primary: 196 48% 32%; /* #2b6876 */
   --brand-accent: 0 79% 70%; /* #ff6b6b */
   --brand-secondary: 196 58% 22%; /* #1a4e5a */
+  
+  /* Typography fonts */
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-code: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
 }
 
 .dark {
@@ -60,7 +65,10 @@
   }
 
   body {
-    @apply bg-background text-foreground font-['Roboto_Mono',monospace] antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
   }
 }
 
@@ -106,13 +114,56 @@
   --tw-ring-color: hsl(var(--brand-primary));
 }
 
-/* Custom font classes */
-.font-title {
-  font-family: 'Noto Serif Georgian', serif;
+/* Typography utility classes */
+.font-heading {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
 }
 
-.font-mono {
-  font-family: 'Roboto Mono', monospace;
+.font-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.font-code {
+  font-family: var(--font-code);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Font size utilities */
+.text-main-title {
+  font-size: 2.5rem; /* 40px */
+  letter-spacing: 0.02em;
+}
+
+.text-tagline {
+  font-size: 1.25rem; /* 20px */
+}
+
+.text-section-header {
+  font-size: 1.75rem; /* 28px */
+}
+
+.text-code {
+  font-size: 0.9rem; /* 14.4px */
+}
+
+/* Responsive scaling */
+@media (max-width: 768px) {
+  .text-main-title {
+    font-size: 2.125rem; /* ~85% of desktop */
+  }
+  
+  .text-tagline {
+    font-size: 1.125rem;
+  }
+  
+  .text-section-header {
+    font-size: 1.5rem;
+  }
 }
 
 /* Rating light glow animation */

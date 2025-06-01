@@ -11,7 +11,7 @@ export default function Landing() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">PromptCraft</span>
+            <span className="text-2xl font-heading text-gray-900">PromptCraft</span>
           </div>
           <Button onClick={() => window.location.href = '/api/login'}>
             Sign In
@@ -24,11 +24,11 @@ export default function Landing() {
         <Badge variant="secondary" className="mb-4">
           AI-Powered Prompt Optimization
         </Badge>
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+        <h1 className="text-main-title font-heading text-gray-900 mb-6">
           Craft Perfect AI Prompts
           <span className="text-blue-600"> Effortlessly</span>
         </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-tagline font-body text-gray-600 mb-8 max-w-2xl mx-auto">
           Transform your basic prompts into powerful, optimized instructions that get better results from AI models. 
           Build custom personas and unlock the full potential of AI assistance.
         </p>
@@ -44,7 +44,7 @@ export default function Landing() {
 
       {/* Features Grid */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+        <h2 className="text-section-header font-heading text-center text-gray-900 mb-12">
           Everything you need to master AI prompts
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -80,7 +80,7 @@ export default function Landing() {
 
       {/* Pricing Section */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+        <h2 className="text-section-header font-heading text-center text-gray-900 mb-12">
           Simple, transparent pricing
         </h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
