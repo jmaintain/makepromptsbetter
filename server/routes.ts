@@ -524,8 +524,8 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
-  // Save Persona
-  app.post("/api/personas/:id/save", async (req, res) => {
+  // Save AI Assistant
+  app.post("/api/ai-assistants/:id/save", async (req, res) => {
     try {
       const personaId = parseInt(req.params.id);
       const userFingerprint = generateUserFingerprint(req);
@@ -534,7 +534,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
       
       const saveResponse = savePersonaResponseSchema.parse({
         success: true,
-        message: "Persona saved successfully!"
+        message: "AI Assistant saved successfully!"
       });
       
       res.json(saveResponse);
@@ -544,8 +544,8 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
-  // Test Persona
-  app.post("/api/personas/test", async (req, res) => {
+  // Test AI Assistant
+  app.post("/api/ai-assistants/test", async (req, res) => {
     try {
       const { personaId, testPrompt } = testPersonaRequestSchema.parse(req.body);
       const userFingerprint = generateUserFingerprint(req);
