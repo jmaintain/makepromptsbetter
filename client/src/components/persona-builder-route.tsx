@@ -15,7 +15,8 @@ export function PersonaBuilderRoute() {
   });
 
   // If user is Pro, show the actual Persona Builder
-  if (userStats?.tier === 'pro') {
+  // Temporarily allow access for development
+  if (userStats?.tier === 'pro' || import.meta.env.DEV) {
     return <PersonaBuilder />;
   }
 
