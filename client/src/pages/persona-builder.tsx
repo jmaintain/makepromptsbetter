@@ -573,6 +573,82 @@ export default function PersonaBuilder() {
         onOpenChange={setShowUpgradeModal}
         creditsResetTime={(creditsStatus as any)?.resetsAt}
       />
+
+      {/* Test Persona Dialog */}
+      <Dialog open={showTestModal} onOpenChange={setShowTestModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Test Your Persona</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="testPrompt">Enter a prompt to test your persona:</Label>
+              <Textarea
+                id="testPrompt"
+                placeholder="e.g., 'Help me write a social media post about our new coffee blend' or 'Debug this Python function that's running slowly'"
+                value={testPrompt}
+                onChange={(e) => setTestPrompt(e.target.value)}
+                className="mt-2 min-h-[100px]"
+              />
+            </div>
+
+            <Button
+              onClick={handleRunTest}
+              disabled={testPersonaMutation.isPending || !testPrompt.trim()}
+              className="w-full"
+            >
+              {testPersonaMutation.isPending ? (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                  Testing Persona...
+                </>
+              ) : (
+                <>
+                  <TestTube className="mr-2 h-4 w-4" />
+                  Run Test
+                </>
+              )}
+            </Button>
+
+            {testResponse && (
+              <div className="mt-4">
+                <Label>Persona Response:</Label>
+                <div className="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border">
+                  <div className="whitespace-pre-wrap text-sm">{testResponse}</div>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => navigator.clipboard.writeText(testResponse)}
+                  className="mt-2"
+                  size="sm"
+                >
+                  <Copy className="mr-2 h-3 w-3" />
+                  Copy Response
+                </Button>
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-end pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setTestPrompt("");
+                  setTestResponse("");
+                }}
+                disabled={testPersonaMutation.isPending}
+              >
+                Clear
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowTestModal(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
