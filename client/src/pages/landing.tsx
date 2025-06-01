@@ -194,7 +194,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-4 text-white">
             <Logo />
           </div>
           <p className="text-gray-400">

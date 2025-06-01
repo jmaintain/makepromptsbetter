@@ -8,7 +8,7 @@ export function Logo() {
         alt="makepromptsbetter.com Logo" 
         className="h-8 w-auto object-contain"
       />
-      <span className="text-2xl font-heading text-gray-900 dark:text-white">makepromptsbetter</span>
+      <span className="text-2xl font-heading text-current">makepromptsbetter</span>
     </div>
   );
 }
