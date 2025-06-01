@@ -54,8 +54,8 @@ export default function PersonaBuilder() {
   });
 
   const enhancePersonaMutation = useMutation({
-    mutationFn: ({ personaId, request }: { personaId: number; request: EnhancePersonaRequest }) => 
-      enhancePersona(personaId, request),
+    mutationFn: ({ personaId, enhancements }: { personaId: number; enhancements: EnhancePersonaRequest["enhancements"] }) => 
+      enhancePersona(personaId, { enhancements }),
     onSuccess: (data) => {
       if (persona) {
         setPersona({ ...persona, persona: data.persona });
@@ -96,7 +96,7 @@ export default function PersonaBuilder() {
 
     enhancePersonaMutation.mutate({
       personaId: persona.id,
-      request: { enhancements },
+      enhancements,
     });
   };
 
@@ -215,9 +215,9 @@ export default function PersonaBuilder() {
 
                 {creditsStatus && (
                   <div className="text-center text-sm text-gray-500">
-                    {creditsStatus.creditsRemaining} generations remaining today
-                    {creditsStatus.resetsAt && (
-                      <span> • Resets {formatTimeUntilReset(creditsStatus.resetsAt)}</span>
+                    {(creditsStatus as any).creditsRemaining} generations remaining today
+                    {(creditsStatus as any).resetsAt && (
+                      <span> • Resets {formatTimeUntilReset((creditsStatus as any).resetsAt)}</span>
                     )}
                   </div>
                 )}
@@ -500,7 +500,7 @@ export default function PersonaBuilder() {
       <UpgradeModal
         open={showUpgradeModal}
         onOpenChange={setShowUpgradeModal}
-        creditsResetTime={creditsStatus?.resetsAt}
+        creditsResetTime={(creditsStatus as any)?.resetsAt}
       />
     </div>
   );

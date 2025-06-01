@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Results from "@/pages/results";
 import PromptSchool from "@/pages/prompt-school";
+import PersonaBuilder from "@/pages/persona-builder";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -14,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/results" component={Results} />
       <Route path="/prompt-school" component={PromptSchool} />
+      <Route path="/persona-builder" component={PersonaBuilder} />
       <Route component={NotFound} />
     </Switch>
   );
