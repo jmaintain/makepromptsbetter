@@ -31,6 +31,7 @@ export function Navigation() {
     
     if (userStats?.tier === 'pro') {
       baseItems.push({ path: "/ai-assistant-builder", label: "AI Assistant Builder", tier: "pro" });
+      baseItems.push({ path: "/my-assistants", label: "My Assistants", tier: "pro" });
     }
     
     return baseItems;

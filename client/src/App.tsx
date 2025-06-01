@@ -12,6 +12,7 @@ import Settings from "@/pages/settings";
 import Results from "@/pages/results";
 import PromptSchool from "@/pages/prompt-school";
 import PersonaBuilder from "@/pages/persona-builder";
+import MyAssistants from "@/pages/my-assistants";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
           <Route path="/results" component={Results} />
           <Route path="/prompt-school" component={PromptSchool} />
           <Route path="/ai-assistant-builder" component={PersonaBuilderRoute} />
+          <Route path="/my-assistants" component={MyAssistants} />
         </Layout>
       )}
       <Route component={NotFound} />

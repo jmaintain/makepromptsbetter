@@ -582,6 +582,18 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
+  // Get user's saved AI assistants
+  app.get("/api/my-assistants", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const savedAssistants = await storage.getUserSavedPersonas(userId);
+      res.json(savedAssistants);
+    } catch (error) {
+      console.error("Error fetching saved assistants:", error);
+      res.status(500).json({ error: "Failed to fetch saved assistants" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
