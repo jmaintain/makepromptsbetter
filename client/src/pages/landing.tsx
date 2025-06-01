@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
-import { CheckCircle, Gauge, Users, Shield } from "lucide-react";
+import { CheckCircle, Gauge, Bot, Shield } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -55,7 +55,7 @@ export default function Landing() {
           </Card>
           <Card>
             <CardHeader>
-              <Users className="h-10 w-10 text-green-600 mb-2" />
+              <Bot className="h-10 w-10 text-green-600 mb-2" />
               <CardTitle>AI Assistant Builder (PRO)</CardTitle>
               <CardDescription>
                 Create custom AI assistants/personas tailored to your specific needs, from technical experts to creative assistants
