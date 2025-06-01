@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
-import { CheckCircle, Zap, Users, Shield } from "lucide-react";
+import { CheckCircle, Gauge, Users, Shield } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -46,7 +46,7 @@ export default function Landing() {
         <div className="grid md:grid-cols-3 gap-8">
           <Card>
             <CardHeader>
-              <Zap className="h-10 w-10 text-blue-600 mb-2" />
+              <Gauge className="h-10 w-10 text-blue-600 mb-2" />
               <CardTitle>Smart Optimization</CardTitle>
               <CardDescription>
                 Automatically improve your prompts with AI-powered suggestions that increase effectiveness by up to 71%
