@@ -217,27 +217,27 @@ export default function PersonaBuilder() {
                 Create sophisticated AI personas in two phases: get immediate results, then enhance with targeted improvements.
               </p>
               
-              {/* Why Use Personas Description */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 max-w-3xl mx-auto">
-                <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+              {/* Why Use Personas Description - Simplified */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
+                <h2 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 text-center">
                   Why Create an AI Persona?
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800 dark:text-blue-200">
-                  <div className="flex items-start space-x-2">
-                    <Target className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                    <span><strong>Consistent Results:</strong> No more explaining your needs every time - your persona remembers your preferences and working style.</span>
+                <div className="flex justify-center items-center gap-6 text-xs text-blue-800 dark:text-blue-200">
+                  <div className="flex items-center space-x-1">
+                    <Target className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                    <span>Consistent results</span>
                   </div>
-                  <div className="flex items-start space-x-2">
-                    <Sparkles className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                    <span><strong>Specialized Knowledge:</strong> Tap into specific expertise areas for more relevant and accurate assistance.</span>
+                  <div className="flex items-center space-x-1">
+                    <Sparkles className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                    <span>Expert knowledge</span>
                   </div>
-                  <div className="flex items-start space-x-2">
-                    <Save className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                    <span><strong>Save Time:</strong> Skip the setup - your persona contains all the context AI needs to help you effectively.</span>
+                  <div className="flex items-center space-x-1">
+                    <Save className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                    <span>Save time</span>
                   </div>
-                  <div className="flex items-start space-x-2">
-                    <Copy className="h-4 w-4 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                    <span><strong>Quality Standards:</strong> Ensure AI follows your preferred communication style across all interactions.</span>
+                  <div className="flex items-center space-x-1">
+                    <Copy className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                    <span>Quality standards</span>
                   </div>
                 </div>
               </div>
