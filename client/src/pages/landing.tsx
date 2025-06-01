@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
-import { CheckCircle, Gauge, Bot, Shield } from "lucide-react";
+import { CheckCircle, Gauge, Bot, MessageSquarePlus } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -64,7 +64,7 @@ export default function Landing() {
           </Card>
           <Card>
             <CardHeader>
-              <Shield className="h-10 w-10 text-purple-600 mb-2" />
+              <MessageSquarePlus className="h-10 w-10 text-purple-600 mb-2" />
               <CardTitle>Enhanced Prompting with Context</CardTitle>
               <CardDescription>
                 Add relevant context to your prompts to get more tailored and useful responses. Including background information & specific requirements gets you closer to exactly what you need.
