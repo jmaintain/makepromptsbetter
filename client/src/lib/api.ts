@@ -17,21 +17,21 @@ export async function ratePrompt(request: RatePromptRequest): Promise<RatePrompt
 }
 
 export async function createPersona(request: CreatePersonaRequest): Promise<CreatePersonaResponse> {
-  const response = await apiRequest("POST", "/api/personas", request);
+  const response = await apiRequest("POST", "/api/ai-assistants", request);
   return response.json();
 }
 
 export async function enhancePersona(personaId: number, request: EnhancePersonaRequest): Promise<EnhancePersonaResponse> {
-  const response = await apiRequest("POST", `/api/personas/${personaId}/enhance`, request);
+  const response = await apiRequest("POST", `/api/ai-assistants/${personaId}/enhance`, request);
   return response.json();
 }
 
 export async function savePersona(personaId: number): Promise<SavePersonaResponse> {
-  const response = await apiRequest("POST", `/api/personas/${personaId}/save`, {});
+  const response = await apiRequest("POST", `/api/ai-assistants/${personaId}/save`, {});
   return response.json();
 }
 
 export async function testPersona(request: TestPersonaRequest): Promise<TestPersonaResponse> {
-  const response = await apiRequest("POST", "/api/personas/test", request);
+  const response = await apiRequest("POST", "/api/ai-assistants/test", request);
   return response.json();
 }

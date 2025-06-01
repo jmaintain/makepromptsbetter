@@ -322,7 +322,7 @@ Respond with JSON in this exact format: { "rating": number_between_1_and_10, "re
       const userPersonasToday = await storage.getUserPersonasToday(userFingerprint);
       if (userPersonasToday.length >= 20) {
         return res.status(429).json({ 
-          error: "Daily persona generation limit reached", 
+          error: "Daily AI assistant generation limit reached", 
           resetsAt: getCreditsResetTime().toISOString() 
         });
       }
@@ -391,8 +391,8 @@ BEHAVIOR: Always provide a complete, usable persona. Ensure all personas are act
     }
   });
 
-  // Phase 2: Enhance Persona (targeted improvements)
-  app.post("/api/personas/:id/enhance", async (req, res) => {
+  // Phase 2: Enhance AI Assistant (targeted improvements)
+  app.post("/api/ai-assistants/:id/enhance", async (req, res) => {
     try {
       const personaId = parseInt(req.params.id);
       const { enhancements } = enhancePersonaRequestSchema.parse(req.body);
