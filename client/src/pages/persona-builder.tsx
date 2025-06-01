@@ -210,16 +210,16 @@ export default function PersonaBuilder() {
               </Button>
             </div>
             <div className="text-center">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              <h1 className="text-main-title font-heading text-gray-900 dark:text-white mb-4">
                 AI Assistant Builder
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
+              <p className="text-tagline font-body text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
                 Create sophisticated AI assistants in two phases: get immediate results, then enhance with targeted improvements.
               </p>
               
               {/* Why Use Personas Description - Simplified */}
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
-                <h2 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 text-center">
+                <h2 className="text-base font-heading font-semibold text-blue-900 dark:text-blue-100 mb-3 text-center">
                   Why Create an AI Persona?
                 </h2>
                 <div className="flex justify-center items-center gap-6 text-xs text-blue-800 dark:text-blue-200">
@@ -248,13 +248,13 @@ export default function PersonaBuilder() {
             /* Phase 1: Initial Form */
             <Card className="bg-white dark:bg-gray-800 shadow-lg border-0">
               <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 dark:text-white">
+                <CardTitle className="text-section-header font-heading text-gray-800 dark:text-white">
                   Describe Your AI Assistant
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <Label htmlFor="input" className="text-base font-medium">
+                  <Label htmlFor="input" className="text-base font-heading font-medium">
                     What should your AI assistant do?
                   </Label>
                   <Textarea
@@ -262,7 +262,7 @@ export default function PersonaBuilder() {
                     placeholder="Describe what you want your AI assistant to do... (e.g., 'Help me write marketing copy for my coffee shop' or 'I need an AI to help me code better Python applications')"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="mt-2 min-h-[120px] text-base"
+                    className="mt-2 min-h-[120px] text-code font-code"
                     maxLength={1000}
                   />
                   <div className="flex justify-between items-center mt-2">
@@ -276,7 +276,7 @@ export default function PersonaBuilder() {
                 </div>
 
                 <div>
-                  <Label htmlFor="name" className="text-base font-medium">
+                  <Label htmlFor="name" className="text-base font-heading font-medium">
                     What should we call it? (Optional)
                   </Label>
                   <Input
