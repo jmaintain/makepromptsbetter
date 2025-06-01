@@ -52,7 +52,7 @@ export default function PersonaBuilder() {
         setShowUpgradeModal(true);
       } else {
         toast({
-          title: "Failed to create persona",
+          title: "Failed to create AI assistant",
           description: "Please try again with a different description.",
           variant: "destructive",
         });
@@ -68,14 +68,14 @@ export default function PersonaBuilder() {
         setPersona({ ...persona, persona: data.persona });
         setShowEnhancement(false);
         toast({
-          title: "Persona enhanced!",
+          title: "AI Assistant enhanced!",
           description: `Updated: ${data.changes.join(", ")}`,
         });
       }
     },
     onError: () => {
       toast({
-        title: "Failed to enhance persona",
+        title: "Failed to enhance AI assistant",
         description: "Please try again.",
         variant: "destructive",
       });
@@ -86,13 +86,13 @@ export default function PersonaBuilder() {
     mutationFn: (personaId: number) => savePersona(personaId),
     onSuccess: (data) => {
       toast({
-        title: "Persona saved!",
+        title: "AI Assistant saved!",
         description: data.message,
       });
     },
     onError: () => {
       toast({
-        title: "Failed to save persona",
+        title: "Failed to save AI assistant",
         description: "Please try again.",
         variant: "destructive",
       });

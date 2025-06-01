@@ -32,11 +32,11 @@ export function PersonaBuilderRoute() {
             </Badge>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            AI Persona Builder
+            AI Assistant Builder
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Create custom AI personas tailored to your specific needs. Build experts, assistants, 
-            and specialized helpers that understand your context and deliver exactly what you need.
+            Create custom AI assistants tailored to your specific needs. Build experts, helpers, 
+            and specialized assistants that understand your context and deliver exactly what you need.
           </p>
         </div>
 
@@ -49,10 +49,10 @@ export function PersonaBuilderRoute() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-blue-600" />
-                Smart Persona Generation
+                Smart AI Assistant Generation
               </CardTitle>
               <CardDescription>
-                Transform simple descriptions into sophisticated AI personas with detailed expertise and communication styles
+                Transform simple descriptions into sophisticated AI assistants with detailed expertise and communication styles
               </CardDescription>
             </CardHeader>
             <CardContent className="text-gray-600">
@@ -80,8 +80,8 @@ export function PersonaBuilderRoute() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <ul className="space-y-2">
-                <li>• Save up to 25 custom personas</li>
-                <li>• Real-time persona testing</li>
+                <li>• Save up to 25 custom AI assistants</li>
+                <li>• Real-time assistant testing</li>
                 <li>• Performance analytics</li>
                 <li>• Export and sharing options</li>
               </ul>
