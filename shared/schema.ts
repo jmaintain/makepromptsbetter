@@ -81,7 +81,6 @@ export const createPersonaResponseSchema = z.object({
 });
 
 export const enhancePersonaRequestSchema = z.object({
-  personaId: z.number(),
   enhancements: z.object({
     communication: z.object({
       formality: z.string().optional(),
