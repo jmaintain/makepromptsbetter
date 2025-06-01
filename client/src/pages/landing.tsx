@@ -82,12 +82,12 @@ export default function Landing() {
           {/* Free Tier */}
           <Card className="relative">
             <CardHeader>
-              <CardTitle className="text-xl">Free</CardTitle>
-              <div className="text-3xl font-bold">$0</div>
-              <CardDescription>Perfect for trying out the platform</CardDescription>
+              <CardTitle className="text-xl font-heading">Free</CardTitle>
+              <div className="text-3xl font-heading font-bold">$0</div>
+              <CardDescription className="font-body">Perfect for trying out the platform</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3">
+              <ul className="space-y-3 font-body">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>5 prompts per month</span>
@@ -111,18 +111,58 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          {/* Starter Tier */}
-          <Card className="relative border-blue-200 shadow-lg">
+          {/* Pro Tier - Most Popular */}
+          <Card className="relative border-2 border-blue-500 shadow-xl scale-105">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-              <Badge className="bg-blue-600">Most Popular</Badge>
+              <Badge className="bg-blue-600 text-white font-heading">Most Popular</Badge>
             </div>
             <CardHeader>
-              <CardTitle className="text-xl">Starter</CardTitle>
-              <div className="text-3xl font-bold">$4.99<span className="text-lg font-normal text-gray-600">/month</span></div>
-              <CardDescription>Great for regular users</CardDescription>
+              <CardTitle className="text-xl font-heading text-blue-600">Pro</CardTitle>
+              <div className="text-3xl font-heading font-bold">$14.99<span className="text-lg font-normal text-gray-600">/month</span></div>
+              <CardDescription className="font-body">For power users and teams</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3">
+              <ul className="space-y-3 font-body">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>500 prompts per month</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>All Free features</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>500 word input limit</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>Save 25 personas</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>Priority support</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>Usage analytics</span>
+                </li>
+              </ul>
+              <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700" onClick={() => window.location.href = '/api/login'}>
+                Upgrade to Pro
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Starter Tier */}
+          <Card className="relative">
+            <CardHeader>
+              <CardTitle className="text-xl font-heading">Starter</CardTitle>
+              <div className="text-3xl font-heading font-bold">$4.99<span className="text-lg font-normal text-gray-600">/month</span></div>
+              <CardDescription className="font-body">Great for regular users</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 font-body">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>100 prompts per month</span>
@@ -144,48 +184,8 @@ export default function Landing() {
                   <span>Export personas</span>
                 </li>
               </ul>
-              <Button className="w-full mt-6" onClick={() => window.location.href = '/api/login'}>
-                Start Free Trial
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Pro Tier */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Pro</CardTitle>
-              <div className="text-3xl font-bold">$14.99<span className="text-lg font-normal text-gray-600">/month</span></div>
-              <CardDescription>For power users and teams</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>500 prompts per month</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>All Starter features</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>500 word input limit</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Save 25 personas</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Priority support</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Usage analytics</span>
-                </li>
-              </ul>
               <Button className="w-full mt-6" variant="outline" onClick={() => window.location.href = '/api/login'}>
-                Upgrade to Pro
+                Start Free Trial
               </Button>
             </CardContent>
           </Card>
