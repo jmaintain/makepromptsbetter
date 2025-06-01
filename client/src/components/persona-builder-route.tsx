@@ -97,7 +97,7 @@ export function PersonaBuilderRoute() {
               Unlock the Full Potential
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Upgrade to Pro and gain access to the Persona Builder, plus 500 monthly prompts, 
+              Upgrade to Pro and gain access to the AI Assistant Builder, plus 500 monthly prompts, 
               priority support, and advanced analytics.
             </p>
             
@@ -114,7 +114,7 @@ export function PersonaBuilderRoute() {
             </Button>
             
             <p className="text-xs text-gray-500 mt-3">
-              Start building personas instantly after upgrade
+              Start building AI assistants instantly after upgrade
             </p>
           </CardContent>
         </Card>

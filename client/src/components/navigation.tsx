@@ -86,9 +86,9 @@ export function Navigation() {
             
             {/* Pro upgrade hint */}
             {userStats?.tier !== 'pro' && (
-              <Link href="/persona-builder" className="relative group">
+              <Link href="/ai-assistant-builder" className="relative group">
                 <span className="text-sm font-medium text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
-                  Persona Builder
+                  AI Assistant Builder
                 </span>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   Upgrade to Pro to unlock

@@ -211,10 +211,10 @@ export default function PersonaBuilder() {
             </div>
             <div className="text-center">
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                AI Persona Builder
+                AI Assistant Builder
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
-                Create sophisticated AI personas in two phases: get immediate results, then enhance with targeted improvements.
+                Create sophisticated AI assistants in two phases: get immediate results, then enhance with targeted improvements.
               </p>
               
               {/* Why Use Personas Description - Simplified */}
@@ -366,7 +366,7 @@ export default function PersonaBuilder() {
                 
                 <Button variant="outline" onClick={handleCopyPersona}>
                   <Copy className="mr-2 h-4 w-4" />
-                  Copy Persona
+                  Copy AI Assistant
                 </Button>
                 
                 <Button 
@@ -382,14 +382,14 @@ export default function PersonaBuilder() {
                   ) : (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Save Persona
+                      Save AI Assistant
                     </>
                   )}
                 </Button>
                 
                 <Button variant="outline" onClick={handleTestPersona}>
                   <TestTube className="mr-2 h-4 w-4" />
-                  Test Persona
+                  Test AI Assistant
                 </Button>
                 
                 <Button variant="outline" onClick={handleStartOver}>
