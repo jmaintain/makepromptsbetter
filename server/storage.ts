@@ -1,4 +1,6 @@
-import { promptOptimizations, type PromptOptimization, type InsertPromptOptimization, type Persona, type InsertPersona } from "@shared/schema";
+import { promptOptimizations, type PromptOptimization, type InsertPromptOptimization, type Persona, type InsertPersona, personas } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   createPromptOptimization(optimization: InsertPromptOptimization): Promise<PromptOptimization>;
@@ -7,6 +9,8 @@ export interface IStorage {
   getPersona(id: number): Promise<Persona | null>;
   getUserPersonasToday(userFingerprint: string): Promise<Persona[]>;
   updatePersona(id: number, updates: Partial<Persona>): Promise<Persona>;
+  getUserSavedPersonas(userFingerprint: string): Promise<Persona[]>;
+  savePersona(id: number, userFingerprint: string): Promise<Persona>;
 }
 
 export class MemStorage implements IStorage {
@@ -61,6 +65,7 @@ export class MemStorage implements IStorage {
       enhancementResponses: insertPersona.enhancementResponses || null,
       userFingerprint: insertPersona.userFingerprint,
       phase: insertPersona.phase || "1",
+      isSaved: insertPersona.isSaved || "false",
       createdAt: new Date(),
     };
     
@@ -89,6 +94,23 @@ export class MemStorage implements IStorage {
     }
     
     const updated = { ...existing, ...updates };
+    this.personas.set(id, updated);
+    return updated;
+  }
+
+  async getUserSavedPersonas(userFingerprint: string): Promise<Persona[]> {
+    return Array.from(this.personas.values()).filter(
+      persona => persona.userFingerprint === userFingerprint && persona.isSaved === "true"
+    );
+  }
+
+  async savePersona(id: number, userFingerprint: string): Promise<Persona> {
+    const persona = this.personas.get(id);
+    if (!persona || persona.userFingerprint !== userFingerprint) {
+      throw new Error(`Persona with id ${id} not found`);
+    }
+    
+    const updated = { ...persona, isSaved: "true" };
     this.personas.set(id, updated);
     return updated;
   }

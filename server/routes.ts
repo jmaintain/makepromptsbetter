@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema } from "@shared/schema";
+import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema } from "@shared/schema";
 import OpenAI from "openai";
 
 const openai = new OpenAI({

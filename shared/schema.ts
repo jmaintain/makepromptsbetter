@@ -61,6 +61,7 @@ export const personas = pgTable("personas", {
   userFingerprint: text("user_fingerprint").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   phase: text("phase").notNull().default("1"), // "1" or "2"
+  isSaved: text("is_saved").notNull().default("false"),
 });
 
 export const insertPersonaSchema = createInsertSchema(personas);
@@ -113,7 +114,24 @@ export const enhancePersonaResponseSchema = z.object({
   changes: z.array(z.string()),
 });
 
+export const savePersonaResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+
+export const testPersonaRequestSchema = z.object({
+  personaId: z.number(),
+  testPrompt: z.string(),
+});
+
+export const testPersonaResponseSchema = z.object({
+  response: z.string(),
+});
+
 export type CreatePersonaRequest = z.infer<typeof createPersonaRequestSchema>;
 export type CreatePersonaResponse = z.infer<typeof createPersonaResponseSchema>;
 export type EnhancePersonaRequest = z.infer<typeof enhancePersonaRequestSchema>;
 export type EnhancePersonaResponse = z.infer<typeof enhancePersonaResponseSchema>;
+export type SavePersonaResponse = z.infer<typeof savePersonaResponseSchema>;
+export type TestPersonaRequest = z.infer<typeof testPersonaRequestSchema>;
+export type TestPersonaResponse = z.infer<typeof testPersonaResponseSchema>;
