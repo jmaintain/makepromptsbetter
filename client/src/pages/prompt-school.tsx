@@ -19,10 +19,10 @@ export default function PromptSchool() {
                 <BookOpen className="w-12 h-12 text-brand-primary" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-4 font-title">
+            <h1 className="text-main-title font-heading text-brand-primary mb-4">
               Prompt School: Master the Art of AI Communication
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-tagline font-body text-gray-600 max-w-3xl mx-auto">
               Transform your AI interactions from basic to brilliant
             </p>
           </div>
@@ -36,12 +36,12 @@ export default function PromptSchool() {
           {/* Why Better Prompts = Better Results */}
           <Card className="bg-white rounded-2xl shadow-sm border border-gray-200">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-brand-primary">
+              <CardTitle className="text-section-header font-heading text-brand-primary">
                 Why Better Prompts = Better Results
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-6">
+              <p className="text-gray-700 mb-6 font-body">
                 Think of prompting like giving directions. Saying "go to the store" might get someone there, but "go to the Whole Foods on Main Street, park in the back, and grab organic bananas from aisle 3" gets exactly what you need. The same principle applies to AI.
               </p>
               
@@ -70,12 +70,12 @@ export default function PromptSchool() {
           {/* CLEAR Framework */}
           <Card className="bg-white rounded-2xl shadow-sm border border-gray-200">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-brand-primary">
+              <CardTitle className="text-section-header font-heading text-brand-primary">
                 The CLEAR Framework for Everyday Users
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-6">
+              <p className="text-gray-700 mb-6 font-body">
                 Start with this simple framework for instant improvements:
               </p>
               
@@ -86,8 +86,8 @@ export default function PromptSchool() {
                       C
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Context - Set the scene</h3>
-                      <p className="text-gray-600">Tell the AI what situation you're in or what background it needs.</p>
+                      <h3 className="text-lg font-heading font-semibold text-gray-800 mb-2">Context - Set the scene</h3>
+                      <p className="text-gray-600 font-body">Tell the AI what situation you're in or what background it needs.</p>
                     </div>
                   </div>
                   
@@ -96,8 +96,8 @@ export default function PromptSchool() {
                       L
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Lead by example - Show your style</h3>
-                      <p className="text-gray-600">Write your prompt the way you want the AI to respond. Formal prompt = formal response.</p>
+                      <h3 className="text-lg font-heading font-semibold text-gray-800 mb-2">Lead by example - Show your style</h3>
+                      <p className="text-gray-600 font-body">Write your prompt the way you want the AI to respond. Formal prompt = formal response.</p>
                     </div>
                   </div>
                   
@@ -106,8 +106,8 @@ export default function PromptSchool() {
                       E
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Exact instructions - Be specific</h3>
-                      <p className="text-gray-600">Replace vague requests with precise ones. "Many" → "at least 5", "good" → "professional yet conversational"</p>
+                      <h3 className="text-lg font-heading font-semibold text-gray-800 mb-2">Exact instructions - Be specific</h3>
+                      <p className="text-gray-600 font-body">Replace vague requests with precise ones. "Many" → "at least 5", "good" → "professional yet conversational"</p>
                     </div>
                   </div>
                   
