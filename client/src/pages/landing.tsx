@@ -11,14 +11,13 @@ export default function Landing() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-heading text-gray-900">PromptCraft</span>
+            <span className="text-2xl font-heading text-gray-900">makepromptsbetter</span>
           </div>
           <Button onClick={() => window.location.href = '/api/login'}>
             Sign In
           </Button>
         </div>
       </header>
-
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <Badge variant="secondary" className="mb-4">
@@ -41,7 +40,6 @@ export default function Landing() {
           </Button>
         </div>
       </section>
-
       {/* Features Grid */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-section-header font-heading text-center text-gray-900 mb-12">
@@ -77,7 +75,6 @@ export default function Landing() {
           </Card>
         </div>
       </section>
-
       {/* Pricing Section */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-section-header font-heading text-center text-gray-900 mb-12">
@@ -196,7 +193,6 @@ export default function Landing() {
           </Card>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4 text-center">
