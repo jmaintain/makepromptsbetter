@@ -53,7 +53,6 @@ export class DatabaseStorage implements IStorage {
         target: users.id,
         set: {
           ...userData,
-          updatedAt: new Date(),
         },
       })
       .returning();
@@ -86,7 +85,6 @@ export class DatabaseStorage implements IStorage {
         .update(users)
         .set({
           monthlyUsage: sql`${users.monthlyUsage} + 1`,
-          updatedAt: new Date(),
         })
         .where(eq(users.id, log.userId));
     }
@@ -107,7 +105,6 @@ export class DatabaseStorage implements IStorage {
       .set({
         monthlyUsage: 0,
         usageResetDate: nextMonthStr,
-        updatedAt: new Date(),
       })
       .where(eq(users.id, userId));
   }

@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema } from "@shared/schema";
+import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema, userStatsSchema } from "@shared/schema";
 import OpenAI from "openai";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder",
@@ -23,7 +24,32 @@ function getCreditsResetTime(): Date {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Database storage doesn't need reset method
+  // Set up authentication
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Get user stats (usage, limits, etc.)
+  app.get('/api/user/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const stats = await storage.getUserStats(userId);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
   
   // Get user credits status
   app.get("/api/credits", async (req, res) => {
