@@ -231,7 +231,7 @@ export default function Results() {
         
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-section-header font-heading text-gray-900 mb-4">
             Your Optimized Prompt is Ready!
           </h1>
           <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 border border-green-200 rounded-full font-medium">
@@ -245,11 +245,11 @@ export default function Results() {
           {/* Original Prompt */}
           <Card className="bg-gray-100">
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <h3 className="font-semibold text-gray-900">Original Prompt</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="font-heading font-semibold text-gray-900">Original Prompt</h3>
                 <RatingLight prompt={result.original} />
               </div>
-              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <div className="text-code font-code text-gray-700 whitespace-pre-wrap bg-white p-4 rounded-lg border">
                 {result.original}
               </div>
             </CardContent>
@@ -258,11 +258,11 @@ export default function Results() {
           {/* Optimized Prompt */}
           <Card className="border-2 border-brand-primary">
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <h3 className="font-semibold text-brand-primary">Optimized Prompt</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="font-heading font-semibold text-brand-primary">Optimized Prompt</h3>
                 <RatingLight prompt={result.optimized} />
               </div>
-              <div className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+              <div className="text-code font-code text-gray-900 whitespace-pre-wrap bg-white p-4 rounded-lg border border-brand-primary/20">
                 {cleanMarkdown(result.optimized)}
               </div>
             </CardContent>

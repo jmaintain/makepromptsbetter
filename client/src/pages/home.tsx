@@ -222,14 +222,14 @@ export default function Home() {
           
           {/* Prompt Input */}
           <Card className="bg-white rounded-2xl shadow-sm border border-gray-300 mb-6 sm:mb-8">
-            <CardContent className="p-4 sm:p-6 md:p-8">
+            <CardContent className="p-6 sm:p-8 md:p-10">
               <Textarea
                 ref={promptInputRef}
                 placeholder="Enter what you want here..."
                 value={promptText}
                 onChange={(e) => setPromptText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full h-32 resize-none border-none focus:outline-none text-xl text-gray-700 placeholder-gray-400 focus-visible:ring-0"
+                className="w-full h-32 resize-none border-none focus:outline-none text-code font-code text-gray-700 placeholder-gray-400 focus-visible:ring-0"
               />
               
               {/* Word Counter */}
@@ -300,7 +300,7 @@ export default function Home() {
                         placeholder="Or paste your context text here..."
                         value={contextText}
                         onChange={(e) => setContextText(e.target.value)}
-                        className="min-h-[100px] text-lg"
+                        className="min-h-[100px] text-code font-code"
                       />
                       
                       {/* Word Count */}
@@ -332,19 +332,19 @@ export default function Home() {
 
           {/* Benefits Section */}
           <Card className="bg-white rounded-xl border border-gray-200 mb-8">
-            <CardContent className="p-8">
+            <CardContent className="p-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-brand-primary mb-3">Save Hours</div>
-                  <div className="text-gray-600 leading-relaxed">Stop spending time learning prompt engineering</div>
+                  <div className="text-section-header font-heading text-brand-primary mb-3">Save Hours</div>
+                  <div className="text-gray-600 font-body">Stop spending time learning prompt engineering</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-brand-primary mb-3">Get Better Results</div>
-                  <div className="text-gray-600 leading-relaxed">Transform vague ideas into precise prompts</div>
+                  <div className="text-section-header font-heading text-brand-primary mb-3">Get Better Results</div>
+                  <div className="text-gray-600 font-body">Transform vague ideas into precise prompts</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-brand-primary mb-3">Learn While You Use</div>
-                  <div className="text-gray-600 leading-relaxed">Understand why each improvement works</div>
+                  <div className="text-section-header font-heading text-brand-primary mb-3">Learn While You Use</div>
+                  <div className="text-gray-600 font-body">Understand why each improvement works</div>
                 </div>
               </div>
             </CardContent>
