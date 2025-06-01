@@ -61,11 +61,8 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80">
-            <div className="w-8 h-8">
-              <Logo />
-            </div>
-            <span className="text-xl font-bold text-gray-900">makepromptsbetter</span>
+          <Link href="/" className="hover:opacity-80">
+            <Logo />
           </Link>
 
           {/* Navigation Links */}

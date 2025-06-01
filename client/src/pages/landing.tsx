@@ -22,8 +22,8 @@ export default function Landing() {
           AI-Powered Prompt Optimization
         </Badge>
         <h1 className="text-main-title font-heading text-gray-900 mb-6">
-          Craft Perfect AI Prompts
-          <span className="text-blue-600"> Effortlessly</span>
+          Say what you want.
+          <span className="text-blue-600"> Get exactly what you mean</span>
         </h1>
         <p className="text-tagline font-body text-gray-600 mb-8 max-w-2xl mx-auto">
           Transform your basic prompts into powerful, optimized instructions that get better results from AI models. 
@@ -31,7 +31,7 @@ export default function Landing() {
         </p>
         <div className="flex gap-4 justify-center">
           <Button size="lg" onClick={() => window.location.href = '/api/login'}>
-            Get Started Free
+            Sign Up for Free
           </Button>
           <Button variant="outline" size="lg">
             View Demo
@@ -41,7 +41,7 @@ export default function Landing() {
       {/* Features Grid */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-section-header font-heading text-center text-gray-900 mb-12">
-          Everything you need to master AI prompts
+          Get 5 FREE improvements per month with signup!
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <Card>
@@ -56,18 +56,18 @@ export default function Landing() {
           <Card>
             <CardHeader>
               <Users className="h-10 w-10 text-green-600 mb-2" />
-              <CardTitle>Persona Builder</CardTitle>
+              <CardTitle>AI Assistant Builder (PRO)</CardTitle>
               <CardDescription>
-                Create custom AI personas tailored to your specific needs, from technical experts to creative assistants
+                Create custom AI assistants/personas tailored to your specific needs, from technical experts to creative assistants
               </CardDescription>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader>
               <Shield className="h-10 w-10 text-purple-600 mb-2" />
-              <CardTitle>Usage Analytics</CardTitle>
+              <CardTitle>Enhanced Prompting with Context</CardTitle>
               <CardDescription>
-                Track your prompt performance and usage patterns to continuously improve your AI interactions
+                Add relevant context to your prompts to get more tailored and useful responses. Including background information & specific requirements gets you closer to exactly what you need.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -90,11 +90,11 @@ export default function Landing() {
               <ul className="space-y-3 font-body">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>5 prompts per month</span>
+                  <span>5 improvements per month</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Basic persona generation</span>
+                  <span>Prompt School Learning</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
@@ -102,7 +102,7 @@ export default function Landing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Community support</span>
+                  <span>Prompt + Context</span>
                 </li>
               </ul>
               <Button className="w-full mt-6" variant="outline" onClick={() => window.location.href = '/api/login'}>
@@ -119,13 +119,13 @@ export default function Landing() {
             <CardHeader>
               <CardTitle className="text-xl font-heading text-blue-600">Pro</CardTitle>
               <div className="text-3xl font-heading font-bold">$14.99<span className="text-lg font-normal text-gray-600">/month</span></div>
-              <CardDescription className="font-body">For power users and teams</CardDescription>
+              <CardDescription className="font-body">For an AI optimized Workflow</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 font-body">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>500 prompts per month</span>
+                  <span>500 improvements per month</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
@@ -137,15 +137,15 @@ export default function Landing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Save 25 personas</span>
+                  <span>Save 50 AI Prompts</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Priority support</span>
+                  <span>Save 25 AI Assistants</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Usage analytics</span>
+                  <span>Create and Test AI Assistants</span>
                 </li>
               </ul>
               <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700" onClick={() => window.location.href = '/api/login'}>
@@ -165,7 +165,7 @@ export default function Landing() {
               <ul className="space-y-3 font-body">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>100 prompts per month</span>
+                  <span>100 improvements per month</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
@@ -177,15 +177,11 @@ export default function Landing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Email support</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Export personas</span>
+                  <span>Prompt + Context</span>
                 </li>
               </ul>
               <Button className="w-full mt-6" variant="outline" onClick={() => window.location.href = '/api/login'}>
-                Start Free Trial
+                Get Started
               </Button>
             </CardContent>
           </Card>
