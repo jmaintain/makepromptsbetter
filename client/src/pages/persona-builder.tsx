@@ -614,7 +614,12 @@ export default function PersonaBuilder() {
               <div className="mt-4">
                 <Label>Persona Response:</Label>
                 <div className="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border">
-                  <div className="whitespace-pre-wrap text-sm">{testResponse}</div>
+                  <div 
+                    className="whitespace-pre-wrap text-sm prose prose-gray dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ 
+                      __html: cleanMarkdown(testResponse).replace(/\n/g, '<br/>') 
+                    }}
+                  />
                 </div>
                 <Button
                   variant="outline"
