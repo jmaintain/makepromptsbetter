@@ -14,8 +14,8 @@ export default function Settings() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account and subscription preferences</p>
+          <h1 className="text-section-header font-heading text-gray-900">Account Settings</h1>
+          <p className="text-gray-600 mt-2 font-body">Manage your account and subscription preferences</p>
         </div>
         <Button 
           variant="outline" 
@@ -34,18 +34,18 @@ export default function Settings() {
               <User className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Your account details</CardDescription>
+              <CardTitle className="font-heading">Profile Information</CardTitle>
+              <CardDescription className="font-body">Your account details</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Email Address</label>
-              <p className="text-gray-900">{user.email || 'Not available'}</p>
+              <label className="text-sm font-medium text-gray-700 font-body">Email Address</label>
+              <p className="text-gray-900 font-body">{user.email || 'Not available'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">User ID</label>
-              <p className="text-gray-900 font-mono text-sm">{user.id || 'Not available'}</p>
+              <label className="text-sm font-medium text-gray-700 font-body">User ID</label>
+              <p className="text-gray-900 font-code text-sm">{user.id || 'Not available'}</p>
             </div>
           </CardContent>
         </Card>

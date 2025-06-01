@@ -15,14 +15,14 @@ export function PersonaUsageGuide({ open, onOpenChange }: PersonaUsageGuideProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">AI Persona Usage Guide & FAQ</DialogTitle>
+          <DialogTitle className="text-section-header font-heading">AI Persona Usage Guide & FAQ</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
           {/* Quick Start Section */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center font-heading">
                 <Target className="h-5 w-5 mr-2" />
                 Quick Start: Using Your Persona
               </CardTitle>
@@ -32,8 +32,8 @@ export function PersonaUsageGuide({ open, onOpenChange }: PersonaUsageGuideProps
                 <div className="flex items-start space-x-3">
                   <Badge variant="outline" className="min-w-fit">Step 1</Badge>
                   <div>
-                    <strong>Copy Your Persona Instructions</strong>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    <strong className="font-heading">Copy Your Persona Instructions</strong>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 font-body">
                       Copy the complete persona from your results page and paste it into any AI chat (Claude, ChatGPT, etc.) as your first message.
                     </p>
                   </div>

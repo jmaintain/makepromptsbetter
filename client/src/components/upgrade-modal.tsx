@@ -16,10 +16,10 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold text-center mb-4">
+          <DialogTitle className="text-section-header font-heading text-center mb-4">
             You're out of free optimizations!
           </DialogTitle>
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 font-body">
             Your prompts were improved by an average of <strong className="text-brand-primary">71%</strong>
           </p>
         </DialogHeader>
@@ -27,9 +27,9 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           {/* Starter */}
           <div className="border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Starter</h3>
-            <div className="text-2xl font-bold text-gray-900 mb-1">$9</div>
-            <div className="text-sm text-gray-600 mb-4">per month</div>
+            <h3 className="font-heading font-semibold text-gray-900 mb-2">Starter</h3>
+            <div className="text-2xl font-heading font-bold text-gray-900 mb-1">$9</div>
+            <div className="text-sm text-gray-600 mb-4 font-body">per month</div>
             <ul className="space-y-2 text-sm text-gray-600 mb-6">
               <li>• 100 optimizations/month</li>
               <li>• Basic improvements</li>
@@ -47,7 +47,7 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
                 Most Popular
               </span>
             </div>
-            <h3 className="font-semibold text-brand-primary mb-2">Pro</h3>
+            <h3 className="font-heading font-semibold text-brand-primary mb-2">Pro</h3>
             <div className="text-2xl font-bold text-gray-900 mb-1">$19</div>
             <div className="text-sm text-gray-600 mb-4">per month</div>
             <ul className="space-y-2 text-sm text-gray-600 mb-6">
