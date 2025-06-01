@@ -4,7 +4,7 @@ export function Logo() {
   return (
     <img 
       src={logoPath} 
-      alt="Prompt Optimizer Logo" 
+      alt="makepromptsbetter.com Logo" 
       className="w-full h-full object-contain"
     />
   );

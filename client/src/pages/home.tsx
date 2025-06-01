@@ -204,35 +204,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header with Logo */}
+      {/* Header */}
       <header className="pt-6 sm:pt-12 pb-6 sm:pb-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="flex justify-center items-center mb-4 sm:mb-6">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
-              <Logo />
-            </div>
-          </div>
-          
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-primary mb-3 sm:mb-4 font-title">
-            make prompts better
+            makepromptsbetter.com
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-2">
             Say what you want. Get exactly what you mean.
           </p>
-          
-          {/* Navigation Links */}
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
-            <Link href="/persona-builder">
-              <Button variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100">
-                AI Persona Builder
-              </Button>
-            </Link>
-            <Link href="/prompt-school">
-              <Button variant="outline" className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100">
-                Prompt School
-              </Button>
-            </Link>
-          </div>
         </div>
       </header>
 
