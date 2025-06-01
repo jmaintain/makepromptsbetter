@@ -43,7 +43,7 @@ export default function PersonaBuilder() {
     onSuccess: (data) => {
       setPersona(data);
       toast({
-        title: "Persona created successfully!",
+        title: "AI Assistant created successfully!",
         description: `Your ${data.name} is ready to use.`,
       });
     },
@@ -622,11 +622,11 @@ export default function PersonaBuilder() {
       <Dialog open={showTestModal} onOpenChange={setShowTestModal}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Test Your Persona</DialogTitle>
+            <DialogTitle>Test Your AI Assistant</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="testPrompt">Enter a prompt to test your persona:</Label>
+              <Label htmlFor="testPrompt">Enter a prompt to test your AI assistant:</Label>
               <Textarea
                 id="testPrompt"
                 placeholder="e.g., 'Help me write a social media post about our new coffee blend' or 'Debug this Python function that's running slowly'"
@@ -644,7 +644,7 @@ export default function PersonaBuilder() {
               {testPersonaMutation.isPending ? (
                 <>
                   <Sparkles className="mr-2 h-4 w-4 animate-spin" />
-                  Testing Persona...
+                  Testing AI Assistant...
                 </>
               ) : (
                 <>

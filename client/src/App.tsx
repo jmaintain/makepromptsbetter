@@ -27,7 +27,7 @@ function Router() {
           <Route path="/settings" component={Settings} />
           <Route path="/results" component={Results} />
           <Route path="/prompt-school" component={PromptSchool} />
-          <Route path="/persona-builder" component={PersonaBuilderRoute} />
+          <Route path="/ai-assistant-builder" component={PersonaBuilderRoute} />
         </Layout>
       )}
       <Route component={NotFound} />

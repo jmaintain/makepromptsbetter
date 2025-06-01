@@ -312,8 +312,8 @@ Respond with JSON in this exact format: { "rating": number_between_1_and_10, "re
     }
   });
 
-  // Phase 1: Create AI Persona (immediate generation)
-  app.post("/api/personas", async (req, res) => {
+  // Phase 1: Create AI Assistant (immediate generation)
+  app.post("/api/ai-assistants", async (req, res) => {
     try {
       const { input, name } = createPersonaRequestSchema.parse(req.body);
       const userFingerprint = generateUserFingerprint(req);

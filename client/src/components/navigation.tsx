@@ -30,7 +30,7 @@ export function Navigation() {
     ];
     
     if (userStats?.tier === 'pro') {
-      baseItems.push({ path: "/persona-builder", label: "Persona Builder", tier: "pro" });
+      baseItems.push({ path: "/ai-assistant-builder", label: "AI Assistant Builder", tier: "pro" });
     }
     
     return baseItems;
