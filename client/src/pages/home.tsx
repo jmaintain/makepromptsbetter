@@ -179,6 +179,20 @@ export default function Home() {
           <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-2">
             Say what you want. Get exactly what you mean.
           </p>
+          
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
+            <Link href="/persona-builder">
+              <Button variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100">
+                AI Persona Builder
+              </Button>
+            </Link>
+            <Link href="/prompt-school">
+              <Button variant="outline" className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100">
+                Prompt School
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
