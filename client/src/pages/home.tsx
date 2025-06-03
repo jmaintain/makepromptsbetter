@@ -316,7 +316,7 @@ export default function Home() {
                         <div className="text-sm leading-relaxed">
                           <div className="break-words">Add context (optional)</div>
                           <div className="text-xs text-gray-500 mt-0.5 break-words">
-                            Supporting information like your resume, meeting notes, etc.
+                            Supporting information like your resume, meeting notes, etc.  This does help improve the results.
                           </div>
                         </div>
                         {contextText && (
