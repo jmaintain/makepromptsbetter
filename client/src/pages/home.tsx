@@ -5,6 +5,7 @@ import { Logo } from "@/components/logo";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { LoginModal } from "@/components/login-modal";
 import { WordCounter } from "@/components/word-counter";
+import { RatingLight } from "@/components/rating-light";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -285,9 +286,15 @@ export default function Home() {
                 className="w-full h-32 resize-none border-none focus:outline-none text-code font-code text-gray-700 placeholder-gray-400 focus-visible:ring-0"
               />
               
-              {/* Word Counter */}
-              <div className="mt-3">
+              {/* Word Counter and Rating */}
+              <div className="mt-3 flex items-center justify-between">
                 <WordCounter text={promptText} limit={wordLimit} />
+                {promptText.trim() && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Quality:</span>
+                    <RatingLight prompt={promptText.trim()} />
+                  </div>
+                )}
               </div>
               
               {/* Context Section */}
