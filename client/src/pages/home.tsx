@@ -31,6 +31,8 @@ export default function Home() {
   const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
     enabled: !!user,
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Auto-focus the main text input when page loads
@@ -43,7 +45,9 @@ export default function Home() {
   // Get credits status
   const { data: creditsData } = useQuery<CreditsStatus>({
     queryKey: ["/api/credits"],
-    refetchInterval: 60000, // Refresh every minute
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   // Word count function

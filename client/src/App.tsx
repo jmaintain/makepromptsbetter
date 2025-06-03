@@ -16,32 +16,34 @@ import MyAssistants from "@/pages/my-assistants";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isError } = useAuth();
+
+  // If there's an auth error (401), treat as unauthenticated
+  const authState = isError ? false : isAuthenticated;
 
   return (
     <Switch>
-      {isLoading ? (
+      {isLoading && !isError ? (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading...</p>
           </div>
         </div>
-      ) : !isAuthenticated ? (
-        <Layout>
-          <Route path="/" component={Home} />
-          <Route path="/prompt-school" component={PromptSchool} />
-        </Layout>
       ) : (
         <Layout>
           <Route path="/" component={Home} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/results" component={Results} />
           <Route path="/prompt-school" component={PromptSchool} />
-          {/* Hidden AI Assistant Builder - keeping routes for internal access */}
-          <Route path="/ai-assistant-builder" component={PersonaBuilderRoute} />
-          <Route path="/persona-builder" component={PersonaBuilder} />
-          <Route path="/my-assistants" component={MyAssistants} />
+          {authState && (
+            <>
+              <Route path="/settings" component={Settings} />
+              <Route path="/results" component={Results} />
+              {/* Hidden AI Assistant Builder - keeping routes for internal access */}
+              <Route path="/ai-assistant-builder" component={PersonaBuilderRoute} />
+              <Route path="/persona-builder" component={PersonaBuilder} />
+              <Route path="/my-assistants" component={MyAssistants} />
+            </>
+          )}
         </Layout>
       )}
       <Route component={NotFound} />
