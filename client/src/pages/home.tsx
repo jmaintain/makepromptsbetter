@@ -260,6 +260,9 @@ export default function Home() {
           <p className="text-tagline font-body text-gray-700 max-w-2xl mx-auto px-2">
             Say what you want. Get exactly what you mean.
           </p>
+          <p className="text-sm font-body text-gray-600 max-w-2xl mx-auto px-2 mt-2">
+            (No prompt engineering required)
+          </p>
           {/* Quick guidance */}
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
             <p className="text-sm text-blue-800">
@@ -303,7 +306,7 @@ export default function Home() {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 hover:bg-transparent w-full justify-start text-left"
+                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start text-left"
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         {isContextOpen ? (
