@@ -434,40 +434,49 @@ export default function Results() {
         )}
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
-          <Button
-            onClick={handleCopy}
-            className={`${hasUserCopied 
-              ? 'bg-green-600 hover:bg-green-700' 
-              : 'bg-brand-primary hover:bg-brand-secondary'
-            } text-white focus:ring-brand-primary`}
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            {hasUserCopied ? 'Copied!' : 'Copy'}
-          </Button>
-          <Button
-            onClick={handleSaveToFile}
-            variant="outline"
-            className={`${hasUserSaved 
-              ? 'border-green-600 text-green-600 hover:bg-green-50' 
-              : 'border-orange-600 text-orange-600 hover:bg-orange-50'
-            }`}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {hasUserSaved ? 'Saved!' : 'Save File'}
-          </Button>
-          <Button variant="outline" onClick={handleOpenChatGPT}>
-            Copy & Open ChatGPT
-            <ExternalLink className="w-4 h-4 ml-2" />
-          </Button>
-          <Button variant="outline" onClick={handleOpenClaude}>
-            Copy & Open Claude
-            <ExternalLink className="w-4 h-4 ml-2" />
-          </Button>
-          <Button variant="outline" onClick={handleOpenGemini}>
-            Copy & Open Gemini
-            <ExternalLink className="w-4 h-4 ml-2" />
-          </Button>
+        <div className="space-y-6 mb-8">
+          {/* Primary Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={handleCopy}
+              size="lg"
+              className={`${hasUserCopied 
+                ? 'bg-green-600 hover:bg-green-700' 
+                : 'bg-brand-primary hover:bg-brand-secondary'
+              } text-white focus:ring-brand-primary min-w-[140px]`}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {hasUserCopied ? 'Copied!' : 'Copy'}
+            </Button>
+            <Button
+              onClick={handleSaveToFile}
+              variant="outline"
+              size="lg"
+              className={`${hasUserSaved 
+                ? 'border-green-600 text-green-600 hover:bg-green-50' 
+                : 'border-orange-600 text-orange-600 hover:bg-orange-50'
+              } min-w-[140px]`}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {hasUserSaved ? 'Saved!' : 'Save File'}
+            </Button>
+          </div>
+
+          {/* Secondary Action Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <Button variant="outline" onClick={handleOpenChatGPT} className="justify-center">
+              Copy & Open ChatGPT
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+            <Button variant="outline" onClick={handleOpenClaude} className="justify-center">
+              Copy & Open Claude
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+            <Button variant="outline" onClick={handleOpenGemini} className="justify-center">
+              Copy & Open Gemini
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </div>
 
         {/* Tip */}
