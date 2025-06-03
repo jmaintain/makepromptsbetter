@@ -29,6 +29,34 @@ export default function Home() {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  // Cache and restore prompt data on load
+  useEffect(() => {
+    const cachedPrompt = localStorage.getItem('pendingPrompt');
+    const cachedContext = localStorage.getItem('pendingContext');
+    
+    if (cachedPrompt) {
+      setPromptText(cachedPrompt);
+      localStorage.removeItem('pendingPrompt');
+    }
+    
+    if (cachedContext) {
+      setContextText(cachedContext);
+      setIsContextOpen(true);
+      localStorage.removeItem('pendingContext');
+    }
+  }, []);
+
+  // Auto-optimize when user logs in with cached prompt
+  useEffect(() => {
+    if (user && promptText.trim() && !optimizeMutation.isPending) {
+      // Small delay to ensure UI is ready
+      const timer = setTimeout(() => {
+        handleOptimize();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]); // Only trigger when user state changes
+
   // Get user stats for word limits
   const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
@@ -173,6 +201,11 @@ export default function Home() {
 
     // Check if user is authenticated
     if (!user) {
+      // Cache the prompt and context before showing login modal
+      localStorage.setItem('pendingPrompt', promptText.trim());
+      if (contextText.trim()) {
+        localStorage.setItem('pendingContext', contextText.trim());
+      }
       setShowLoginModal(true);
       return;
     }
