@@ -17,15 +17,6 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md mx-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-          onClick={() => onOpenChange(false)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-        
         <DialogHeader className="text-center pb-2">
           <DialogTitle className="text-xl font-semibold text-gray-900">
             Start Your Free Trial
