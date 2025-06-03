@@ -257,7 +257,7 @@ export default function Home() {
           <h1 className="text-main-title font-heading text-brand-primary mb-3 sm:mb-4">
             makepromptsbetter
           </h1>
-          <p className="text-tagline font-body text-gray-600 max-w-2xl mx-auto px-2">
+          <p className="text-tagline font-body text-gray-700 max-w-2xl mx-auto px-2">
             Say what you want. Get exactly what you mean.
           </p>
           {/* Quick guidance */}

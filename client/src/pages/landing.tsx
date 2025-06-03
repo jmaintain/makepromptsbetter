@@ -25,7 +25,7 @@ export default function Landing() {
           Say what you want.
           <span className="text-blue-600"> Get exactly what you mean</span>
         </h1>
-        <p className="text-tagline font-body text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-tagline font-body text-gray-700 mb-8 max-w-2xl mx-auto">
           Transform your basic prompts into powerful, optimized instructions that get better results from AI models. 
           Build custom personas and unlock the full potential of AI assistance.
         </p>

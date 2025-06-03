@@ -213,7 +213,7 @@ export default function PersonaBuilder() {
               <h1 className="text-main-title font-heading text-gray-900 dark:text-white mb-4">
                 AI Assistant Builder
               </h1>
-              <p className="text-tagline font-body text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
+              <p className="text-tagline font-body text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">
                 Create sophisticated AI assistants in two phases: get immediate results, then enhance with targeted improvements.
               </p>
               

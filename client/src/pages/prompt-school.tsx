@@ -22,7 +22,7 @@ export default function PromptSchool() {
             <h1 className="text-main-title font-heading text-brand-primary mb-4">
               Prompt School: Master the Art of AI Communication
             </h1>
-            <p className="text-tagline font-body text-gray-600 max-w-3xl mx-auto">
+            <p className="text-tagline font-body text-gray-700 max-w-3xl mx-auto">
               Transform your AI interactions from basic to brilliant
             </p>
           </div>
