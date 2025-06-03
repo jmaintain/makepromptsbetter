@@ -258,13 +258,12 @@ export default function Home() {
             makepromptsbetter
           </h1>
           <p className="text-tagline font-body text-gray-600 max-w-2xl mx-auto px-2">
-            Transform your basic prompts into powerful, optimized instructions
+            Say what you want. Get exactly what you mean.
           </p>
           {/* Quick guidance */}
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
             <p className="text-sm text-blue-800">
-              <strong>Quick Start:</strong> Type what you want AI to do, click optimize, get better results. 
-              <span className="hidden sm:inline"> Use Ctrl+Enter to optimize quickly.</span>
+              <strong>Quick Start:</strong> Enter your Prompt ➡ Improve ➡ Copy ➡ Use it!
             </p>
           </div>
         </div>
@@ -293,6 +292,7 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Quality:</span>
                     <RatingLight prompt={promptText.trim()} />
+                    <span className="text-xs text-gray-400 italic">hover for details</span>
                   </div>
                 )}
               </div>
@@ -310,7 +310,7 @@ export default function Home() {
                       ) : (
                         <ChevronRight className="w-4 h-4" />
                       )}
-                      Add context (optional)
+                      Add context (optional) - You may add supporting information like your resume, meeting notes, or any other relevant information
                       {contextText && (
                         <Badge variant="secondary" className="ml-2">
                           {getWordCount(contextText)} words
@@ -321,7 +321,7 @@ export default function Home() {
                   <CollapsibleContent className="mt-4">
                     <div className="space-y-4">
                       <div className="text-sm text-gray-600">
-                        Add additional context like resume details, job descriptions, or background information (max 500 words)
+                        (max 500 words)
                       </div>
                       
                       {/* File Upload */}
