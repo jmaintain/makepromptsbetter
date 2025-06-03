@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Logo } from "@/components/logo";
 import { UpgradeModal } from "@/components/upgrade-modal";
+import { LoginModal } from "@/components/login-modal";
 import { WordCounter } from "@/components/word-counter";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +23,7 @@ export default function Home() {
   const [contextText, setContextText] = useState("");
   const [isContextOpen, setIsContextOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -166,6 +168,12 @@ export default function Home() {
         description: "Please enter a prompt to improve!",
         variant: "destructive",
       });
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!user) {
+      setShowLoginModal(true);
       return;
     }
 
@@ -428,6 +436,12 @@ export default function Home() {
         open={showUpgradeModal}
         onOpenChange={setShowUpgradeModal}
         creditsResetTime={creditsData?.resetsAt}
+      />
+
+      {/* Login Modal */}
+      <LoginModal
+        open={showLoginModal}
+        onOpenChange={setShowLoginModal}
       />
     </div>
   );
