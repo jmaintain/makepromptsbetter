@@ -241,6 +241,17 @@ export default function Results() {
           </div>
         </div>
 
+        {/* Important Notice */}
+        {!hasUserCopied && (
+          <Alert className="mb-6 border-orange-200 bg-orange-50">
+            <Save className="h-4 w-4 text-orange-600" />
+            <AlertDescription>
+              <strong className="text-orange-900">Important:</strong> Your prompts are not stored on our servers for privacy. 
+              Make sure to copy your optimized prompt before leaving this page or you'll lose it.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Prompt Comparison */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Original Prompt */}

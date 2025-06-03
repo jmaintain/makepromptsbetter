@@ -12,9 +12,9 @@ export function PrivacyNotice({ variant = "compact", className = "" }: PrivacyNo
       <div className={`text-xs text-gray-500 space-y-1 ${className}`}>
         <div className="flex items-center gap-1">
           <Shield className="w-3 h-3" />
-          <span>Your data is private and secure</span>
+          <span>Your prompts are never stored on our servers</span>
         </div>
-        <p>We never sell or use your prompts for training. Data auto-deleted after 30 days.</p>
+        <p>Maximum privacy: prompts are processed and discarded immediately. Results cached in your browser only.</p>
       </div>
     );
   }
@@ -31,21 +31,21 @@ export function PrivacyNotice({ variant = "compact", className = "" }: PrivacyNo
           <div className="flex items-start gap-2">
             <Lock className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <div>
-              <strong>Zero Data Misuse:</strong> We never sell, share, or use your prompts for AI training or any other purpose.
+              <strong>Zero Data Storage:</strong> Your prompts are never stored on our servers. They're processed and discarded immediately.
             </div>
           </div>
           
           <div className="flex items-start gap-2">
             <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <div>
-              <strong>Auto-Deletion:</strong> All prompts and optimizations are automatically deleted after 30 days.
+              <strong>Browser Only:</strong> Results are cached in your browser temporarily for your convenience.
             </div>
           </div>
           
           <div className="flex items-start gap-2">
             <Trash2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <div>
-              <strong>Your Control:</strong> Request immediate data deletion anytime by contacting support.
+              <strong>Complete Privacy:</strong> No data to delete since nothing is stored on our servers.
             </div>
           </div>
         </div>

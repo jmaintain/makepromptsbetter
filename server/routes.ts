@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema, userStatsSchema } from "@shared/schema";
 import OpenAI from "openai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { dataCleanupService } from "./dataCleanup";
+
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder",
