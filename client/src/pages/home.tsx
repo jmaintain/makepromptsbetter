@@ -312,12 +312,15 @@ export default function Home() {
                           <ChevronRight className="w-4 h-4" />
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-sm leading-relaxed break-words">
-                          Add context (optional) - You may add supporting information like your resume, meeting notes, or any other relevant information
-                        </span>
+                      <div className="flex-1 min-w-0 pr-2">
+                        <div className="text-sm leading-relaxed">
+                          <div className="break-words">Add context (optional)</div>
+                          <div className="text-xs text-gray-500 mt-0.5 break-words">
+                            Supporting information like your resume, meeting notes, etc.
+                          </div>
+                        </div>
                         {contextText && (
-                          <Badge variant="secondary" className="ml-2 mt-1">
+                          <Badge variant="secondary" className="mt-2">
                             {getWordCount(contextText)} words
                           </Badge>
                         )}
