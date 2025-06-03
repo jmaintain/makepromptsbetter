@@ -84,56 +84,64 @@ export function Navigation() {
 
           {/* User Menu */}
           <div className="flex items-center gap-4">
-            {/* Usage Badge */}
-            {userStats && (
-              <div className="hidden sm:flex items-center gap-2">
-                <Badge variant="outline">
-                  {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
-                </Badge>
-                <Badge className={getTierBadgeColor(userStats.tier)}>
-                  {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)}
-                </Badge>
-              </div>
-            )}
+            {user ? (
+              <>
+                {/* Usage Badge */}
+                {userStats && (
+                  <div className="hidden sm:flex items-center gap-2">
+                    <Badge variant="outline">
+                      {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
+                    </Badge>
+                    <Badge className={getTierBadgeColor(userStats.tier)}>
+                      {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)}
+                    </Badge>
+                  </div>
+                )}
 
-            {/* User Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={user?.profileImageUrl} alt="Profile" />
-                    <AvatarFallback className="bg-blue-600 text-white">
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex flex-col space-y-1 p-2">
-                  <p className="text-sm font-medium leading-none">{user?.email}</p>
-                  {userStats && (
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)} Plan
-                    </p>
-                  )}
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="flex items-center">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-red-600 focus:text-red-600"
-                  onClick={() => window.location.href = '/api/logout'}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user?.profileImageUrl} alt="Profile" />
+                        <AvatarFallback className="bg-blue-600 text-white">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium leading-none">{user?.email}</p>
+                      {userStats && (
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)} Plan
+                        </p>
+                      )}
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings" className="flex items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600"
+                      onClick={() => window.location.href = '/api/logout'}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Sign out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Button onClick={() => window.location.href = '/api/login'}>
+                Sign In
+              </Button>
+            )}
           </div>
         </div>
       </div>

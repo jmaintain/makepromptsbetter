@@ -28,7 +28,10 @@ function Router() {
           </div>
         </div>
       ) : !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <Layout>
+          <Route path="/" component={Home} />
+          <Route path="/prompt-school" component={PromptSchool} />
+        </Layout>
       ) : (
         <Layout>
           <Route path="/" component={Home} />
