@@ -307,7 +307,7 @@ export default function Home() {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start text-left"
+                      className="flex items-start gap-2 p-2 sm:p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start text-left"
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         {isContextOpen ? (
@@ -316,15 +316,15 @@ export default function Home() {
                           <ChevronRight className="w-4 h-4" />
                         )}
                       </div>
-                      <div className="flex-1 min-w-0 pr-2">
+                      <div className="flex-1 min-w-0">
                         <div className="text-sm leading-relaxed">
                           <div className="break-words">Add context (optional)</div>
-                          <div className="text-xs text-gray-500 mt-0.5 break-words">
-                            Supporting information like your resume, meeting notes, etc.  This does help improve the results.
+                          <div className="text-xs text-gray-500 mt-1 break-words leading-relaxed">
+                            Supporting information like your resume, meeting notes, etc. This does help improve the results.
                           </div>
                         </div>
                         {contextText && (
-                          <Badge variant="secondary" className="mt-2">
+                          <Badge variant="secondary" className="mt-2 text-xs">
                             {getWordCount(contextText)} words
                           </Badge>
                         )}
