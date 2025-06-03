@@ -303,19 +303,25 @@ export default function Home() {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 p-0 h-auto text-gray-600 hover:text-gray-900"
+                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start text-left"
                     >
-                      {isContextOpen ? (
-                        <ChevronDown className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                      Add context (optional) - You may add supporting information like your resume, meeting notes, or any other relevant information
-                      {contextText && (
-                        <Badge variant="secondary" className="ml-2">
-                          {getWordCount(contextText)} words
-                        </Badge>
-                      )}
+                      <div className="flex-shrink-0 mt-0.5">
+                        {isContextOpen ? (
+                          <ChevronDown className="w-4 h-4" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm leading-relaxed break-words">
+                          Add context (optional) - You may add supporting information like your resume, meeting notes, or any other relevant information
+                        </span>
+                        {contextText && (
+                          <Badge variant="secondary" className="ml-2 mt-1">
+                            {getWordCount(contextText)} words
+                          </Badge>
+                        )}
+                      </div>
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-4">
