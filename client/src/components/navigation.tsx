@@ -18,7 +18,7 @@ import { useState } from "react";
 import type { UserStats } from "@/../../shared/schema";
 
 export function Navigation() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -26,6 +26,27 @@ export function Navigation() {
     queryKey: ["/api/user/stats"],
     enabled: !!user,
   });
+
+  // Check if user has unsaved results
+  const hasUnsavedResults = () => {
+    if (location !== "/results") return false;
+    const stored = sessionStorage.getItem("promptResult");
+    return stored && !localStorage.getItem("resultSecured");
+  };
+
+  // Protected navigation handler
+  const handleNavigation = (targetPath: string) => {
+    if (hasUnsavedResults()) {
+      const shouldProceed = window.confirm(
+        "⚠️ WARNING: You have an unsaved optimization result that cost you credits!\n\nIf you navigate away without copying or saving, you'll lose it forever.\n\nAre you sure you want to leave?"
+      );
+      if (!shouldProceed) {
+        return;
+      }
+    }
+    setLocation(targetPath);
+    setMobileMenuOpen(false);
+  };
 
   const getNavItems = () => {
     const baseItems = [
@@ -64,16 +85,16 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="hover:opacity-80">
+          <button onClick={() => handleNavigation("/")} className="hover:opacity-80">
             <Logo />
-          </Link>
+          </button>
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <Link
+              <button
                 key={item.path}
-                href={item.path}
+                onClick={() => handleNavigation(item.path)}
                 className={`text-sm font-medium transition-colors hover:text-blue-600 ${
                   location === item.path
                     ? "text-blue-600 border-b-2 border-blue-600 pb-4"
@@ -81,7 +102,7 @@ export function Navigation() {
                 }`}
               >
                 {item.label}
-              </Link>
+              </button>
             ))}
           </nav>
 
@@ -99,18 +120,17 @@ export function Navigation() {
                   <div className="py-6">
                     <nav className="space-y-4">
                       {navItems.map((item) => (
-                        <Link
+                        <button
                           key={item.path}
-                          href={item.path}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          onClick={() => handleNavigation(item.path)}
+                          className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
                             location === item.path
                               ? "bg-blue-50 text-blue-600"
                               : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
                           }`}
                         >
                           {item.label}
-                        </Link>
+                        </button>
                       ))}
                     </nav>
                     

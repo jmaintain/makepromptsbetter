@@ -167,6 +167,7 @@ export default function Results() {
     try {
       await navigator.clipboard.writeText(result.optimized);
       setHasUserCopied(true);
+      localStorage.setItem("resultSecured", "true");
       triggerCopyConfetti();
       toast({
         title: "Copied & Secured!",
@@ -197,6 +198,7 @@ export default function Results() {
       URL.revokeObjectURL(url);
       
       setHasUserSaved(true);
+      localStorage.setItem("resultSecured", "true");
       toast({
         title: "Saved to File!",
         description: "Your prompt optimization has been saved to your device",
@@ -217,6 +219,7 @@ export default function Results() {
     try {
       await navigator.clipboard.writeText(result.optimized);
       setHasUserCopied(true);
+      localStorage.setItem("resultSecured", "true");
       toast({
         title: "Copied & Opening ChatGPT",
         description: "Prompt copied to clipboard and opening ChatGPT.",
@@ -295,6 +298,7 @@ export default function Results() {
     // Clean up all storage
     sessionStorage.removeItem("promptResult");
     localStorage.removeItem("promptResult_backup");
+    localStorage.removeItem("resultSecured");
     setLocation("/");
   };
 
