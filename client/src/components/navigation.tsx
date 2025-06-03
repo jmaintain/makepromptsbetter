@@ -9,15 +9,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
-import { Zap, Settings, LogOut, User } from "lucide-react";
+import { Zap, Settings, LogOut, User, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import type { UserStats } from "@/../../shared/schema";
 
 export function Navigation() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
@@ -83,12 +86,56 @@ export function Navigation() {
           </nav>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mobile Menu */}
+            <div className="md:hidden">
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72">
+                  <div className="py-6">
+                    <nav className="space-y-4">
+                      {navItems.map((item) => (
+                        <Link
+                          key={item.path}
+                          href={item.path}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                            location === item.path
+                              ? "bg-blue-50 text-blue-600"
+                              : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </nav>
+                    
+                    {user && userStats && (
+                      <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex flex-col gap-2">
+                          <Badge variant="outline" className="self-start">
+                            {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
+                          </Badge>
+                          <Badge className={`${getTierBadgeColor(userStats.tier)} self-start`}>
+                            {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)}
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
             {user ? (
               <>
-                {/* Usage Badge */}
+                {/* Usage Badge - Desktop */}
                 {userStats && (
-                  <div className="hidden sm:flex items-center gap-2">
+                  <div className="hidden lg:flex items-center gap-2">
                     <Badge variant="outline">
                       {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
                     </Badge>

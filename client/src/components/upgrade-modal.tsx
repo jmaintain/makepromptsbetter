@@ -14,17 +14,17 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle className="text-section-header font-heading text-center mb-4">
+          <DialogTitle className="text-lg sm:text-section-header font-heading text-center mb-4">
             You're out of free optimizations!
           </DialogTitle>
-          <p className="text-center text-gray-600 font-body">
+          <p className="text-center text-gray-600 font-body text-sm sm:text-base">
             Your prompts were improved by an average of <strong className="text-brand-primary">71%</strong>
           </p>
         </DialogHeader>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {/* Starter */}
           <div className="border border-gray-200 rounded-xl p-6">
             <h3 className="font-heading font-semibold text-gray-900 mb-2">Starter</h3>
