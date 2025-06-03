@@ -303,7 +303,7 @@ export default function Home() {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 w-full justify-start text-left"
+                      className="flex items-start gap-2 p-0 h-auto text-gray-600 hover:text-gray-900 hover:bg-transparent w-full justify-start text-left"
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         {isContextOpen ? (
