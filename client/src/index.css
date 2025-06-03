@@ -192,13 +192,25 @@
 
 /* Font size utilities */
 .text-main-title {
-  font-size: 3rem; /* 48px - increased from 40px */
+  font-size: 1.75rem; /* 28px on mobile */
   letter-spacing: 0.015em; /* improved scannability */
   line-height: 1.1; /* tighter, more confident presence */
 }
 
+@media (min-width: 640px) {
+  .text-main-title {
+    font-size: 2.5rem; /* 40px on tablets */
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-main-title {
+    font-size: 3rem; /* 48px on desktop */
+  }
+}
+
 .text-tagline {
-  font-size: 1.375rem; /* 22px - increased from 20px */
+  font-size: 1rem; /* 16px on mobile */
   letter-spacing: 0.01em; /* subtle letter-spacing */
 }
 
@@ -210,19 +222,20 @@
   font-size: 0.9rem; /* 14.4px */
 }
 
-/* Responsive scaling */
-@media (max-width: 768px) {
-  .text-main-title {
-    font-size: 2.5rem; /* ~83% of desktop - adjusted for new larger size */
-    line-height: 1.15; /* slightly looser on mobile */
-  }
-  
+/* Additional responsive scaling for other typography */
+@media (min-width: 640px) {
   .text-tagline {
-    font-size: 1.25rem; /* proportionally scaled */
+    font-size: 1.25rem; /* 20px on tablets */
   }
   
   .text-section-header {
-    font-size: 1.5rem;
+    font-size: 1.75rem; /* 28px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-tagline {
+    font-size: 1.375rem; /* 22px on desktop */
   }
 }
 
