@@ -187,16 +187,27 @@ export function Navigation() {
                       )}
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/settings" className="flex items-center">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </Link>
+                    <DropdownMenuItem 
+                      onClick={() => handleNavigation("/settings")} 
+                      className="flex items-center cursor-pointer"
+                    >
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      className="text-red-600 focus:text-red-600"
-                      onClick={() => window.location.href = '/api/logout'}
+                      className="text-red-600 focus:text-red-600 cursor-pointer"
+                      onClick={() => {
+                        if (hasUnsavedResults()) {
+                          const shouldProceed = window.confirm(
+                            "⚠️ WARNING: You have an unsaved optimization result that cost you credits!\n\nIf you log out without copying or saving, you'll lose it forever.\n\nAre you sure you want to log out?"
+                          );
+                          if (!shouldProceed) {
+                            return;
+                          }
+                        }
+                        window.location.href = '/api/logout';
+                      }}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Sign out</span>
