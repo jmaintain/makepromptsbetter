@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
-import { Zap, Settings, LogOut, User, Menu } from "lucide-react";
+import { Zap, Settings, LogOut, User, Menu, History } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -187,6 +187,13 @@ export function Navigation() {
                       )}
                     </div>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={() => handleNavigation("/prompt-history")} 
+                      className="flex items-center cursor-pointer"
+                    >
+                      <History className="mr-2 h-4 w-4" />
+                      <span>Prompt History</span>
+                    </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleNavigation("/settings")} 
                       className="flex items-center cursor-pointer"

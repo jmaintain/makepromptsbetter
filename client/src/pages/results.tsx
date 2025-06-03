@@ -9,6 +9,7 @@ import { Copy, ExternalLink, Lightbulb, Sparkles, ChevronDown, ChevronRight, Fil
 import { useToast } from "@/hooks/use-toast";
 import { RatingLight } from "@/components/rating-light";
 import { cleanMarkdown } from "@/lib/text-utils";
+import { saveToHistory } from "@/lib/prompt-history";
 import confetti from "canvas-confetti";
 
 interface PromptResult {
@@ -59,6 +60,13 @@ export default function Results() {
       setResult(parsedResult);
       // Create backup immediately
       createBackup(parsedResult);
+      // Save to history
+      saveToHistory(
+        parsedResult.original,
+        parsedResult.optimized,
+        parsedResult.improvement,
+        parsedResult.contextText
+      );
       // Trigger confetti celebration when results load
       triggerCelebrationConfetti();
     } else {
