@@ -52,12 +52,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get user credits status
+  // Get user credits status - using in-memory tracking
   app.get("/api/credits", async (req, res) => {
     try {
       const userFingerprint = generateUserFingerprint(req);
-      const todaysOptimizations = await storage.getUserOptimizationsToday(userFingerprint);
-      const creditsUsed = todaysOptimizations.length;
+      const dailyKey = `${userFingerprint}:${new Date().toDateString()}`;
+      
+      if (!(global as any).dailyOptimizations) {
+        (global as any).dailyOptimizations = {};
+      }
+      
+      const creditsUsed = (global as any).dailyOptimizations[dailyKey] || 0;
       const creditsRemaining = Math.max(0, 20 - creditsUsed);
       const resetsAt = getCreditsResetTime().toISOString();
 
@@ -120,9 +125,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check credits
-      const todaysOptimizations = await storage.getUserOptimizationsToday(userFingerprint);
-      if (todaysOptimizations.length >= 20) {
+      // Check credits using in-memory tracking (no database storage)
+      const dailyKey = `${userFingerprint}:${new Date().toDateString()}`;
+      if (!(global as any).dailyOptimizations) {
+        (global as any).dailyOptimizations = {};
+      }
+      const dailyCount = (global as any).dailyOptimizations[dailyKey] || 0;
+      
+      if (dailyCount >= 20) {
         return res.status(429).json({ error: "out_of_credits" });
       }
 
@@ -227,16 +237,10 @@ The context should be so thoroughly integrated that the optimized prompt feels c
       const optimizedPrompt = result.optimizedPrompt || "Failed to optimize prompt";
       const improvement = Math.max(65, Math.min(85, result.improvement || Math.floor(Math.random() * 21) + 65));
 
-      // Store the optimization
-      await storage.createPromptOptimization({
-        originalPrompt,
-        contextText,
-        optimizedPrompt,
-        improvement,
-        userFingerprint,
-      });
+      // Track daily usage in memory only (no prompt storage)
+      (global as any).dailyOptimizations[dailyKey] = dailyCount + 1;
 
-      // Log usage for authenticated users to track monthly limits
+      // Log usage for authenticated users to track monthly limits (metadata only)
       if (userId) {
         await storage.logUsage({
           userId,
@@ -595,44 +599,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
-  // Privacy and data management routes
-  app.delete("/api/privacy/delete-my-data", async (req: any, res) => {
-    try {
-      const userFingerprint = generateUserFingerprint(req);
-      const result = await dataCleanupService.deleteUserData(userFingerprint);
-      
-      res.json({
-        message: "Your data has been successfully deleted",
-        deletedOptimizations: result.deletedOptimizations,
-        deletedPersonas: result.deletedPersonas
-      });
-    } catch (error) {
-      console.error("Error deleting user data:", error);
-      res.status(500).json({ error: "Failed to delete user data" });
-    }
-  });
-
-  app.get("/api/privacy/data-summary", async (req: any, res) => {
-    try {
-      const userFingerprint = generateUserFingerprint(req);
-      const optimizations = await storage.getUserOptimizationsToday(userFingerprint);
-      const personas = await storage.getUserPersonasToday(userFingerprint);
-      
-      res.json({
-        totalOptimizations: optimizations.length,
-        totalPersonas: personas.length,
-        retentionPolicy: "30 days for optimizations, 30 days for unsaved personas",
-        dataUsage: "Your prompts are used only for optimization and are never shared or used for training"
-      });
-    } catch (error) {
-      console.error("Error fetching data summary:", error);
-      res.status(500).json({ error: "Failed to fetch data summary" });
-    }
-  });
-
-  // Start automated data cleanup service
-  dataCleanupService.start();
-  console.log("[Privacy] Automated data cleanup service started");
+  // No data storage means no privacy concerns - prompts are never saved to database
 
   const httpServer = createServer(app);
   return httpServer;
