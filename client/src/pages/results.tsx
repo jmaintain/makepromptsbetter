@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, ExternalLink, Lightbulb, Sparkles, ChevronDown, ChevronRight, FileText, AlertTriangle, Save } from "lucide-react";
+import { Copy, ExternalLink, Lightbulb, Sparkles, ChevronDown, ChevronRight, FileText, AlertTriangle, Save, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RatingLight } from "@/components/rating-light";
 import { cleanMarkdown } from "@/lib/text-utils";
@@ -23,20 +23,71 @@ export default function Results() {
   const [result, setResult] = useState<PromptResult | null>(null);
   const [isContextOpen, setIsContextOpen] = useState(false);
   const [hasUserCopied, setHasUserCopied] = useState(false);
+  const [hasUserSaved, setHasUserSaved] = useState(false);
   const { toast } = useToast();
+
+  // Enhanced protection system
+  const isResultProtected = !hasUserCopied && !hasUserSaved;
+
+  // Browser navigation protection
+  const handleBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
+    if (isResultProtected && result) {
+      e.preventDefault();
+      e.returnValue = "You have an unsaved optimization result. If you leave now, you'll lose it forever.";
+      return e.returnValue;
+    }
+  }, [isResultProtected, result]);
+
+  // Backup to localStorage for additional protection
+  const createBackup = useCallback((promptResult: PromptResult) => {
+    const backup = {
+      ...promptResult,
+      timestamp: Date.now(),
+      id: Math.random().toString(36).substr(2, 9)
+    };
+    localStorage.setItem("promptResult_backup", JSON.stringify(backup));
+  }, []);
 
   useEffect(() => {
     // Get result from sessionStorage
     const stored = sessionStorage.getItem("promptResult");
     if (stored) {
-      setResult(JSON.parse(stored));
+      const parsedResult = JSON.parse(stored);
+      setResult(parsedResult);
+      // Create backup immediately
+      createBackup(parsedResult);
       // Trigger confetti celebration when results load
       triggerCelebrationConfetti();
     } else {
-      // If no result, redirect to home
-      setLocation("/");
+      // Check for backup if session storage is empty
+      const backup = localStorage.getItem("promptResult_backup");
+      if (backup) {
+        const backupData = JSON.parse(backup);
+        // Only restore backup if it's less than 1 hour old
+        if (Date.now() - backupData.timestamp < 3600000) {
+          setResult(backupData);
+          // Restore to session storage
+          sessionStorage.setItem("promptResult", JSON.stringify(backupData));
+          toast({
+            title: "Result Restored",
+            description: "We recovered your optimization result from backup.",
+          });
+        } else {
+          // Clean up old backup
+          localStorage.removeItem("promptResult_backup");
+          setLocation("/");
+        }
+      } else {
+        setLocation("/");
+      }
     }
-  }, [setLocation]);
+  }, [setLocation, createBackup, toast]);
+
+  // Add browser navigation protection
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [handleBeforeUnload]);
 
   const triggerCelebrationConfetti = () => {
     // Main celebration burst
@@ -118,13 +169,42 @@ export default function Results() {
       setHasUserCopied(true);
       triggerCopyConfetti();
       toast({
-        title: "Copied!",
-        description: "Optimized prompt copied to clipboard",
+        title: "Copied & Secured!",
+        description: "Your optimized prompt is now safely copied to clipboard",
       });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSaveToFile = () => {
+    if (!result) return;
+    
+    try {
+      const content = `ORIGINAL PROMPT:\n${result.original}\n\nOPTIMIZED PROMPT:\n${result.optimized}\n\nIMPROVEMENT: ${result.improvement}%\n\nGenerated on: ${new Date().toLocaleString()}`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `optimized-prompt-${Date.now()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      setHasUserSaved(true);
+      toast({
+        title: "Saved to File!",
+        description: "Your prompt optimization has been saved to your device",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save file",
         variant: "destructive",
       });
     }
@@ -203,15 +283,18 @@ export default function Results() {
   };
 
   const handleTryAnother = () => {
-    if (!hasUserCopied) {
+    if (isResultProtected) {
       const shouldProceed = window.confirm(
-        "You haven't copied your optimized prompt yet. If you continue, you'll lose this result. Are you sure you want to try another prompt?"
+        "⚠️ WARNING: You haven't secured your optimized prompt yet!\n\nThis cost you credits and cannot be recovered. If you continue without copying or saving, you'll lose this result forever.\n\nAre you absolutely sure you want to proceed?"
       );
       if (!shouldProceed) {
         return;
       }
     }
+    
+    // Clean up all storage
     sessionStorage.removeItem("promptResult");
+    localStorage.removeItem("promptResult_backup");
     setLocation("/");
   };
 
@@ -241,13 +324,22 @@ export default function Results() {
           </div>
         </div>
 
-        {/* Important Notice */}
-        {!hasUserCopied && (
-          <Alert className="mb-6 border-orange-200 bg-orange-50">
-            <Save className="h-4 w-4 text-orange-600" />
+        {/* Enhanced Protection Alerts */}
+        {isResultProtected && (
+          <Alert className="mb-6 border-red-300 bg-red-50">
+            <Shield className="h-4 w-4 text-red-600" />
             <AlertDescription>
-              <strong className="text-orange-900">Important:</strong> Your prompts are not stored on our servers for privacy. 
-              Make sure to copy your optimized prompt before leaving this page or you'll lose it.
+              <strong className="text-red-900">⚠️ SECURE YOUR RESULT:</strong> This optimization cost you credits and cannot be recovered. 
+              You must copy or save it before leaving - there's no way to get it back once lost.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {(hasUserCopied || hasUserSaved) && (
+          <Alert className="mb-6 border-green-300 bg-green-50">
+            <Shield className="h-4 w-4 text-green-600" />
+            <AlertDescription>
+              <strong className="text-green-900">✓ SECURED:</strong> Your optimization result is now safely {hasUserCopied && hasUserSaved ? 'copied and saved' : hasUserCopied ? 'copied to clipboard' : 'saved to file'}.
             </AlertDescription>
           </Alert>
         )}
@@ -333,7 +425,7 @@ export default function Results() {
         )}
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
           <Button
             onClick={handleCopy}
             className={`${hasUserCopied 
@@ -343,6 +435,17 @@ export default function Results() {
           >
             <Copy className="w-4 h-4 mr-2" />
             {hasUserCopied ? 'Copied!' : 'Copy'}
+          </Button>
+          <Button
+            onClick={handleSaveToFile}
+            variant="outline"
+            className={`${hasUserSaved 
+              ? 'border-green-600 text-green-600 hover:bg-green-50' 
+              : 'border-orange-600 text-orange-600 hover:bg-orange-50'
+            }`}
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {hasUserSaved ? 'Saved!' : 'Save File'}
           </Button>
           <Button variant="outline" onClick={handleOpenChatGPT}>
             Copy & Open ChatGPT
