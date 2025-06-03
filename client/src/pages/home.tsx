@@ -290,13 +290,13 @@ export default function Home() {
               />
               
               {/* Word Counter and Rating */}
-              <div className="mt-3 flex items-center justify-between">
+              <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <WordCounter text={promptText} limit={wordLimit} />
                 {promptText.trim() && (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Quality:</span>
                     <RatingLight prompt={promptText.trim()} />
-                    <span className="text-xs text-gray-400 italic">hover for details</span>
+                    <span className="text-xs text-gray-400 italic hidden sm:inline">hover for details</span>
                   </div>
                 )}
               </div>
@@ -405,8 +405,8 @@ export default function Home() {
 
           {/* Benefits Section */}
           <Card className="bg-white rounded-xl border border-gray-200 mb-8">
-            <CardContent className="p-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <CardContent className="p-6 sm:p-8 md:p-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 <div className="text-center">
                   <div className="text-section-header font-subheading text-brand-primary mb-3">Save Hours</div>
                   <div className="text-gray-600 font-body">Stop spending time learning prompt engineering</div>
@@ -425,10 +425,10 @@ export default function Home() {
 
           {/* Before/After Example */}
           <Card className="bg-white rounded-xl border border-gray-200 mb-6">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">See the Difference</h3>
+            <CardContent className="p-6 sm:p-8">
+              <h3 className="text-xl sm:text-2xl font-bold text-center text-gray-900 mb-6 sm:mb-8">See the Difference</h3>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                 {/* Before */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">

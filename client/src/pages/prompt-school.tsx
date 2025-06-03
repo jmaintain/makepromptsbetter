@@ -12,17 +12,17 @@ export default function PromptSchool() {
 
       {/* Hero Section */}
       <section className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-brand-primary/10 p-4 rounded-2xl">
-                <BookOpen className="w-12 h-12 text-brand-primary" />
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="bg-brand-primary/10 p-3 sm:p-4 rounded-2xl">
+                <BookOpen className="w-8 h-8 sm:w-12 sm:h-12 text-brand-primary" />
               </div>
             </div>
-            <h1 className="text-main-title font-heading text-brand-primary mb-4">
+            <h1 className="text-2xl sm:text-main-title font-heading text-brand-primary mb-4">
               Prompt School: Master the Art of AI Communication
             </h1>
-            <p className="text-tagline font-body text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-tagline font-body text-gray-700 max-w-3xl mx-auto px-4">
               Transform your AI interactions from basic to brilliant
             </p>
           </div>
@@ -30,7 +30,7 @@ export default function PromptSchool() {
       </section>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="space-y-12">
           
           {/* Why Better Prompts = Better Results */}

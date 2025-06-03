@@ -91,27 +91,28 @@ export default function MyAssistants() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               My AI Assistants
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
               Manage and test your saved AI assistants
             </p>
           </div>
-          <Button onClick={() => window.location.href = '/ai-assistant-builder'}>
+          <Button onClick={() => window.location.href = '/ai-assistant-builder'} className="w-full sm:w-auto">
             <Bot className="mr-2 h-4 w-4" />
-            Create New Assistant
+            <span className="hidden sm:inline">Create New Assistant</span>
+            <span className="sm:hidden">Create New</span>
           </Button>
         </div>
 
         {/* Saved Assistants Grid */}
         {savedAssistants.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {savedAssistants.map((assistant) => (
               <Card key={assistant.id}>
                 <CardHeader>

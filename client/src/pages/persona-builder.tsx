@@ -191,11 +191,11 @@ export default function PersonaBuilder() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <Link href="/" className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 Back to Home
@@ -203,10 +203,11 @@ export default function PersonaBuilder() {
               <Button
                 variant="outline"
                 onClick={() => setShowUsageGuide(true)}
-                className="inline-flex items-center"
+                className="inline-flex items-center text-sm"
               >
                 <HelpCircle className="h-4 w-4 mr-2" />
-                Usage Guide & FAQ
+                <span className="hidden sm:inline">Usage Guide & FAQ</span>
+                <span className="sm:hidden">Guide</span>
               </Button>
             </div>
             <div className="text-center">
