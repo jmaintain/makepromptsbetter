@@ -369,6 +369,7 @@ export default function Results() {
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="font-heading font-semibold text-gray-900">Original Prompt</h3>
                 <RatingLight prompt={result.original} />
+                <span className="text-xs text-gray-500 ml-1">hover for details</span>
               </div>
               <div className="text-code font-code text-gray-700 whitespace-pre-wrap bg-white p-4 rounded-lg border">
                 {result.original}
@@ -382,6 +383,7 @@ export default function Results() {
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="font-heading font-semibold text-brand-primary">Optimized Prompt</h3>
                 <RatingLight prompt={result.optimized} />
+                <span className="text-xs text-gray-500 ml-1">hover for details</span>
               </div>
               <div className="text-code font-code text-gray-900 whitespace-pre-wrap bg-white p-4 rounded-lg border border-brand-primary/20">
                 {cleanMarkdown(result.optimized)}
