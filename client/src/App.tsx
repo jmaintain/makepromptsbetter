@@ -13,6 +13,7 @@ import Results from "@/pages/results";
 import PromptSchool from "@/pages/prompt-school";
 import PersonaBuilder from "@/pages/persona-builder";
 import MyAssistants from "@/pages/my-assistants";
+import PrivacyPolicy from "@/pages/privacy-policy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +35,7 @@ function Router() {
         <Layout>
           <Route path="/" component={Home} />
           <Route path="/prompt-school" component={PromptSchool} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
           {authState && (
             <>
               <Route path="/settings" component={Settings} />
