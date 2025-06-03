@@ -407,15 +407,15 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 <div className="text-center">
                   <div className="text-section-header font-subheading text-brand-primary mb-3">Save Hours</div>
-                  <div className="text-gray-600 font-body">Stop spending time learning prompt engineering, although we teach a bit also </div>
+                  <div className="text-gray-600 font-body">No need to master prompt engineering — though you'll pick up a few tips along the way </div>
                 </div>
                 <div className="text-center">
                   <div className="text-section-header font-subheading text-brand-primary mb-3">Get Better Results</div>
-                  <div className="text-gray-600 font-body">Transform vague ideas into precise prompts.</div>
+                  <div className="text-gray-600 font-body">Transform vague ideas into precise prompts</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-section-header font-subheading text-brand-primary mb-3">Learn While You Use</div>
-                  <div className="text-gray-600 font-body">Understand why each improvement works with our quality ratings</div>
+                  <div className="text-section-header font-subheading text-brand-primary mb-3">Learn Naturally</div>
+                  <div className="text-gray-600 font-body">Learn what makes a great prompt through our transparent quality scores</div>
                 </div>
               </div>
             </CardContent>
