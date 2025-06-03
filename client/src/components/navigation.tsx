@@ -13,26 +13,24 @@ import { Logo } from "@/components/logo";
 import { Zap, Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import type { UserStats } from "@/../../shared/schema";
 
 export function Navigation() {
   const [location] = useLocation();
   const { user } = useAuth();
   
-  const { data: userStats } = useQuery({
+  const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
     enabled: !!user,
   });
 
   const getNavItems = () => {
     const baseItems = [
-      { path: "/", label: "Home" },
+      { path: "/", label: "Prompt Optimizer" },
       { path: "/prompt-school", label: "Prompt School", tier: "starter" },
     ];
     
-    if (userStats?.tier === 'pro') {
-      baseItems.push({ path: "/ai-assistant-builder", label: "AI Assistant Builder", tier: "pro" });
-      baseItems.push({ path: "/my-assistants", label: "My Assistants", tier: "pro" });
-    }
+    // AI Assistant Builder is hidden from navigation but routes remain functional
     
     return baseItems;
   };
@@ -81,18 +79,6 @@ export function Navigation() {
                 {item.label}
               </Link>
             ))}
-            
-            {/* Pro upgrade hint */}
-            {userStats?.tier !== 'pro' && (
-              <Link href="/ai-assistant-builder" className="relative group">
-                <span className="text-sm font-medium text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
-                  AI Assistant Builder
-                </span>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                  Upgrade to Pro to unlock
-                </div>
-              </Link>
-            )}
           </nav>
 
           {/* User Menu */}
