@@ -395,15 +395,15 @@ export default function Home() {
             <CardContent className="p-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center">
-                  <div className="text-section-header font-heading text-brand-primary mb-3">Save Hours</div>
+                  <div className="text-section-header font-subheading text-brand-primary mb-3">Save Hours</div>
                   <div className="text-gray-600 font-body">Stop spending time learning prompt engineering</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-section-header font-heading text-brand-primary mb-3">Get Better Results</div>
+                  <div className="text-section-header font-subheading text-brand-primary mb-3">Get Better Results</div>
                   <div className="text-gray-600 font-body">Transform vague ideas into precise prompts</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-section-header font-heading text-brand-primary mb-3">Learn While You Use</div>
+                  <div className="text-section-header font-subheading text-brand-primary mb-3">Learn While You Use</div>
                   <div className="text-gray-600 font-body">Understand why each improvement works</div>
                 </div>
               </div>
