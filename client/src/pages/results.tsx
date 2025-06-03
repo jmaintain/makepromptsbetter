@@ -49,6 +49,9 @@ export default function Results() {
   }, []);
 
   useEffect(() => {
+    // Clear security flag for new results
+    localStorage.removeItem("resultSecured");
+    
     // Get result from sessionStorage
     const stored = sessionStorage.getItem("promptResult");
     if (stored) {
@@ -244,6 +247,7 @@ export default function Results() {
     try {
       await navigator.clipboard.writeText(result.optimized);
       setHasUserCopied(true);
+      localStorage.setItem("resultSecured", "true");
       toast({
         title: "Copied & Opening Claude",
         description: "Prompt copied to clipboard. Paste it in Claude when it opens.",
@@ -268,6 +272,7 @@ export default function Results() {
     try {
       await navigator.clipboard.writeText(result.optimized);
       setHasUserCopied(true);
+      localStorage.setItem("resultSecured", "true");
       toast({
         title: "Copied & Opening Gemini",
         description: "Prompt copied to clipboard. Paste it in Gemini when it opens.",
