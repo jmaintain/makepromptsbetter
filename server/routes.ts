@@ -140,13 +140,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       
       // Prepare the system message with enhanced context integration
-      let systemMessage = `You are a premium prompt optimizer who transforms basic ideas into powerful, concise AI prompts that deliver exceptional results while respecting token limits.
+      let systemMessage = `You are a premium prompt optimizer who transforms basic ideas into powerful, effective AI prompts that deliver exceptional results.
 
 Core principles:
-• Maximize impact with minimal words
-• Balance clarity with brevity
-• Include only essential modifiers that significantly improve output
-• Every word must earn its place
+• Maximize impact while maintaining clarity
+• Balance specificity with efficiency
+• Include essential details that significantly improve output
+• Output can be up to 150 words when complexity warrants more detail
+• For simple requests, shorter outputs (60-80 words) are perfectly fine
 
 Process:
 1. Analyze:
