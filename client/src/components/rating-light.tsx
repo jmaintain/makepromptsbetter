@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { ratePrompt } from "@/lib/api";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
@@ -13,10 +14,21 @@ interface RatingLightProps {
 
 export function RatingLight({ prompt, className }: RatingLightProps) {
   const isMobile = useIsMobile();
+  const [debouncedPrompt, setDebouncedPrompt] = useState(prompt);
+
+  // Debounce the prompt to avoid excessive API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedPrompt(prompt);
+    }, 2000); // Wait 2 seconds after user stops typing
+
+    return () => clearTimeout(timer);
+  }, [prompt]);
+
   const { data: rating, isLoading } = useQuery({
-    queryKey: ["/api/rate", prompt],
-    queryFn: () => ratePrompt({ prompt }),
-    enabled: !!prompt,
+    queryKey: ["/api/rate", debouncedPrompt],
+    queryFn: () => ratePrompt({ prompt: debouncedPrompt }),
+    enabled: !!debouncedPrompt && debouncedPrompt.trim().length > 5, // Only rate prompts with some substance
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
