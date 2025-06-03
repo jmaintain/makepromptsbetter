@@ -30,7 +30,8 @@ export function Navigation() {
       { path: "/prompt-school", label: "Prompt School", tier: "starter" },
     ];
     
-    // AI Assistant Builder is hidden from navigation but routes remain functional
+    // AI Assistant Builder is intentionally hidden from navigation
+    // Routes remain functional for internal access (/ai-assistant-builder, /persona-builder, /my-assistants)
     
     return baseItems;
   };

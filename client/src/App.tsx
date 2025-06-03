@@ -37,6 +37,7 @@ function Router() {
           <Route path="/prompt-school" component={PromptSchool} />
           {/* Hidden AI Assistant Builder - keeping routes for internal access */}
           <Route path="/ai-assistant-builder" component={PersonaBuilderRoute} />
+          <Route path="/persona-builder" component={PersonaBuilder} />
           <Route path="/my-assistants" component={MyAssistants} />
         </Layout>
       )}

@@ -14,6 +14,7 @@ import { optimizePrompt, getCreditsStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { queryClient } from "@/lib/queryClient";
+import type { UserStats, CreditsStatus } from "@/../../shared/schema";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -27,7 +28,7 @@ export default function Home() {
   const { user } = useAuth();
 
   // Get user stats for word limits
-  const { data: userStats } = useQuery({
+  const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
     enabled: !!user,
   });
@@ -40,7 +41,7 @@ export default function Home() {
   }, []);
 
   // Get credits status
-  const { data: creditsData } = useQuery({
+  const { data: creditsData } = useQuery<CreditsStatus>({
     queryKey: ["/api/credits"],
     refetchInterval: 60000, // Refresh every minute
   });
@@ -211,8 +212,15 @@ export default function Home() {
             makepromptsbetter
           </h1>
           <p className="text-tagline font-body text-gray-600 max-w-2xl mx-auto px-2">
-            Say what you want. Get exactly what you mean.
+            Transform your basic prompts into powerful, optimized instructions
           </p>
+          {/* Quick guidance */}
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
+            <p className="text-sm text-blue-800">
+              <strong>Quick Start:</strong> Type what you want AI to do, click optimize, get better results. 
+              <span className="hidden sm:inline"> Use Ctrl+Enter to optimize quickly.</span>
+            </p>
+          </div>
         </div>
       </header>
 
@@ -225,7 +233,7 @@ export default function Home() {
             <CardContent className="p-6 sm:p-8 md:p-10">
               <Textarea
                 ref={promptInputRef}
-                placeholder="Enter what you want here..."
+                placeholder="Type what you want AI to do... e.g., 'Write a professional email declining a meeting' or 'Create a marketing strategy for my startup'"
                 value={promptText}
                 onChange={(e) => setPromptText(e.target.value)}
                 onKeyDown={handleKeyDown}
