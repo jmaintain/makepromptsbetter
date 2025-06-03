@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema, userStatsSchema } from "@shared/schema";
 import OpenAI from "openai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { dataCleanupService } from "./dataCleanup";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder",
@@ -593,6 +594,45 @@ Use the same markdown structure as the original persona. Highlight improvements 
       res.status(500).json({ error: "Failed to fetch saved assistants" });
     }
   });
+
+  // Privacy and data management routes
+  app.delete("/api/privacy/delete-my-data", async (req: any, res) => {
+    try {
+      const userFingerprint = generateUserFingerprint(req);
+      const result = await dataCleanupService.deleteUserData(userFingerprint);
+      
+      res.json({
+        message: "Your data has been successfully deleted",
+        deletedOptimizations: result.deletedOptimizations,
+        deletedPersonas: result.deletedPersonas
+      });
+    } catch (error) {
+      console.error("Error deleting user data:", error);
+      res.status(500).json({ error: "Failed to delete user data" });
+    }
+  });
+
+  app.get("/api/privacy/data-summary", async (req: any, res) => {
+    try {
+      const userFingerprint = generateUserFingerprint(req);
+      const optimizations = await storage.getUserOptimizationsToday(userFingerprint);
+      const personas = await storage.getUserPersonasToday(userFingerprint);
+      
+      res.json({
+        totalOptimizations: optimizations.length,
+        totalPersonas: personas.length,
+        retentionPolicy: "30 days for optimizations, 30 days for unsaved personas",
+        dataUsage: "Your prompts are used only for optimization and are never shared or used for training"
+      });
+    } catch (error) {
+      console.error("Error fetching data summary:", error);
+      res.status(500).json({ error: "Failed to fetch data summary" });
+    }
+  });
+
+  // Start automated data cleanup service
+  dataCleanupService.start();
+  console.log("[Privacy] Automated data cleanup service started");
 
   const httpServer = createServer(app);
   return httpServer;

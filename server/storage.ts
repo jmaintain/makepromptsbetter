@@ -215,6 +215,74 @@ export class DatabaseStorage implements IStorage {
     
     return await this.updatePersona(id, { isSaved: "true" });
   }
+
+  // Privacy and data retention methods
+  async deleteOldData(): Promise<{ deletedOptimizations: number; deletedPersonas: number; deletedUsageLogs: number }> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Delete old prompt optimizations
+    const deletedOptimizations = await db
+      .delete(promptOptimizations)
+      .where(sql`${promptOptimizations.createdAt} < ${thirtyDaysAgo}`)
+      .returning();
+
+    // Delete old unsaved personas
+    const deletedPersonas = await db
+      .delete(personas)
+      .where(
+        and(
+          sql`${personas.createdAt} < ${thirtyDaysAgo}`,
+          eq(personas.isSaved, "false")
+        )
+      )
+      .returning();
+
+    // Delete old usage logs (keep for 90 days for billing purposes)
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    
+    const deletedUsageLogs = await db
+      .delete(usageLogs)
+      .where(sql`${usageLogs.createdAt} < ${ninetyDaysAgo}`)
+      .returning();
+
+    return {
+      deletedOptimizations: deletedOptimizations.length,
+      deletedPersonas: deletedPersonas.length,
+      deletedUsageLogs: deletedUsageLogs.length
+    };
+  }
+
+  async deleteUserData(userFingerprint: string): Promise<{ deletedOptimizations: number; deletedPersonas: number }> {
+    // Delete user's prompt optimizations
+    const deletedOptimizations = await db
+      .delete(promptOptimizations)
+      .where(eq(promptOptimizations.userFingerprint, userFingerprint))
+      .returning();
+
+    // Delete user's personas
+    const deletedPersonas = await db
+      .delete(personas)
+      .where(eq(personas.userFingerprint, userFingerprint))
+      .returning();
+
+    return {
+      deletedOptimizations: deletedOptimizations.length,
+      deletedPersonas: deletedPersonas.length
+    };
+  }
+
+  async anonymizeUserData(userId: string): Promise<void> {
+    // For registered users, we can anonymize rather than delete
+    // Replace user fingerprints with anonymized versions in usage logs
+    const anonymizedFingerprint = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    await db
+      .update(usageLogs)
+      .set({ userFingerprint: anonymizedFingerprint })
+      .where(eq(usageLogs.userId, userId));
+  }
 }
 
 export const storage = new DatabaseStorage();
