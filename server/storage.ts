@@ -36,6 +36,11 @@ export interface IStorage {
   checkUsageLimit(userId: string): Promise<boolean>;
   resetMonthlyUsage(userId: string): Promise<void>;
   getSubscriptionTier(tierName: string): Promise<SubscriptionTier | null>;
+  
+  // Privacy and data retention methods
+  deleteOldData(): Promise<{ deletedOptimizations: number; deletedPersonas: number; deletedUsageLogs: number }>;
+  deleteUserData(userFingerprint: string): Promise<{ deletedOptimizations: number; deletedPersonas: number }>;
+  anonymizeUserData(userId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {

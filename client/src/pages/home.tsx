@@ -6,6 +6,7 @@ import { UpgradeModal } from "@/components/upgrade-modal";
 import { LoginModal } from "@/components/login-modal";
 import { WordCounter } from "@/components/word-counter";
 import { RatingLight } from "@/components/rating-light";
+import { PrivacyNotice } from "@/components/privacy-notice";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -479,6 +480,11 @@ export default function Home() {
               <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
               {creditsData?.creditsRemaining ?? 3} free optimizations today
             </Badge>
+          </div>
+          
+          {/* Privacy Notice */}
+          <div className="max-w-2xl mx-auto mt-12">
+            <PrivacyNotice variant="compact" className="text-center" />
           </div>
         </div>
       </main>

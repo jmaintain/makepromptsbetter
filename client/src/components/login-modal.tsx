@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PrivacyNotice } from "@/components/privacy-notice";
 import { Sparkles, Zap, Users, X } from "lucide-react";
 
 interface LoginModalProps {
@@ -61,6 +62,8 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
               </div>
             </CardContent>
           </Card>
+
+          <PrivacyNotice variant="full" className="mb-4" />
 
           <Button 
             onClick={handleLogin}
