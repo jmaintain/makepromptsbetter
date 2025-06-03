@@ -10,24 +10,40 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
+interface DataSummary {
+  totalOptimizations: number;
+  totalPersonas: number;
+  retentionPolicy: string;
+  dataUsage: string;
+}
+
 export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch user's data summary
-  const { data: dataSummary, isLoading: loadingData } = useQuery({
+  const { data: dataSummary, isLoading: loadingData } = useQuery<DataSummary>({
     queryKey: ['/api/privacy/data-summary'],
     enabled: !!user,
   });
 
   // Delete user data mutation
   const deleteDataMutation = useMutation({
-    mutationFn: () => apiRequest('/api/privacy/delete-my-data', { method: 'DELETE' }),
+    mutationFn: async () => {
+      const response = await fetch('/api/privacy/delete-my-data', { 
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete data');
+      }
+      return response.json();
+    },
     onSuccess: (data) => {
       toast({
         title: "Data Deleted Successfully",
-        description: `Deleted ${data.deletedOptimizations} optimizations and ${data.deletedPersonas} personas.`,
+        description: `Deleted ${data.deletedOptimizations} optimizations and ${data.deletedPersonas} saved items.`,
       });
       setShowDeleteConfirm(false);
     },
@@ -134,7 +150,7 @@ export default function Settings() {
                     <Badge variant="outline">{dataSummary.totalOptimizations}</Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">AI assistants created:</span>
+                    <span className="text-gray-600">Saved optimizations:</span>
                     <Badge variant="outline">{dataSummary.totalPersonas}</Badge>
                   </div>
                   <div className="flex justify-between">
@@ -155,8 +171,8 @@ export default function Settings() {
             <Alert>
               <Clock className="h-4 w-4" />
               <AlertDescription>
-                <strong>Automatic Data Deletion:</strong> Your prompts and optimizations are automatically deleted after 30 days. 
-                Unsaved AI assistants are also removed after 30 days to protect your privacy.
+                <strong>Automatic Data Deletion:</strong> Your prompts and optimizations are automatically deleted after 30 days 
+                to protect your privacy.
               </AlertDescription>
             </Alert>
 
@@ -170,7 +186,7 @@ export default function Settings() {
                 Delete All My Data
               </h3>
               <p className="text-gray-600 text-sm mb-4">
-                Permanently delete all your prompts, optimizations, and AI assistants immediately. This action cannot be undone.
+                Permanently delete all your prompts and optimizations immediately. This action cannot be undone.
               </p>
               
               {!showDeleteConfirm ? (

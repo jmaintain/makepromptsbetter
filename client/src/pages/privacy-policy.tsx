@@ -136,7 +136,7 @@ export default function PrivacyPolicy() {
                       <Badge className="bg-blue-100 text-blue-800">30 days</Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-blue-800">Unsaved AI assistants:</span>
+                      <span className="text-blue-800">Temporary data:</span>
                       <Badge className="bg-blue-100 text-blue-800">30 days</Badge>
                     </div>
                     <div className="flex justify-between">
@@ -144,7 +144,7 @@ export default function PrivacyPolicy() {
                       <Badge className="bg-blue-100 text-blue-800">90 days</Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-blue-800">Saved AI assistants:</span>
+                      <span className="text-blue-800">Saved optimizations:</span>
                       <Badge className="bg-green-100 text-green-800">Until you delete</Badge>
                     </div>
                   </div>
