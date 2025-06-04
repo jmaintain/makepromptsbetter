@@ -57,6 +57,8 @@ export interface IStorage {
   createPayment(payment: InsertPayment): Promise<Payment>;
   updatePaymentStatus(paymentIntentId: string, status: string, metadata?: any): Promise<Payment>;
   getPayment(paymentIntentId: string): Promise<Payment | null>;
+  getPaymentBySessionId(sessionId: string): Promise<Payment | null>;
+  updatePaymentIntentId(sessionId: string, paymentIntentId: string): Promise<Payment | null>;
   getUserTransactionHistory(userId: string, limit?: number): Promise<TokenTransaction[]>;
   
   // Privacy and data retention methods
@@ -457,6 +459,23 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(payments)
       .where(eq(payments.stripePaymentIntentId, paymentIntentId));
+    return payment || null;
+  }
+
+  async getPaymentBySessionId(sessionId: string): Promise<Payment | null> {
+    const [payment] = await db
+      .select()
+      .from(payments)
+      .where(eq(payments.stripeSessionId, sessionId));
+    return payment || null;
+  }
+
+  async updatePaymentIntentId(sessionId: string, paymentIntentId: string): Promise<Payment | null> {
+    const [payment] = await db
+      .update(payments)
+      .set({ stripePaymentIntentId: paymentIntentId })
+      .where(eq(payments.stripeSessionId, sessionId))
+      .returning();
     return payment || null;
   }
 

@@ -5,9 +5,7 @@ import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatu
 import OpenAI from "openai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import Stripe from "stripe";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
-import { payments } from "@shared/schema";
+
 
 
 const openai = new OpenAI({
@@ -808,21 +806,14 @@ Use the same markdown structure as the original persona. Highlight improvements 
                 console.log(`Found session ${sessionId} for payment intent ${paymentIntent.id}`);
                 
                 // Look up payment by session ID in our pending payments
-                const [pendingPayment] = await db
-                  .select()
-                  .from(payments)
-                  .where(eq(payments.stripeSessionId, sessionId));
+                const pendingPayment = await storage.getPaymentBySessionId(sessionId);
                 
                 if (pendingPayment) {
                   payment = pendingPayment;
                   console.log(`Found pending payment record by session ID: ${sessionId}`);
                   
                   // Update the payment record with the real payment intent ID
-                  await db
-                    .update(payments)
-                    .set({ stripePaymentIntentId: paymentIntent.id })
-                    .where(eq(payments.id, pendingPayment.id));
-                    
+                  await storage.updatePaymentIntentId(sessionId, paymentIntent.id);
                   console.log(`Updated payment record ${pendingPayment.id} with real payment intent ID: ${paymentIntent.id}`);
                 }
               }
