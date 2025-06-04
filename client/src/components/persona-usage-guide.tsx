@@ -13,9 +13,9 @@ interface PersonaUsageGuideProps {
 export function PersonaUsageGuide({ open, onOpenChange }: PersonaUsageGuideProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-4xl max-h-[95vh] overflow-y-auto mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-section-header font-heading">AI Persona Usage Guide & FAQ</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl lg:text-section-header font-heading">AI Persona Usage Guide & FAQ</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">

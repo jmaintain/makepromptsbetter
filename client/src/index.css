@@ -272,18 +272,32 @@
     max-height: 95vh !important;
     max-width: 95vw !important;
     margin: auto !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
   }
 
-  /* Mobile-friendly navigation */
+  /* Fix for mobile viewport issues */
   @media (max-width: 767px) {
+    [data-radix-dialog-content] {
+      width: 95vw !important;
+      max-height: 90vh !important;
+      top: 5vh !important;
+      transform: translateX(-50%) !important;
+    }
+    
     .mobile-nav {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
       z-index: 50;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
+    }
+    
+    /* Prevent viewport zoom on input focus */
+    input, textarea, select {
+      font-size: 16px !important;
     }
   }
 
@@ -297,6 +311,20 @@
   @media (min-width: 768px) {
     .mobile-container {
       padding: 2rem;
+    }
+  }
+
+  /* Touch-friendly interactive elements */
+  @media (max-width: 767px) {
+    button, .clickable {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Ensure text inputs are accessible */
+    .form-input {
+      padding: 12px;
+      min-height: 44px;
     }
   }
 }

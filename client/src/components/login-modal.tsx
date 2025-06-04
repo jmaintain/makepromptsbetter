@@ -58,7 +58,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
 
           <Button 
             onClick={handleLogin}
-            className="w-full bg-brand-primary hover:bg-brand-secondary text-white py-3"
+            className="w-full bg-brand-primary hover:bg-brand-secondary text-white py-3 min-h-[44px] text-base sm:text-sm"
           >
             Start Free Trial
           </Button>
