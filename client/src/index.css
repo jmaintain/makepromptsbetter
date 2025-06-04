@@ -289,6 +289,14 @@
       margin-bottom: 2.5vh !important;
     }
     
+    /* Fix close button positioning on mobile */
+    [data-radix-dialog-close] {
+      position: absolute !important;
+      top: 1rem !important;
+      right: 1rem !important;
+      z-index: 10 !important;
+    }
+    
     .mobile-nav {
       position: sticky;
       top: 0;

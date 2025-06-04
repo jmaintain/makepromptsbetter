@@ -125,7 +125,7 @@ export function TokenBalanceDisplay({
                   <History className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-2xl">
+              <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] overflow-y-auto mx-auto">
                 <DialogHeader>
                   <DialogTitle>Transaction History</DialogTitle>
                   <DialogDescription>
