@@ -8,23 +8,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
 import { TokenBalanceDisplay } from "@/components/token-balance-display";
-import { Zap, Settings, LogOut, User, Menu, History, Coins } from "lucide-react";
+import { Zap, Settings, LogOut, User, Menu, History, Coins, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { getTokenBalance } from "@/lib/api";
 import type { UserStats } from "@/../../shared/schema";
 
 export function Navigation() {
   const [location, setLocation] = useLocation();
   const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [transactionHistoryOpen, setTransactionHistoryOpen] = useState(false);
   
   const { data: userStats } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
+    enabled: !!user,
+  });
+
+  const { data: tokenBalance } = useQuery({
+    queryKey: ['/api/token-balance'],
+    queryFn: getTokenBalance,
     enabled: !!user,
   });
 
@@ -180,6 +195,13 @@ export function Navigation() {
                       <span>Prompt History</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
+                      onClick={() => setTransactionHistoryOpen(true)} 
+                      className="flex items-center cursor-pointer"
+                    >
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      <span>Transaction History</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
                       onClick={() => handleNavigation("/settings")} 
                       className="flex items-center cursor-pointer"
                     >
@@ -215,6 +237,53 @@ export function Navigation() {
           </div>
         </div>
       </div>
+
+      {/* Transaction History Dialog */}
+      <Dialog open={transactionHistoryOpen} onOpenChange={setTransactionHistoryOpen}>
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] overflow-y-auto mx-auto">
+          <DialogHeader>
+            <DialogTitle>Transaction History</DialogTitle>
+            <DialogDescription>
+              Your recent token transactions and usage
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="max-h-[60vh] overflow-y-auto">
+            {tokenBalance?.transactions?.length ? (
+              <div className="space-y-3">
+                {tokenBalance.transactions.map((transaction) => (
+                  <div 
+                    key={transaction.id}
+                    className="p-3 border rounded-lg space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm break-words">{transaction.description}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {new Date(transaction.createdAt).toLocaleDateString()} at{" "}
+                          {new Date(transaction.createdAt).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </div>
+                      </div>
+                      <div className={`font-semibold text-sm flex-shrink-0 ${
+                        transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No transactions yet
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
