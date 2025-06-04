@@ -11,7 +11,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
-import { Zap, Settings, LogOut, User, Menu, History } from "lucide-react";
+import { TokenBalanceDisplay } from "@/components/token-balance-display";
+import { Zap, Settings, LogOut, User, Menu, History, Coins } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";

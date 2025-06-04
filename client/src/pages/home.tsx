@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Logo } from "@/components/logo";
-import { UpgradeModal } from "@/components/upgrade-modal";
+import { TokenPurchaseModal } from "@/components/token-purchase-modal";
+import { TokenBalanceDisplay } from "@/components/token-balance-display";
 import { LoginModal } from "@/components/login-modal";
 import { WordCounter } from "@/components/word-counter";
 import { RatingLight } from "@/components/rating-light";
@@ -24,7 +25,7 @@ export default function Home() {
   const [promptText, setPromptText] = useState("");
   const [contextText, setContextText] = useState("");
   const [isContextOpen, setIsContextOpen] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showTokenPurchaseModal, setShowTokenPurchaseModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
@@ -153,8 +154,13 @@ export default function Home() {
       setLocation("/results");
     },
     onError: (error: any) => {
-      if (error.message?.includes("out_of_credits") || error.status === 429) {
-        setShowUpgradeModal(true);
+      if (error.message?.includes("insufficient_tokens") || error.status === 402) {
+        setShowTokenPurchaseModal(true);
+        toast({
+          title: "Insufficient Tokens",
+          description: "You need more tokens to perform this optimization. Purchase tokens to continue.",
+          variant: "destructive",
+        });
       } else if (error.message?.includes("rate_limit_exceeded")) {
         toast({
           title: "Rate Limit Exceeded",
@@ -164,11 +170,9 @@ export default function Home() {
       } else if (error.message?.includes("word_limit_exceeded")) {
         toast({
           title: "Word Limit Exceeded",
-          description: error.message || "Your prompt exceeds the word limit for your current plan.",
+          description: error.message || "Your prompt exceeds the maximum word limit.",
           variant: "destructive",
         });
-      } else if (error.message?.includes("monthly_limit_exceeded")) {
-        setShowUpgradeModal(true);
       } else {
         toast({
           title: "Error",
@@ -224,7 +228,7 @@ export default function Home() {
     }
 
     if (creditsData?.creditsRemaining === 0) {
-      setShowUpgradeModal(true);
+      setShowTokenPurchaseModal(true);
       return;
     }
     
@@ -490,11 +494,10 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        open={showUpgradeModal}
-        onOpenChange={setShowUpgradeModal}
-        creditsResetTime={creditsData?.resetsAt}
+      {/* Token Purchase Modal */}
+      <TokenPurchaseModal
+        open={showTokenPurchaseModal}
+        onOpenChange={setShowTokenPurchaseModal}
       />
 
       {/* Login Modal */}
