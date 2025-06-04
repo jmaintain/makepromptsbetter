@@ -87,7 +87,7 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
             className="text-brand-primary hover:text-brand-secondary text-sm"
             onClick={() => onOpenChange(false)}
           >
-            Maybe later – new credits in {timeUntilReset}
+            Maybe later – credits reset {timeUntilReset}
           </Button>
         </div>
 
