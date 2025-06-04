@@ -482,7 +482,7 @@ export default function Home() {
             <div className="text-center">
               <Badge className="inline-flex items-center bg-green-50 text-green-700 px-4 py-2 border border-green-200 hover:bg-green-50">
                 <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                {creditsData?.creditsRemaining ?? 0} optimizations remaining this month
+                {creditsData?.creditsRemaining ?? 0} optimizations remaining{creditsData?.resetsAt ? ' this month' : ''}
               </Badge>
             </div>
           )}

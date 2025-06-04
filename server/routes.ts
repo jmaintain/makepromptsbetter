@@ -54,9 +54,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "User not found" });
       }
 
+      let creditsRemaining: number;
+      let resetsAt: string | null = null;
+
+      if (user.hasEverPurchased) {
+        // User has purchased tokens - show their purchased token balance (no expiry)
+        creditsRemaining = user.tokenBalance;
+      } else {
+        // User hasn't purchased yet - show monthly free credits
+        const stats = await storage.getUserStats(userId);
+        creditsRemaining = Math.max(0, stats.monthlyLimit - stats.monthlyUsage);
+        
+        // Calculate next month reset date
+        const nextMonth = new Date();
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        nextMonth.setDate(1);
+        nextMonth.setHours(0, 0, 0, 0);
+        resetsAt = nextMonth.toISOString();
+      }
+
       const response = creditsStatusSchema.parse({
-        creditsRemaining: user.tokenBalance,
-        resetsAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // Tokens don't expire
+        creditsRemaining,
+        resetsAt,
       });
 
       res.json(response);
@@ -79,14 +98,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Check if user has enough tokens (1 token per optimization)
-      const tokensRequired = 1;
-      if (user.tokenBalance < tokensRequired) {
+      // Check if user can perform optimization based on their status
+      let canOptimize = false;
+      let errorMessage = "";
+
+      if (user.hasEverPurchased) {
+        // User has purchased - check their token balance
+        canOptimize = user.tokenBalance >= 1;
+        if (!canOptimize) {
+          errorMessage = "You need more tokens to perform this optimization. Please purchase tokens to continue.";
+        }
+      } else {
+        // User hasn't purchased - check monthly free credits
+        const stats = await storage.getUserStats(userId);
+        const remainingFreeCredits = Math.max(0, stats.monthlyLimit - stats.monthlyUsage);
+        canOptimize = remainingFreeCredits >= 1;
+        if (!canOptimize) {
+          errorMessage = "You've used all your free monthly optimizations. Purchase tokens to continue optimizing prompts.";
+        }
+      }
+
+      if (!canOptimize) {
         return res.status(402).json({ 
-          message: "insufficient_tokens",
-          error: "You need more tokens to perform this optimization. Please purchase tokens to continue.",
-          tokensRequired,
-          currentBalance: user.tokenBalance
+          message: "insufficient_credits",
+          error: errorMessage,
+          hasEverPurchased: user.hasEverPurchased
         });
       }
 
@@ -207,13 +243,19 @@ The context should be so thoroughly integrated that the optimized prompt feels c
       const optimizedPrompt = result.optimizedPrompt || "Failed to optimize prompt";
       const improvement = Math.max(65, Math.min(85, result.improvement || Math.floor(Math.random() * 21) + 65));
 
-      // Deduct token from user balance
-      await storage.deductTokens(
-        userId,
-        tokensRequired,
-        `Prompt optimization: "${originalPrompt.substring(0, 50)}${originalPrompt.length > 50 ? '...' : ''}"`,
-        `optimization_${Date.now()}`
-      );
+      // Deduct from appropriate source based on user's purchase status
+      if (user.hasEverPurchased) {
+        // User has purchased - deduct from token balance
+        await storage.deductTokens(
+          userId,
+          1,
+          `Prompt optimization: "${originalPrompt.substring(0, 50)}${originalPrompt.length > 50 ? '...' : ''}"`,
+          `optimization_${Date.now()}`
+        );
+      } else {
+        // User hasn't purchased - just increment monthly usage (handled by logUsage)
+        // No token deduction needed since they're using free monthly credits
+      }
 
       // Log usage for analytics
       await storage.logUsage({
