@@ -123,14 +123,14 @@ export function Navigation() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72">
-                  <div className="py-6">
-                    <nav className="space-y-4">
+                <SheetContent side="right" className="w-72 h-full flex flex-col">
+                  <div className="flex-1 overflow-y-auto py-6">
+                    <nav className="space-y-4 mb-6">
                       {navItems.map((item) => (
                         <button
                           key={item.path}
                           onClick={() => handleNavigation(item.path)}
-                          className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors min-h-[44px] ${
                             location === item.path
                               ? "bg-blue-50 text-blue-600"
                               : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
@@ -142,7 +142,7 @@ export function Navigation() {
                     </nav>
                     
                     {user && (
-                      <div className="mt-6">
+                      <div className="mt-auto">
                         <TokenBalanceDisplay variant="full" showPurchaseButton={true} />
                       </div>
                     )}

@@ -88,22 +88,22 @@ export function TokenBalanceDisplay({
   return (
     <>
       <Card className={className}>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Coins className="h-6 w-6 text-blue-600" />
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-blue-100 rounded-lg">
+                <Coins className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Token Balance</h3>
-                <p className="text-sm text-gray-600">Available optimizations</p>
+                <h3 className="font-semibold text-base">Token Balance</h3>
+                <p className="text-xs text-gray-600">Available optimizations</p>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-xl font-bold text-blue-600">
                 {tokenBalance?.balance || 0}
               </div>
-              <div className="text-sm text-gray-500">tokens</div>
+              <div className="text-xs text-gray-500">tokens</div>
             </div>
           </div>
 
@@ -111,7 +111,8 @@ export function TokenBalanceDisplay({
             {showPurchaseButton && (
               <Button
                 onClick={() => setPurchaseModalOpen(true)}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 min-h-[44px]"
+                size="sm"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Purchase Tokens
@@ -120,7 +121,7 @@ export function TokenBalanceDisplay({
             
             <Dialog open={historyModalOpen} onOpenChange={setHistoryModalOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="sm" className="min-h-[44px] min-w-[44px]">
                   <History className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
