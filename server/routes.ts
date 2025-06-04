@@ -1,14 +1,17 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema, userStatsSchema } from "@shared/schema";
+import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatusSchema, ratePromptRequestSchema, ratePromptResponseSchema, createPersonaRequestSchema, createPersonaResponseSchema, enhancePersonaRequestSchema, enhancePersonaResponseSchema, savePersonaResponseSchema, testPersonaRequestSchema, testPersonaResponseSchema, userStatsSchema, tokenBalanceSchema, createCheckoutSessionRequestSchema, createCheckoutSessionResponseSchema, tokenPackagesResponseSchema } from "@shared/schema";
 import OpenAI from "openai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import Stripe from "stripe";
 
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder",
 });
+
+const stripe = new Stripe(process.env.MPB_STRIPE_SECRET_KEY!);
 
 
 
@@ -573,7 +576,190 @@ Use the same markdown structure as the original persona. Highlight improvements 
     }
   });
 
-  // No data storage means no privacy concerns - prompts are never saved to database
+  // Token system routes
+  app.get('/api/token-packages', async (req, res) => {
+    try {
+      const packages = await storage.getTokenPackages();
+      const response = tokenPackagesResponseSchema.parse(
+        packages.map(pkg => ({
+          id: pkg.id,
+          name: pkg.name,
+          displayName: pkg.displayName,
+          tokens: pkg.tokens,
+          priceUsd: pkg.priceUsd,
+          perTokenRate: pkg.perTokenRate,
+          description: pkg.description,
+          isPopular: pkg.isPopular || false,
+        }))
+      );
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching token packages:", error);
+      res.status(500).json({ error: "Failed to fetch token packages" });
+    }
+  });
+
+  app.get('/api/token-balance', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const balance = await storage.getUserTokenBalance(userId);
+      const response = tokenBalanceSchema.parse(balance);
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching token balance:", error);
+      res.status(500).json({ error: "Failed to fetch token balance" });
+    }
+  });
+
+  app.post('/api/create-checkout-session', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { packageId, successUrl, cancelUrl } = createCheckoutSessionRequestSchema.parse(req.body);
+      
+      const packageData = await storage.getTokenPackage(packageId);
+      if (!packageData) {
+        return res.status(404).json({ error: "Package not found" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Create or get Stripe customer
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email || undefined,
+          metadata: { userId },
+        });
+        customerId = customer.id;
+        
+        // Update user with customer ID
+        await storage.upsertUser({
+          id: userId,
+          stripeCustomerId: customerId,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImageUrl: user.profileImageUrl,
+        });
+      }
+
+      // Create Stripe checkout session
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: packageData.displayName,
+                description: `${packageData.tokens} optimization tokens - ${packageData.description}`,
+                images: [],
+              },
+              unit_amount: Math.round(parseFloat(packageData.priceUsd) * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        metadata: {
+          userId,
+          packageId: packageId.toString(),
+          tokens: packageData.tokens.toString(),
+        },
+      });
+
+      // Create payment record
+      await storage.createPayment({
+        userId,
+        stripePaymentIntentId: session.payment_intent as string,
+        stripeSessionId: session.id,
+        packageId,
+        amountUsd: packageData.priceUsd,
+        tokensGranted: packageData.tokens,
+        status: 'pending',
+        metadata: { sessionId: session.id },
+      });
+
+      const response = createCheckoutSessionResponseSchema.parse({
+        sessionId: session.id,
+        url: session.url!,
+      });
+
+      res.json(response);
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ error: "Failed to create checkout session" });
+    }
+  });
+
+  // Stripe webhook endpoint for payment completion
+  app.post('/api/stripe-webhook', async (req, res) => {
+    const sig = req.headers['stripe-signature'] as string;
+    let event: Stripe.Event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
+    } catch (err: any) {
+      console.error('Webhook signature verification failed:', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    try {
+      switch (event.type) {
+        case 'checkout.session.completed':
+          const session = event.data.object as Stripe.Checkout.Session;
+          
+          if (session.payment_status === 'paid') {
+            const { userId, packageId, tokens } = session.metadata!;
+            
+            // Update payment status
+            await storage.updatePaymentStatus(
+              session.payment_intent as string,
+              'completed',
+              { completedAt: new Date().toISOString() }
+            );
+
+            // Add tokens to user account
+            await storage.addTokens(
+              userId,
+              parseInt(tokens),
+              `Token purchase: ${packageId}`,
+              session.payment_intent as string,
+              { sessionId: session.id, packageId }
+            );
+
+            console.log(`Successfully processed payment for user ${userId}: ${tokens} tokens`);
+          }
+          break;
+
+        case 'payment_intent.payment_failed':
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
+          
+          await storage.updatePaymentStatus(
+            paymentIntent.id,
+            'failed',
+            { failureReason: paymentIntent.last_payment_error?.message }
+          );
+          
+          console.log(`Payment failed for payment intent ${paymentIntent.id}`);
+          break;
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+
+      res.json({ received: true });
+    } catch (error) {
+      console.error('Error processing webhook:', error);
+      res.status(500).json({ error: 'Webhook processing failed' });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
