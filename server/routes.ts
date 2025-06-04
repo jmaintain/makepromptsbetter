@@ -757,7 +757,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
             );
 
             // Add tokens to user account with optimization count metadata
-            await storage.addTokens(
+            const tokenTransaction = await storage.addTokens(
               userId,
               parseInt(tokens),
               `Token purchase: ${packageData.displayName} (${packageData.tokens} optimizations)`,
@@ -772,6 +772,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
             );
 
             console.log(`Successfully processed payment for user ${userId}: ${tokens} tokens (${packageData.tokens} optimizations)`);
+            console.log(`Token transaction created:`, JSON.stringify(tokenTransaction, null, 2));
           }
           break;
 
