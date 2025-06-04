@@ -43,67 +43,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get user credits status - only for authenticated users
+  // Get user token balance - only for authenticated users
   app.get("/api/credits", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const userStats = await storage.getUserStats(userId);
+      const user = await storage.getUser(userId);
       
-      const creditsRemaining = Math.max(0, userStats.monthlyLimit - userStats.monthlyUsage);
-      
-      // Calculate next month reset time
-      const nextMonth = new Date();
-      nextMonth.setUTCMonth(nextMonth.getUTCMonth() + 1);
-      nextMonth.setUTCDate(1);
-      nextMonth.setUTCHours(0, 0, 0, 0);
-      const resetsAt = nextMonth.toISOString();
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
 
       const response = creditsStatusSchema.parse({
-        creditsRemaining,
-        resetsAt,
+        creditsRemaining: user.tokenBalance,
+        resetsAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // Tokens don't expire
       });
 
       res.json(response);
     } catch (error) {
-      console.error("Error getting credits:", error);
-      res.status(500).json({ error: "Failed to get credits status" });
+      console.error("Error getting token balance:", error);
+      res.status(500).json({ error: "Failed to get token balance" });
     }
   });
 
-  // Optimize prompt endpoint - requires authentication
+  // Optimize prompt endpoint - requires authentication and tokens
   app.post("/api/optimize", isAuthenticated, async (req: any, res) => {
     try {
       const { originalPrompt, contextText } = optimizePromptRequestSchema.parse(req.body);
 
       // Only authenticated users can use optimization
       const userId = req.user.claims.sub;
-      const userStats = await storage.getUserStats(userId);
+      const user = await storage.getUser(userId);
       
-      // Set word limit based on tier
-      let wordLimit = 200; // Default for free tier
-      switch (userStats.tier) {
-        case 'pro': wordLimit = 500; break;
-        case 'starter': wordLimit = 300; break;
-        default: wordLimit = 200; break;
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
       }
 
-      // Check if user has exceeded monthly usage limit
-      const hasUsageLeft = await storage.checkUsageLimit(userId);
-      if (!hasUsageLeft) {
-        return res.status(429).json({ 
-          message: "monthly_limit_exceeded",
-          error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
+      // Check if user has enough tokens (1 token per optimization)
+      const tokensRequired = 1;
+      if (user.tokenBalance < tokensRequired) {
+        return res.status(402).json({ 
+          message: "insufficient_tokens",
+          error: "You need more tokens to perform this optimization. Please purchase tokens to continue.",
+          tokensRequired,
+          currentBalance: user.tokenBalance
         });
       }
 
-      // Count words in the prompt
+      // Basic word limit for all users (can be generous since they're paying per use)
+      const wordLimit = 2000;
       const wordCount = originalPrompt.trim() ? originalPrompt.trim().split(/\s+/).length : 0;
       
-      // Enforce word limit
       if (wordCount > wordLimit) {
         return res.status(400).json({ 
           message: "word_limit_exceeded",
-          error: `Your prompt has ${wordCount} words, but your tier allows only ${wordLimit} words. Please shorten your prompt or upgrade your plan.`,
+          error: `Your prompt has ${wordCount} words, but the maximum allowed is ${wordLimit} words. Please shorten your prompt.`,
           wordCount,
           wordLimit
         });
@@ -213,13 +206,21 @@ The context should be so thoroughly integrated that the optimized prompt feels c
       const optimizedPrompt = result.optimizedPrompt || "Failed to optimize prompt";
       const improvement = Math.max(65, Math.min(85, result.improvement || Math.floor(Math.random() * 21) + 65));
 
-      // Log usage for authenticated users to track monthly limits (metadata only)
+      // Deduct token from user balance
+      await storage.deductTokens(
+        userId,
+        tokensRequired,
+        `Prompt optimization: "${originalPrompt.substring(0, 50)}${originalPrompt.length > 50 ? '...' : ''}"`,
+        `optimization_${Date.now()}`
+      );
+
+      // Log usage for analytics
       await storage.logUsage({
         userId,
         requestType: 'prompt_optimization',
-        inputTokens: wordCount, // approximate token count
-        outputTokens: optimizedPrompt.split(' ').length, // approximate token count
-        cost: '0.0001' // estimated cost
+        inputTokens: wordCount,
+        outputTokens: optimizedPrompt.split(' ').length,
+        cost: '0.0001'
       });
 
       const optimizeResponse = optimizePromptResponseSchema.parse({
