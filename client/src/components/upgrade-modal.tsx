@@ -20,7 +20,7 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
             You're out of free optimizations!
           </DialogTitle>
           <p className="text-center text-gray-600 font-body text-sm sm:text-base">
-            Your prompts were improved by an average of <strong className="text-brand-primary">71%</strong>
+            Control your Cost buy more tokens <strong className="text-brand-primary">71%</strong>
           </p>
         </DialogHeader>
 
