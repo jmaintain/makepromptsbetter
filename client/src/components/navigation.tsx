@@ -141,16 +141,9 @@ export function Navigation() {
                       ))}
                     </nav>
                     
-                    {user && userStats && (
-                      <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-                        <div className="flex flex-col gap-2">
-                          <Badge variant="outline" className="self-start">
-                            {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
-                          </Badge>
-                          <Badge className={`${getTierBadgeColor(userStats.tier)} self-start`}>
-                            {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)}
-                          </Badge>
-                        </div>
+                    {user && (
+                      <div className="mt-6">
+                        <TokenBalanceDisplay variant="full" showPurchaseButton={true} />
                       </div>
                     )}
                   </div>
@@ -160,17 +153,7 @@ export function Navigation() {
 
             {user ? (
               <>
-                {/* Usage Badge - Desktop */}
-                {userStats && (
-                  <div className="hidden lg:flex items-center gap-2">
-                    <Badge variant="outline">
-                      {userStats.monthlyUsage}/{userStats.monthlyLimit} prompts
-                    </Badge>
-                    <Badge className={getTierBadgeColor(userStats.tier)}>
-                      {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)}
-                    </Badge>
-                  </div>
-                )}
+
 
                 {/* User Dropdown */}
                 <DropdownMenu>

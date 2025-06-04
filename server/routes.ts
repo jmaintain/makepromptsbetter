@@ -713,6 +713,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
     let event: Stripe.Event;
 
     try {
+      // req.body is now a Buffer thanks to express.raw() middleware
       event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
