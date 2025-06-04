@@ -173,10 +173,62 @@ export const users = pgTable("users", {
   usageResetDate: date("usage_reset_date").notNull().defaultNow(),
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
+  tokenBalance: integer("token_balance").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Token packages for purchase
+export const tokenPackages = pgTable("token_packages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  displayName: varchar("display_name", { length: 100 }).notNull(),
+  tokens: integer("tokens").notNull(),
+  priceUsd: decimal("price_usd", { precision: 10, scale: 2 }).notNull(),
+  perTokenRate: decimal("per_token_rate", { precision: 10, scale: 4 }).notNull(),
+  description: text("description"),
+  isPopular: boolean("is_popular").default(false),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User token balances and transaction history
+export const tokenTransactions = pgTable("token_transactions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 50 }).notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // 'purchase', 'deduction', 'refund', 'bonus'
+  amount: integer("amount").notNull(), // positive for credits, negative for debits
+  description: text("description").notNull(),
+  referenceId: varchar("reference_id", { length: 100 }), // Stripe payment ID, optimization ID, etc.
+  balanceAfter: integer("balance_after").notNull(),
+  metadata: jsonb("metadata"), // Additional context like package info, optimization details
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("token_transactions_user_id_idx").on(table.userId),
+  typeIdx: index("token_transactions_type_idx").on(table.type),
+  createdAtIdx: index("token_transactions_created_at_idx").on(table.createdAt),
+}));
+
+// Payment records for audit and reconciliation
+export const payments = pgTable("payments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 50 }).notNull(),
+  stripePaymentIntentId: varchar("stripe_payment_intent_id", { length: 100 }).notNull().unique(),
+  stripeSessionId: varchar("stripe_session_id", { length: 200 }),
+  packageId: integer("package_id").notNull(),
+  amountUsd: decimal("amount_usd", { precision: 10, scale: 2 }).notNull(),
+  tokensGranted: integer("tokens_granted").notNull(),
+  status: varchar("status", { length: 20 }).notNull(), // 'pending', 'completed', 'failed', 'refunded'
+  metadata: jsonb("metadata"), // Stripe webhook data, etc.
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+}, (table) => ({
+  userIdIdx: index("payments_user_id_idx").on(table.userId),
+  statusIdx: index("payments_status_idx").on(table.status),
+  stripePaymentIntentIdx: index("payments_stripe_payment_intent_idx").on(table.stripePaymentIntentId),
+}));
 
 // Usage tracking table
 export const usageLogs = pgTable("usage_logs", {
@@ -229,3 +281,67 @@ export const userStatsSchema = z.object({
 });
 
 export type UserStats = z.infer<typeof userStatsSchema>;
+
+// Token system types
+export const insertTokenPackageSchema = createInsertSchema(tokenPackages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertTokenTransactionSchema = createInsertSchema(tokenTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPaymentSchema = createInsertSchema(payments).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export type TokenPackage = typeof tokenPackages.$inferSelect;
+export type InsertTokenPackage = z.infer<typeof insertTokenPackageSchema>;
+export type TokenTransaction = typeof tokenTransactions.$inferSelect;
+export type InsertTokenTransaction = z.infer<typeof insertTokenTransactionSchema>;
+export type Payment = typeof payments.$inferSelect;
+export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+
+// API schemas for token system
+export const tokenBalanceSchema = z.object({
+  balance: z.number(),
+  transactions: z.array(z.object({
+    id: z.number(),
+    type: z.string(),
+    amount: z.number(),
+    description: z.string(),
+    createdAt: z.string(),
+    metadata: z.any().optional(),
+  })),
+});
+
+export const createCheckoutSessionRequestSchema = z.object({
+  packageId: z.number(),
+  successUrl: z.string().url(),
+  cancelUrl: z.string().url(),
+});
+
+export const createCheckoutSessionResponseSchema = z.object({
+  sessionId: z.string(),
+  url: z.string(),
+});
+
+export const tokenPackagesResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+  displayName: z.string(),
+  tokens: z.number(),
+  priceUsd: z.string(),
+  perTokenRate: z.string(),
+  description: z.string().nullable(),
+  isPopular: z.boolean(),
+}));
+
+export type TokenBalance = z.infer<typeof tokenBalanceSchema>;
+export type CreateCheckoutSessionRequest = z.infer<typeof createCheckoutSessionRequestSchema>;
+export type CreateCheckoutSessionResponse = z.infer<typeof createCheckoutSessionResponseSchema>;
+export type TokenPackagesResponse = z.infer<typeof tokenPackagesResponseSchema>;

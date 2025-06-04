@@ -8,11 +8,21 @@ import {
   users, 
   usageLogs, 
   subscriptionTiers,
+  tokenPackages,
+  tokenTransactions,
+  payments,
   type User, 
   type UpsertUser, 
   type InsertUsageLog,
   type SubscriptionTier,
-  type UserStats
+  type UserStats,
+  type TokenPackage,
+  type InsertTokenPackage,
+  type TokenTransaction,
+  type InsertTokenTransaction,
+  type Payment,
+  type InsertPayment,
+  type TokenBalance
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, sql } from "drizzle-orm";
@@ -28,7 +38,7 @@ export interface IStorage {
   getUserSavedPersonas(userFingerprint: string): Promise<Persona[]>;
   savePersona(id: number, userFingerprint: string): Promise<Persona>;
   
-  // New user and billing methods
+  // User and billing methods
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   getUserStats(userId: string): Promise<UserStats>;
@@ -36,6 +46,18 @@ export interface IStorage {
   checkUsageLimit(userId: string): Promise<boolean>;
   resetMonthlyUsage(userId: string): Promise<void>;
   getSubscriptionTier(tierName: string): Promise<SubscriptionTier | null>;
+  
+  // Token system methods
+  getTokenPackages(): Promise<TokenPackage[]>;
+  getTokenPackage(id: number): Promise<TokenPackage | null>;
+  createTokenPackage(packageData: InsertTokenPackage): Promise<TokenPackage>;
+  getUserTokenBalance(userId: string): Promise<TokenBalance>;
+  deductTokens(userId: string, amount: number, description: string, referenceId?: string): Promise<TokenTransaction>;
+  addTokens(userId: string, amount: number, description: string, referenceId?: string, metadata?: any): Promise<TokenTransaction>;
+  createPayment(payment: InsertPayment): Promise<Payment>;
+  updatePaymentStatus(paymentIntentId: string, status: string, metadata?: any): Promise<Payment>;
+  getPayment(paymentIntentId: string): Promise<Payment | null>;
+  getUserTransactionHistory(userId: string, limit?: number): Promise<TokenTransaction[]>;
   
   // Privacy and data retention methods
   deleteOldData(): Promise<{ deletedOptimizations: number; deletedPersonas: number; deletedUsageLogs: number }>;
@@ -282,6 +304,169 @@ export class DatabaseStorage implements IStorage {
       .update(usageLogs)
       .set({ userFingerprint: anonymizedFingerprint })
       .where(eq(usageLogs.userId, userId));
+  }
+
+  // Token system implementations
+  async getTokenPackages(): Promise<TokenPackage[]> {
+    return await db
+      .select()
+      .from(tokenPackages)
+      .where(eq(tokenPackages.isActive, true))
+      .orderBy(tokenPackages.sortOrder);
+  }
+
+  async getTokenPackage(id: number): Promise<TokenPackage | null> {
+    const [pkg] = await db
+      .select()
+      .from(tokenPackages)
+      .where(and(eq(tokenPackages.id, id), eq(tokenPackages.isActive, true)));
+    return pkg || null;
+  }
+
+  async createTokenPackage(packageData: InsertTokenPackage): Promise<TokenPackage> {
+    const [pkg] = await db
+      .insert(tokenPackages)
+      .values(packageData)
+      .returning();
+    return pkg;
+  }
+
+  async getUserTokenBalance(userId: string): Promise<TokenBalance> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+
+    const recentTransactions = await db
+      .select()
+      .from(tokenTransactions)
+      .where(eq(tokenTransactions.userId, userId))
+      .orderBy(sql`${tokenTransactions.createdAt} DESC`)
+      .limit(20);
+
+    return {
+      balance: user.tokenBalance,
+      transactions: recentTransactions.map(t => ({
+        id: t.id,
+        type: t.type,
+        amount: t.amount,
+        description: t.description,
+        createdAt: t.createdAt.toISOString(),
+        metadata: t.metadata,
+      })),
+    };
+  }
+
+  async deductTokens(userId: string, amount: number, description: string, referenceId?: string): Promise<TokenTransaction> {
+    return await db.transaction(async (tx) => {
+      // Get current balance with row lock
+      const [user] = await tx
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .for("update");
+
+      if (!user) throw new Error("User not found");
+      if (user.tokenBalance < amount) throw new Error("Insufficient token balance");
+
+      const newBalance = user.tokenBalance - amount;
+
+      // Update user balance
+      await tx
+        .update(users)
+        .set({ tokenBalance: newBalance })
+        .where(eq(users.id, userId));
+
+      // Record transaction
+      const [transaction] = await tx
+        .insert(tokenTransactions)
+        .values({
+          userId,
+          type: "deduction",
+          amount: -amount,
+          description,
+          referenceId,
+          balanceAfter: newBalance,
+        })
+        .returning();
+
+      return transaction;
+    });
+  }
+
+  async addTokens(userId: string, amount: number, description: string, referenceId?: string, metadata?: any): Promise<TokenTransaction> {
+    return await db.transaction(async (tx) => {
+      // Get current balance with row lock
+      const [user] = await tx
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .for("update");
+
+      if (!user) throw new Error("User not found");
+
+      const newBalance = user.tokenBalance + amount;
+
+      // Update user balance
+      await tx
+        .update(users)
+        .set({ tokenBalance: newBalance })
+        .where(eq(users.id, userId));
+
+      // Record transaction
+      const [transaction] = await tx
+        .insert(tokenTransactions)
+        .values({
+          userId,
+          type: "purchase",
+          amount,
+          description,
+          referenceId,
+          balanceAfter: newBalance,
+          metadata,
+        })
+        .returning();
+
+      return transaction;
+    });
+  }
+
+  async createPayment(payment: InsertPayment): Promise<Payment> {
+    const [newPayment] = await db
+      .insert(payments)
+      .values(payment)
+      .returning();
+    return newPayment;
+  }
+
+  async updatePaymentStatus(paymentIntentId: string, status: string, metadata?: any): Promise<Payment> {
+    const [payment] = await db
+      .update(payments)
+      .set({
+        status,
+        metadata,
+        completedAt: status === "completed" ? new Date() : null,
+      })
+      .where(eq(payments.stripePaymentIntentId, paymentIntentId))
+      .returning();
+
+    if (!payment) throw new Error("Payment not found");
+    return payment;
+  }
+
+  async getPayment(paymentIntentId: string): Promise<Payment | null> {
+    const [payment] = await db
+      .select()
+      .from(payments)
+      .where(eq(payments.stripePaymentIntentId, paymentIntentId));
+    return payment || null;
+  }
+
+  async getUserTransactionHistory(userId: string, limit: number = 50): Promise<TokenTransaction[]> {
+    return await db
+      .select()
+      .from(tokenTransactions)
+      .where(eq(tokenTransactions.userId, userId))
+      .orderBy(sql`${tokenTransactions.createdAt} DESC`)
+      .limit(limit);
   }
 }
 
