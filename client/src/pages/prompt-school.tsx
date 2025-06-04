@@ -366,7 +366,7 @@ Avoid: Tourist traps, expensive hotels, generic advice`}
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 mb-6">
-                When you need precision, XML formatting gives you superpowers:
+                When you need precision, XML formatting gives you superpowers: Ask any AI to rewrite your prompt in XML format.
               </p>
               
               <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -599,7 +599,7 @@ Include: [specific elements like b-roll notes]`}
               <div className="mt-6 text-center">
                 <Link href="/">
                   <Button className="bg-brand-primary text-white hover:bg-brand-secondary inline-flex items-center gap-2">
-                    Ready to enhance your prompts automatically? Try Make Prompts Better
+                    Just make my prompts better
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>

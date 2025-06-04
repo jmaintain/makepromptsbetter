@@ -100,7 +100,7 @@ export function TokenPurchaseModal({ open, onOpenChange }: TokenPurchaseModalPro
             Purchase Optimization Tokens
           </DialogTitle>
           <DialogDescription className="text-sm sm:text-base">
-            Get tokens to optimize your prompts. Each optimization uses 1 token.
+           Each optimization uses 1 token.
             {tokenBalance && (
               <span className="block mt-2 font-medium text-blue-600">
                 Current balance: {tokenBalance.balance} tokens
@@ -195,7 +195,6 @@ export function TokenPurchaseModal({ open, onOpenChange }: TokenPurchaseModalPro
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-gray-500">
             <span>• SSL Encrypted</span>
             <span>• PCI Compliant</span>
-            <span>• Money-back Guarantee</span>
           </div>
         </div>
       </DialogContent>

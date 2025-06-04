@@ -80,7 +80,7 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-gray-600 mb-4">
             <Lock className="w-4 h-4" />
-            Secure payment by Stripe • 7-day money-back guarantee
+            Secure payment by Stripe
           </div>
           <Button
             variant="link"

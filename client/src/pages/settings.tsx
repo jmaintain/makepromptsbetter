@@ -58,10 +58,6 @@ export default function Settings() {
               <label className="text-sm font-medium text-gray-700 font-body">Email Address</label>
               <p className="text-gray-900 font-body">{user.email || 'Not available'}</p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700 font-body">User ID</label>
-              <p className="text-gray-900 font-code text-sm">{user.id || 'Not available'}</p>
-            </div>
           </CardContent>
         </Card>
 
