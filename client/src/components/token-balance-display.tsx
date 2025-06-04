@@ -133,25 +133,30 @@ export function TokenBalanceDisplay({
                   </DialogDescription>
                 </DialogHeader>
                 
-                <div className="max-h-96 overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto">
                   {tokenBalance?.transactions?.length ? (
                     <div className="space-y-3">
                       {tokenBalance.transactions.map((transaction) => (
                         <div 
                           key={transaction.id}
-                          className="flex items-center justify-between p-3 border rounded-lg"
+                          className="p-3 border rounded-lg space-y-2"
                         >
-                          <div className="flex-1">
-                            <div className="font-medium">{transaction.description}</div>
-                            <div className="text-sm text-gray-500">
-                              {new Date(transaction.createdAt).toLocaleDateString()} at{" "}
-                              {new Date(transaction.createdAt).toLocaleTimeString()}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-sm break-words">{transaction.description}</div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {new Date(transaction.createdAt).toLocaleDateString()} at{" "}
+                                {new Date(transaction.createdAt).toLocaleTimeString([], { 
+                                  hour: '2-digit', 
+                                  minute: '2-digit' 
+                                })}
+                              </div>
                             </div>
-                          </div>
-                          <div className={`font-semibold ${
-                            transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                          }`}>
-                            {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                            <div className={`font-semibold text-sm flex-shrink-0 ${
+                              transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                            </div>
                           </div>
                         </div>
                       ))}
