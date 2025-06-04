@@ -647,21 +647,20 @@ Use the same markdown structure as the original persona. Highlight improvements 
         });
       }
 
-      // Create Stripe checkout session
+      // Get Stripe Price ID from package metadata
+      const metadata = packageData.metadata as any;
+      const stripePriceId = metadata?.stripe_price_id;
+      if (!stripePriceId) {
+        return res.status(500).json({ error: "Package configuration error: missing Stripe Price ID" });
+      }
+
+      // Create Stripe checkout session using predefined Price ID
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ['card'],
         line_items: [
           {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: packageData.displayName,
-                description: `${packageData.tokens} optimization tokens - ${packageData.description}`,
-                images: [],
-              },
-              unit_amount: Math.round(parseFloat(packageData.priceUsd) * 100),
-            },
+            price: stripePriceId,
             quantity: 1,
           },
         ],
@@ -672,13 +671,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
           userId,
           packageId: packageId.toString(),
           tokens: packageData.tokens.toString(),
-        },
-        payment_intent_data: {
-          metadata: {
-            userId,
-            packageId: packageId.toString(),
-            tokens: packageData.tokens.toString(),
-          },
+          package_name: packageData.name,
         },
       });
 
@@ -713,8 +706,14 @@ Use the same markdown structure as the original persona. Highlight improvements 
     let event: Stripe.Event;
 
     try {
-      // req.body is now a Buffer thanks to express.raw() middleware
+      // req.body should be a Buffer from express.raw() middleware
+      if (!Buffer.isBuffer(req.body)) {
+        console.error('Webhook body is not a Buffer:', typeof req.body);
+        return res.status(400).send('Webhook Error: Invalid body format');
+      }
+      
       event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
+      console.log('Webhook signature verified successfully');
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);

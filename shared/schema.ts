@@ -191,6 +191,7 @@ export const tokenPackages = pgTable("token_packages", {
   isPopular: boolean("is_popular").default(false),
   isActive: boolean("is_active").default(true),
   sortOrder: integer("sort_order").default(0),
+  metadata: jsonb("metadata"), // Store Stripe Price IDs and other metadata
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
