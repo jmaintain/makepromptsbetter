@@ -282,9 +282,11 @@
   @media (max-width: 767px) {
     [data-radix-dialog-content] {
       width: 95vw !important;
-      max-height: 90vh !important;
-      top: 5vh !important;
+      max-height: 85vh !important;
+      top: 2.5vh !important;
       transform: translateX(-50%) !important;
+      overflow-y: auto !important;
+      margin-bottom: 2.5vh !important;
     }
     
     .mobile-nav {

@@ -23,9 +23,9 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="text-center">
-            <div className="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-3">
+            <div className="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
               <Sparkles className="w-4 h-4 mr-1" />
               Free Trial Available
             </div>
@@ -35,26 +35,26 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
           </div>
 
           <Card className="border-green-200 bg-green-50">
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-green-900 mb-3 text-center">What you'll get:</h3>
-              <div className="space-y-2 text-sm">
+            <CardContent className="p-3">
+              <h3 className="font-semibold text-green-900 mb-2 text-center text-sm">What you'll get:</h3>
+              <div className="space-y-1.5 text-xs sm:text-sm">
                 <div className="flex items-center gap-2 text-green-800">
-                  <Zap className="w-4 h-4 flex-shrink-0" />
+                  <Zap className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                   <span>5 free optimization credits</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-800">
-                  <Users className="w-4 h-4 flex-shrink-0" />
+                  <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                   <span>Access to all optimization and Prompt School</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-800">
-                  <Sparkles className="w-4 h-4 flex-shrink-0" />
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                   <span>See live prompt ratings</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <PrivacyNotice variant="full" className="mb-4" />
+          <PrivacyNotice variant="full" className="mb-2" />
 
           <Button 
             onClick={handleLogin}
