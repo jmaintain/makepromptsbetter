@@ -74,9 +74,10 @@ export default function Home() {
     }
   }, []);
 
-  // Get credits status
+  // Get credits status (only for authenticated users)
   const { data: creditsData } = useQuery<CreditsStatus>({
     queryKey: ["/api/credits"],
+    enabled: !!user,
     retry: false,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,

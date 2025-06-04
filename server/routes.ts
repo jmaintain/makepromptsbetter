@@ -10,19 +10,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder",
 });
 
-function generateUserFingerprint(req: any): string {
-  // Simple fingerprinting based on IP and user agent
-  const ip = req.ip || req.connection.remoteAddress || "unknown";
-  const userAgent = req.get("User-Agent") || "unknown";
-  return Buffer.from(`${ip}:${userAgent}`).toString("base64");
-}
 
-function getCreditsResetTime(): Date {
-  const tomorrow = new Date();
-  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-  tomorrow.setUTCHours(0, 0, 0, 0);
-  return tomorrow;
-}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
@@ -52,19 +40,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get user credits status - using in-memory tracking
-  app.get("/api/credits", async (req, res) => {
+  // Get user credits status - only for authenticated users
+  app.get("/api/credits", isAuthenticated, async (req: any, res) => {
     try {
-      const userFingerprint = generateUserFingerprint(req);
-      const dailyKey = `${userFingerprint}:${new Date().toDateString()}`;
+      const userId = req.user.claims.sub;
+      const userStats = await storage.getUserStats(userId);
       
-      if (!(global as any).dailyOptimizations) {
-        (global as any).dailyOptimizations = {};
-      }
+      const creditsRemaining = Math.max(0, userStats.monthlyLimit - userStats.monthlyUsage);
       
-      const creditsUsed = (global as any).dailyOptimizations[dailyKey] || 0;
-      const creditsRemaining = Math.max(0, 20 - creditsUsed);
-      const resetsAt = getCreditsResetTime().toISOString();
+      // Calculate next month reset time
+      const nextMonth = new Date();
+      nextMonth.setUTCMonth(nextMonth.getUTCMonth() + 1);
+      nextMonth.setUTCDate(1);
+      nextMonth.setUTCHours(0, 0, 0, 0);
+      const resetsAt = nextMonth.toISOString();
 
       const response = creditsStatusSchema.parse({
         creditsRemaining,
@@ -78,38 +67,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Optimize prompt endpoint with word limits and usage tracking
-  app.post("/api/optimize", async (req, res) => {
+  // Optimize prompt endpoint - requires authentication
+  app.post("/api/optimize", isAuthenticated, async (req: any, res) => {
     try {
       const { originalPrompt, contextText } = optimizePromptRequestSchema.parse(req.body);
-      const userFingerprint = generateUserFingerprint(req);
 
-      // Check if user is authenticated for tier-based limits
-      let wordLimit = 200; // Default for unauthenticated users
-      let userId: string | null = null;
+      // Only authenticated users can use optimization
+      const userId = req.user.claims.sub;
+      const userStats = await storage.getUserStats(userId);
       
-      if (req.isAuthenticated && req.isAuthenticated()) {
-        const tempUserId = (req.user as any).claims.sub;
-        if (tempUserId) {
-          userId = tempUserId;
-          const userStats = await storage.getUserStats(userId);
-          
-          // Set word limit based on tier
-          switch (userStats.tier) {
-            case 'pro': wordLimit = 500; break;
-            case 'starter': wordLimit = 300; break;
-            default: wordLimit = 200; break;
-          }
+      // Set word limit based on tier
+      let wordLimit = 200; // Default for free tier
+      switch (userStats.tier) {
+        case 'pro': wordLimit = 500; break;
+        case 'starter': wordLimit = 300; break;
+        default: wordLimit = 200; break;
+      }
 
-          // Check if user has exceeded monthly usage limit
-          const hasUsageLeft = await storage.checkUsageLimit(userId);
-          if (!hasUsageLeft) {
-            return res.status(429).json({ 
-              message: "monthly_limit_exceeded",
-              error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
-            });
-          }
-        }
+      // Check if user has exceeded monthly usage limit
+      const hasUsageLeft = await storage.checkUsageLimit(userId);
+      if (!hasUsageLeft) {
+        return res.status(429).json({ 
+          message: "monthly_limit_exceeded",
+          error: "You have reached your monthly usage limit. Please upgrade or wait until next month." 
+        });
       }
 
       // Count words in the prompt
@@ -125,16 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check credits using in-memory tracking (no database storage)
-      const dailyKey = `${userFingerprint}:${new Date().toDateString()}`;
-      if (!(global as any).dailyOptimizations) {
-        (global as any).dailyOptimizations = {};
-      }
-      const dailyCount = (global as any).dailyOptimizations[dailyKey] || 0;
-      
-      if (dailyCount >= 20) {
-        return res.status(429).json({ error: "out_of_credits" });
-      }
+
 
       // Call OpenAI API to optimize the prompt
       // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -238,19 +210,14 @@ The context should be so thoroughly integrated that the optimized prompt feels c
       const optimizedPrompt = result.optimizedPrompt || "Failed to optimize prompt";
       const improvement = Math.max(65, Math.min(85, result.improvement || Math.floor(Math.random() * 21) + 65));
 
-      // Track daily usage in memory only (no prompt storage)
-      (global as any).dailyOptimizations[dailyKey] = dailyCount + 1;
-
       // Log usage for authenticated users to track monthly limits (metadata only)
-      if (userId) {
-        await storage.logUsage({
-          userId,
-          requestType: 'prompt_optimization',
-          inputTokens: wordCount, // approximate token count
-          outputTokens: optimizedPrompt.split(' ').length, // approximate token count
-          cost: '0.0001' // estimated cost
-        });
-      }
+      await storage.logUsage({
+        userId,
+        requestType: 'prompt_optimization',
+        inputTokens: wordCount, // approximate token count
+        outputTokens: optimizedPrompt.split(' ').length, // approximate token count
+        cost: '0.0001' // estimated cost
+      });
 
       const optimizeResponse = optimizePromptResponseSchema.parse({
         optimizedPrompt,
@@ -258,7 +225,7 @@ The context should be so thoroughly integrated that the optimized prompt feels c
       });
 
       res.json(optimizeResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error optimizing prompt:", error);
       if (error.message?.includes("rate limit") || error.status === 429) {
         return res.status(429).json({ error: "rate_limit_exceeded" });
