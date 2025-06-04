@@ -5,6 +5,9 @@ import { optimizePromptRequestSchema, optimizePromptResponseSchema, creditsStatu
 import OpenAI from "openai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import Stripe from "stripe";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import { payments } from "@shared/schema";
 
 
 const openai = new OpenAI({
@@ -675,11 +678,10 @@ Use the same markdown structure as the original persona. Highlight improvements 
         },
       });
 
-      // Create payment record with proper payment intent ID handling
-      const paymentIntentId = session.payment_intent as string || `pi_pending_${session.id}`;
+      // Create payment record - we'll update with real payment intent ID when webhook fires
       await storage.createPayment({
         userId,
-        stripePaymentIntentId: paymentIntentId,
+        stripePaymentIntentId: `pi_pending_${session.id}`, // Temporary ID, will be updated by webhook
         stripeSessionId: session.id,
         packageId,
         amountUsd: packageData.priceUsd,
@@ -709,24 +711,31 @@ Use the same markdown structure as the original persona. Highlight improvements 
       // req.body is now a Buffer from express.raw() middleware
       if (!Buffer.isBuffer(req.body)) {
         console.error('Webhook body is not a Buffer:', typeof req.body);
+        console.error('Body content:', req.body);
         return res.status(400).send('Webhook Error: Invalid body format');
       }
       
       if (!sig) {
         console.error('No Stripe signature header found');
+        console.error('Available headers:', Object.keys(req.headers));
         return res.status(400).send('Webhook Error: Missing signature');
       }
       
       console.log('Processing webhook with body length:', req.body.length);
       console.log('Stripe signature header:', sig.substring(0, 50) + '...');
+      console.log('Webhook secret exists:', !!process.env.MPB_STRIPE_WEBHOOK_SECRET);
+      console.log('Webhook secret length:', process.env.MPB_STRIPE_WEBHOOK_SECRET?.length);
       
+      // Try to construct the event with detailed error logging
       event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
       console.log('Webhook signature verified successfully for event:', event.type);
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
       console.error('Body length:', req.body?.length, 'Body type:', typeof req.body);
-      console.error('Signature header:', sig?.substring(0, 50) + '...');
+      console.error('Body first 100 chars:', req.body?.toString().substring(0, 100));
+      console.error('Signature header:', sig?.substring(0, 80));
       console.error('Webhook secret configured:', !!process.env.MPB_STRIPE_WEBHOOK_SECRET);
+      console.error('Webhook secret starts with whsec_:', process.env.MPB_STRIPE_WEBHOOK_SECRET?.startsWith('whsec_'));
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -776,16 +785,111 @@ Use the same markdown structure as the original persona. Highlight improvements 
           }
           break;
 
-        case 'payment_intent.payment_failed':
+        case 'payment_intent.succeeded':
           const paymentIntent = event.data.object as Stripe.PaymentIntent;
+          console.log(`Processing payment_intent.succeeded for ${paymentIntent.id}`);
           
+          // First try to get payment by actual payment intent ID
+          let payment = await storage.getPayment(paymentIntent.id);
+          
+          // If not found, we need to find the payment by looking up via Stripe session
+          if (!payment) {
+            console.log(`Payment record not found by payment intent ID ${paymentIntent.id}, looking up session...`);
+            
+            // Get the checkout session from the payment intent metadata or by retrieving from Stripe
+            try {
+              const sessions = await stripe.checkout.sessions.list({
+                payment_intent: paymentIntent.id,
+                limit: 1
+              });
+              
+              if (sessions.data.length > 0) {
+                const sessionId = sessions.data[0].id;
+                console.log(`Found session ${sessionId} for payment intent ${paymentIntent.id}`);
+                
+                // Look up payment by session ID in our pending payments
+                const [pendingPayment] = await db
+                  .select()
+                  .from(payments)
+                  .where(eq(payments.stripeSessionId, sessionId));
+                
+                if (pendingPayment) {
+                  payment = pendingPayment;
+                  console.log(`Found pending payment record by session ID: ${sessionId}`);
+                  
+                  // Update the payment record with the real payment intent ID
+                  await db
+                    .update(payments)
+                    .set({ stripePaymentIntentId: paymentIntent.id })
+                    .where(eq(payments.id, pendingPayment.id));
+                    
+                  console.log(`Updated payment record ${pendingPayment.id} with real payment intent ID: ${paymentIntent.id}`);
+                }
+              }
+            } catch (stripeError) {
+              console.error('Error looking up Stripe session:', stripeError);
+            }
+          }
+          
+          if (!payment) {
+            console.error(`Payment record not found for payment intent ${paymentIntent.id} after session lookup`);
+            break;
+          }
+
+          // Skip if already processed
+          if (payment.status === 'completed') {
+            console.log(`Payment ${paymentIntent.id} already processed, skipping`);
+            break;
+          }
+
+          // Get package details
+          const packageData = await storage.getTokenPackage(payment.packageId);
+          if (!packageData) {
+            console.error(`Package ${payment.packageId} not found for payment ${paymentIntent.id}`);
+            break;
+          }
+
+          // Update payment status using the real payment intent ID
           await storage.updatePaymentStatus(
             paymentIntent.id,
+            'completed',
+            { 
+              completedAt: new Date().toISOString(),
+              optimization_count: packageData.tokens,
+              package_name: packageData.name,
+              payment_intent_event: true
+            }
+          );
+
+          // Add tokens to user account
+          const tokenTransaction = await storage.addTokens(
+            payment.userId,
+            payment.tokensGranted,
+            `Token purchase: ${packageData.displayName} (${packageData.tokens} optimizations)`,
+            paymentIntent.id,
+            { 
+              packageId: payment.packageId,
+              package_name: packageData.name,
+              optimization_count: packageData.tokens,
+              per_token_rate: packageData.perTokenRate,
+              payment_intent_event: true
+            }
+          );
+
+          console.log(`Successfully processed payment_intent.succeeded for user ${payment.userId}: ${payment.tokensGranted} tokens (${packageData.tokens} optimizations)`);
+          console.log(`Token transaction created:`, JSON.stringify(tokenTransaction, null, 2));
+          break;
+
+        case 'payment_intent.payment_failed':
+          const failedPaymentIntent = event.data.object as Stripe.PaymentIntent;
+          
+          await storage.updatePaymentStatus(
+            failedPaymentIntent.id,
             'failed',
-            { failureReason: paymentIntent.last_payment_error?.message }
+            { failureReason: failedPaymentIntent.last_payment_error?.message }
           );
           
-          console.log(`Payment failed for payment intent ${paymentIntent.id}`);
+          console.log(`Payment failed for payment intent ${failedPaymentIntent.id}`);
           break;
 
         default:
