@@ -2,11 +2,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PrivacyNotice } from "@/components/privacy-notice";
-import { LogOut, User, CreditCard, Shield, AlertTriangle } from "lucide-react";
+import { LogOut, User, CreditCard, Shield, AlertTriangle, Coins } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import type { UserStats, TokenBalance } from "@shared/schema";
 
 export default function Settings() {
   const { user } = useAuth();
+
+  const { data: userStats } = useQuery<UserStats>({
+    queryKey: ['/api/user/stats'],
+    enabled: !!user,
+  });
+
+  const { data: tokenBalance } = useQuery<TokenBalance>({
+    queryKey: ['/api/token-balance'],
+    enabled: !!user,
+  });
 
   if (!user) {
     return <div>Loading...</div>;
@@ -53,24 +65,30 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Subscription */}
+        {/* Token Balance */}
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
             <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full">
-              <CreditCard className="h-6 w-6 text-green-600" />
+              <Coins className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <CardTitle>Subscription</CardTitle>
-              <CardDescription>Your current plan</CardDescription>
+              <CardTitle>Token Balance</CardTitle>
+              <CardDescription>Your available tokens for optimizations</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Current Plan</label>
-              <p className="text-gray-900">Free (Default)</p>
+              <label className="text-sm font-medium text-gray-700">Current Balance</label>
+              <p className="text-2xl font-bold text-gray-900">{tokenBalance?.balance || 0} tokens</p>
             </div>
-            <Button className="w-full">
-              Upgrade Plan
+            <div>
+              <label className="text-sm font-medium text-gray-700">Account Tier</label>
+              <p className="text-gray-900 capitalize">
+                {userStats?.tier ? `${userStats.tier.charAt(0).toUpperCase()}${userStats.tier.slice(1)}` : 'Loading...'}
+              </p>
+            </div>
+            <Button className="w-full" onClick={() => window.location.href = '/#purchase'}>
+              Buy More Tokens
             </Button>
           </CardContent>
         </Card>
