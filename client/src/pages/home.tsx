@@ -256,22 +256,22 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col bg-gray-50 overflow-x-hidden">
       {/* Header */}
-      <header className="pt-6 sm:pt-12 pb-6 sm:pb-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-main-title font-heading text-brand-primary mb-3 sm:mb-4">
+      <header className="pt-4 sm:pt-12 pb-4 sm:pb-8">
+        <div className="max-w-4xl mx-auto px-3 sm:px-6 text-center">
+          <h1 className="text-main-title font-heading text-brand-primary mb-2 sm:mb-4">
             makepromptsbetter
           </h1>
           <p className="text-tagline font-body text-gray-700 max-w-2xl mx-auto px-2">
             Say what you want. Get exactly what you mean.
           </p>
-          <p className="text-sm font-body text-gray-600 max-w-2xl mx-auto px-2 mt-2">
+          <p className="text-sm font-body text-gray-600 max-w-2xl mx-auto px-2 mt-1 sm:mt-2">
             (No prompt engineering required)
           </p>
           {/* Quick guidance */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
-            <p className="text-sm text-blue-800">
+          <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 max-w-2xl mx-auto">
+            <p className="text-xs sm:text-sm text-blue-800">
               <strong>Quick Start:</strong> Enter your Prompt ➡ Improve ➡ Copy ➡ Use it!
             </p>
           </div>
@@ -279,12 +279,12 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 w-full">
+      <main className="flex-1 flex flex-col pb-4 sm:pb-8">
+        <div className="max-w-4xl mx-auto px-3 sm:px-6 w-full">
           
           {/* Prompt Input */}
-          <Card className="bg-white rounded-2xl shadow-sm border border-gray-300 mb-6 sm:mb-8">
-            <CardContent className="p-6 sm:p-8 md:p-10">
+          <Card className="bg-white rounded-2xl shadow-sm border border-gray-300 mb-4 sm:mb-8">
+            <CardContent className="p-4 sm:p-8 md:p-10">
               <Textarea
                 ref={promptInputRef}
                 placeholder="Type what you want AI to do... e.g., 'Write a professional email declining a meeting' or 'Create a marketing strategy for my startup'"

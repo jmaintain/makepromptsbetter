@@ -16,9 +16,9 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md mx-4">
+      <DialogContent className="w-[95vw] max-w-md max-h-[95vh] overflow-y-auto mx-auto">
         <DialogHeader className="text-center pb-2">
-          <DialogTitle className="text-xl font-semibold text-gray-900">
+          <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-900">
             Start Your Free Trial
           </DialogTitle>
         </DialogHeader>
