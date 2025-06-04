@@ -673,12 +673,20 @@ Use the same markdown structure as the original persona. Highlight improvements 
           packageId: packageId.toString(),
           tokens: packageData.tokens.toString(),
         },
+        payment_intent_data: {
+          metadata: {
+            userId,
+            packageId: packageId.toString(),
+            tokens: packageData.tokens.toString(),
+          },
+        },
       });
 
-      // Create payment record
+      // Create payment record with proper payment intent ID handling
+      const paymentIntentId = session.payment_intent as string || `pi_pending_${session.id}`;
       await storage.createPayment({
         userId,
-        stripePaymentIntentId: session.payment_intent as string,
+        stripePaymentIntentId: paymentIntentId,
         stripeSessionId: session.id,
         packageId,
         amountUsd: packageData.priceUsd,
