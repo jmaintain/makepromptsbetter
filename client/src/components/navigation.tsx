@@ -170,11 +170,6 @@ export function Navigation() {
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <div className="flex flex-col space-y-1 p-2">
                       <p className="text-sm font-medium leading-none">{user?.email}</p>
-                      {userStats && (
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {userStats.tier.charAt(0).toUpperCase() + userStats.tier.slice(1)} Plan
-                        </p>
-                      )}
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
