@@ -4,21 +4,13 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Special handling for Stripe webhooks - must be before express.json()
-// Stripe requires the raw body for webhook signature verification
-app.use('/api/stripe-webhook', (req, res, next) => {
-  let data = '';
-  req.setEncoding('utf8');
-  req.on('data', (chunk) => {
-    data += chunk;
-  });
-  req.on('end', () => {
-    req.body = Buffer.from(data, 'utf8');
-    req.rawBody = req.body;
-    next();
-  });
-});
+// Stripe webhook endpoint must be registered BEFORE any body parsing middleware
+app.use('/api/stripe-webhook', express.raw({ 
+  type: 'application/json',
+  limit: '5mb'
+}));
 
+// JSON parsing for all other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

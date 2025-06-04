@@ -706,22 +706,27 @@ Use the same markdown structure as the original persona. Highlight improvements 
     let event: Stripe.Event;
 
     try {
-      // Use rawBody if available, otherwise fall back to req.body
-      const body = (req as any).rawBody || req.body;
-      
-      if (!Buffer.isBuffer(body)) {
-        console.error('Webhook body is not a Buffer:', typeof body, 'Length:', body?.length);
+      // req.body is now a Buffer from express.raw() middleware
+      if (!Buffer.isBuffer(req.body)) {
+        console.error('Webhook body is not a Buffer:', typeof req.body);
         return res.status(400).send('Webhook Error: Invalid body format');
       }
       
-      console.log('Processing webhook with body length:', body.length);
-      console.log('Stripe signature present:', !!sig);
+      if (!sig) {
+        console.error('No Stripe signature header found');
+        return res.status(400).send('Webhook Error: Missing signature');
+      }
       
-      event = stripe.webhooks.constructEvent(body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
+      console.log('Processing webhook with body length:', req.body.length);
+      console.log('Stripe signature header:', sig.substring(0, 50) + '...');
+      
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
       console.log('Webhook signature verified successfully for event:', event.type);
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
-      console.error('Body type:', typeof req.body, 'Signature:', sig?.substring(0, 20) + '...');
+      console.error('Body length:', req.body?.length, 'Body type:', typeof req.body);
+      console.error('Signature header:', sig?.substring(0, 50) + '...');
+      console.error('Webhook secret configured:', !!process.env.MPB_STRIPE_WEBHOOK_SECRET);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
