@@ -60,6 +60,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (user.hasEverPurchased) {
         // User has purchased tokens - show their purchased token balance (no expiry)
         creditsRemaining = user.tokenBalance;
+        resetsAt = null; // Purchased tokens don't expire
       } else {
         // User hasn't purchased yet - show monthly free credits
         const stats = await storage.getUserStats(userId);

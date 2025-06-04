@@ -33,7 +33,7 @@ export const optimizePromptResponseSchema = z.object({
 
 export const creditsStatusSchema = z.object({
   creditsRemaining: z.number(),
-  resetsAt: z.string(),
+  resetsAt: z.string().nullable(),
 });
 
 export const ratePromptRequestSchema = z.object({
