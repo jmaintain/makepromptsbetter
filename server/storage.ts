@@ -407,10 +407,15 @@ export class DatabaseStorage implements IStorage {
 
       const newBalance = user.tokenBalance + amount;
 
-      // Update user balance
+      // Update user balance and mark as having purchased if this is a token purchase
+      const updateData: any = { tokenBalance: newBalance };
+      if (metadata?.packageId || referenceId?.startsWith('pi_')) {
+        updateData.hasEverPurchased = true;
+      }
+      
       await tx
         .update(users)
-        .set({ tokenBalance: newBalance })
+        .set(updateData)
         .where(eq(users.id, userId));
 
       // Record transaction
