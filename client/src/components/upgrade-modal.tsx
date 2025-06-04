@@ -10,7 +10,7 @@ interface UpgradeModalProps {
 }
 
 export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeModalProps) {
-  const timeUntilReset = creditsResetTime ? formatTimeUntilReset(creditsResetTime) : "18 hours";
+  const timeUntilReset = creditsResetTime ? formatTimeUntilReset(creditsResetTime) : "next month";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -20,7 +20,7 @@ export function UpgradeModal({ open, onOpenChange, creditsResetTime }: UpgradeMo
             You're out of free optimizations!
           </DialogTitle>
           <p className="text-center text-gray-600 font-body text-sm sm:text-base">
-            Control your Cost buy more tokens <strong className="text-brand-primary">71%</strong>
+            Upgrade to get more monthly optimizations and save <strong className="text-brand-primary">71%</strong>
           </p>
         </DialogHeader>
 

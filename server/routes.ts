@@ -295,9 +295,15 @@ Respond with JSON in this exact format: { "rating": number_between_1_and_10, "re
       // Check credit limits
       const userPersonasToday = await storage.getUserPersonasToday(userFingerprint);
       if (userPersonasToday.length >= 20) {
+        // Calculate next month reset time
+        const nextMonth = new Date();
+        nextMonth.setUTCMonth(nextMonth.getUTCMonth() + 1);
+        nextMonth.setUTCDate(1);
+        nextMonth.setUTCHours(0, 0, 0, 0);
+        
         return res.status(429).json({ 
           error: "Daily AI assistant generation limit reached", 
-          resetsAt: getCreditsResetTime().toISOString() 
+          resetsAt: nextMonth.toISOString() 
         });
       }
 
@@ -523,7 +529,7 @@ Use the same markdown structure as the original persona. Highlight improvements 
     try {
       const { personaId, testPrompt } = testPersonaRequestSchema.parse(req.body);
       const userId = req.user.claims.sub;
-      const userFingerprint = generateUserFingerprint(req);
+      const userFingerprint = userId; // Use authenticated user ID as fingerprint
       
       const persona = await storage.getPersona(personaId);
       if (!persona || persona.userFingerprint !== userId) {
