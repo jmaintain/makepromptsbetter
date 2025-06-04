@@ -81,12 +81,6 @@ export default function Settings() {
               <label className="text-sm font-medium text-gray-700">Current Balance</label>
               <p className="text-2xl font-bold text-gray-900">{tokenBalance?.balance || 0} tokens</p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Account Tier</label>
-              <p className="text-gray-900 capitalize">
-                {userStats?.tier ? `${userStats.tier.charAt(0).toUpperCase()}${userStats.tier.slice(1)}` : 'Loading...'}
-              </p>
-            </div>
             <Button className="w-full" onClick={() => window.location.href = '/#purchase'}>
               Buy More Tokens
             </Button>
