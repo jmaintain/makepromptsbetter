@@ -706,16 +706,22 @@ Use the same markdown structure as the original persona. Highlight improvements 
     let event: Stripe.Event;
 
     try {
-      // req.body should be a Buffer from express.raw() middleware
-      if (!Buffer.isBuffer(req.body)) {
-        console.error('Webhook body is not a Buffer:', typeof req.body);
+      // Use rawBody if available, otherwise fall back to req.body
+      const body = (req as any).rawBody || req.body;
+      
+      if (!Buffer.isBuffer(body)) {
+        console.error('Webhook body is not a Buffer:', typeof body, 'Length:', body?.length);
         return res.status(400).send('Webhook Error: Invalid body format');
       }
       
-      event = stripe.webhooks.constructEvent(req.body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
-      console.log('Webhook signature verified successfully');
+      console.log('Processing webhook with body length:', body.length);
+      console.log('Stripe signature present:', !!sig);
+      
+      event = stripe.webhooks.constructEvent(body, sig, process.env.MPB_STRIPE_WEBHOOK_SECRET!);
+      console.log('Webhook signature verified successfully for event:', event.type);
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
+      console.error('Body type:', typeof req.body, 'Signature:', sig?.substring(0, 20) + '...');
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 

@@ -5,7 +5,14 @@ import { setupVite, serveStatic, log } from "./vite";
 const app = express();
 
 // Special handling for Stripe webhooks - must be before express.json()
-app.use('/api/stripe-webhook', express.raw({ type: 'application/json' }));
+// Use express.raw with limit and verify options for webhook security
+app.use('/api/stripe-webhook', express.raw({ 
+  type: 'application/json',
+  limit: '10mb',
+  verify: (req: any, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
