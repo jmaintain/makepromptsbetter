@@ -164,18 +164,21 @@ export default function PromptHistory() {
                     variant="outline"
                     size="sm"
                     onClick={() => handleCopy(item.originalPrompt, 'original')}
+                    className="flex-1 sm:flex-none"
                   >
                     <Copy className="w-3 h-3 mr-1" />
-                    Copy Original
+                    <span className="hidden sm:inline">Copy Original</span>
+                    <span className="sm:hidden">Original</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleCopy(item.optimizedPrompt, 'optimized')}
-                    className="border-brand-primary text-brand-primary hover:bg-brand-primary/5"
+                    className="border-brand-primary text-brand-primary hover:bg-brand-primary/5 flex-1 sm:flex-none"
                   >
                     <Copy className="w-3 h-3 mr-1" />
-                    Copy Optimized
+                    <span className="hidden sm:inline">Copy Optimized</span>
+                    <span className="sm:hidden">Optimized</span>
                   </Button>
                 </div>
 
