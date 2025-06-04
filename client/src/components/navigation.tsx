@@ -109,6 +109,12 @@ export function Navigation() {
 
           {/* User Menu */}
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Token Balance Display */}
+            {user && (
+              <div className="hidden md:block">
+                <TokenBalanceDisplay variant="compact" />
+              </div>
+            )}
             {/* Mobile Menu */}
             <div className="md:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
