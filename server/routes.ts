@@ -719,23 +719,40 @@ Use the same markdown structure as the original persona. Highlight improvements 
           if (session.payment_status === 'paid') {
             const { userId, packageId, tokens } = session.metadata!;
             
-            // Update payment status
+            // Get package details for optimization count
+            const packageData = await storage.getTokenPackage(parseInt(packageId));
+            if (!packageData) {
+              console.error(`Package ${packageId} not found during webhook processing`);
+              break;
+            }
+
+            // Update payment status with optimization count metadata
             await storage.updatePaymentStatus(
               session.payment_intent as string,
               'completed',
-              { completedAt: new Date().toISOString() }
+              { 
+                completedAt: new Date().toISOString(),
+                optimization_count: packageData.tokens,
+                package_name: packageData.name
+              }
             );
 
-            // Add tokens to user account
+            // Add tokens to user account with optimization count metadata
             await storage.addTokens(
               userId,
               parseInt(tokens),
-              `Token purchase: ${packageId}`,
+              `Token purchase: ${packageData.displayName} (${packageData.tokens} optimizations)`,
               session.payment_intent as string,
-              { sessionId: session.id, packageId }
+              { 
+                sessionId: session.id, 
+                packageId,
+                package_name: packageData.name,
+                optimization_count: packageData.tokens,
+                per_token_rate: packageData.perTokenRate
+              }
             );
 
-            console.log(`Successfully processed payment for user ${userId}: ${tokens} tokens`);
+            console.log(`Successfully processed payment for user ${userId}: ${tokens} tokens (${packageData.tokens} optimizations)`);
           }
           break;
 
