@@ -9,8 +9,8 @@ interface PrivacyNoticeProps {
 export function PrivacyNotice({ variant = "compact", className = "" }: PrivacyNoticeProps) {
   if (variant === "compact") {
     return (
-      <div className={`text-xs text-gray-500 space-y-1 ${className}`}>
-        <div className="flex items-center gap-1">
+      <div className={`text-xs text-gray-500 space-y-1 text-center ${className}`}>
+        <div className="flex items-center justify-center gap-1">
           <Shield className="w-3 h-3" />
           <span>Your prompts are never stored on our servers</span>
         </div>
