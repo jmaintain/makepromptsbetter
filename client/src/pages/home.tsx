@@ -276,77 +276,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Example Section */}
-          <div className="mt-8 sm:mt-12 max-w-5xl mx-auto">
-            <div className="text-center mb-6">
-              <h2 className="text-xl sm:text-2xl font-heading text-gray-900 mb-2">See the Difference</h2>
-              <p className="text-sm text-gray-600">Real example showing how we transform basic prompts into effective instructions</p>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
-              <div className="grid lg:grid-cols-2 gap-6">
-                
-                {/* Original Prompt */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-orange-400 rounded-full"></div>
-                    <h3 className="font-semibold text-gray-700">Original Prompt</h3>
-                    <span className="text-xs text-gray-500">hover for details</span>
-                  </div>
-                  
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div className="text-sm font-mono text-gray-800">
-                      Write a job description for a marketing manager position
-                    </div>
-                  </div>
-                </div>
 
-                {/* Optimized Prompt */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <h3 className="font-semibold text-brand-primary">Optimized Prompt</h3>
-                    <div className="bg-brand-primary text-white text-xs px-2 py-1 rounded-full">10/10 - Excellent</div>
-                  </div>
-                  
-                  <div className="bg-green-50 border-2 border-brand-primary rounded-lg p-4">
-                    <div className="text-sm font-mono text-gray-800 leading-relaxed">
-                      You are a recruitment specialist crafting a job description for a Marketing Manager role at a startup that seeks entrepreneurial-marketing individuals. Your work should attract candidates with 3-7 years of experience who thrive in dynamic environments, focusing on building marketing processes from scratch while ensuring a culture compatible with innovation and agility. Focus on: • Ideal qualifications emphasizing startup experience • Key responsibilities that include process development and team leadership • Desired traits highlighting entrepreneurial spirit and adaptability. Success: Attract candidates excited about making impactful contributions and innovating strategies in a fast-paced startup culture.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quality Reasoning */}
-              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-2">Why This Works Better</h4>
-                <div className="text-sm text-blue-800 space-y-2">
-                  <p><strong>78% more specific:</strong> This prompt is exceptionally clear and specific, providing a comprehensive context for the task. It outlines the desired qualifications, key responsibilities, and traits that should attract suitable candidates.</p>
-                  <p>The success criteria are well-defined, focusing on attracting individuals who thrive in a dynamic startup environment. Overall, it guides the recruitment specialist effectively towards generating high-quality responses.</p>
-                </div>
-              </div>
-
-              {/* Context Used */}
-              <div className="mt-4">
-                <details className="group">
-                  <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
-                    <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                    Context Used
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">25 words</span>
-                  </summary>
-                  <div className="mt-3 pl-6 text-sm text-gray-600 bg-gray-50 p-3 rounded border">
-                    <div className="space-y-1">
-                      <div>• 3-7 years experience, preferably at startups or agencies</div>
-                      <div>• Excited by building processes from scratch</div>
-                      <div>• I want a posting that attracts entrepreneurial marketers, not corporate ladder-climbers</div>
-                    </div>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </div>
         </div>
       </header>
 
@@ -513,18 +443,16 @@ export default function Home() {
                   
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <div className="text-gray-800 mb-3">
-                      "Write an Instagram post about our new coffee blend"
+                      "Write a job description for a marketing manager position"
                     </div>
                   </div>
                   
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Context (100 words):</div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">Context (25 words):</div>
                     <div className="text-sm text-gray-600 leading-relaxed">
-                      Coffee Shop: Bean & Grind Local Roasters<br/>
-                      New Blend: "Morning Ritual" - medium roast, chocolate notes<br/>
-                      Audience: Local coffee lovers, morning commuters<br/>
-                      Instagram Style: Casual, community-focused, behind-the-scenes<br/>
-                      Hashtags: Mix of local and coffee tags
+                      3-7 years experience, preferably at startups or agencies<br/>
+                      Excited by building processes from scratch<br/>
+                      I want a posting that attracts entrepreneurial marketers, not corporate ladder-climbers
                     </div>
                   </div>
                 </div>
@@ -538,10 +466,15 @@ export default function Home() {
                   
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="text-gray-800 leading-relaxed">
-                      "Create a casual, community-focused Instagram post that introduces 'Morning Ritual,' our new medium roast with chocolate notes, highlighting its aroma and flavor to evoke warmth and familiarity, while encouraging local coffee lovers to visit Bean & Grind to experience it firsthand."
+                      "You are a recruitment specialist crafting a job description for a Marketing Manager role at a startup that seeks entrepreneurial-marketing individuals. Your work should attract candidates with 3-7 years of experience who thrive in dynamic environments, focusing on building marketing processes from scratch while ensuring a culture compatible with innovation and agility. Focus on: • Ideal qualifications emphasizing startup experience • Key responsibilities that include process development and team leadership • Desired traits highlighting entrepreneurial spirit and adaptability. Success: Attract candidates excited about making impactful contributions and innovating strategies in a fast-paced startup culture."
                     </div>
-                    <div className="mt-3 text-sm font-medium text-gray-700">
-                      Call-to-Action: Visit shop, try new blend
+                  </div>
+                  
+                  {/* Quality Reasoning */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <h4 className="font-semibold text-blue-900 mb-2">Prompt Quality: 10/10 - Excellent</h4>
+                    <div className="text-sm text-blue-800 space-y-1">
+                      <p><strong>78% more specific:</strong> This prompt is exceptionally clear and specific, providing a comprehensive context for the task. It outlines the desired qualifications, key responsibilities, and traits that should attract suitable candidates. The success criteria are well-defined, focusing on attracting individuals who thrive in a dynamic startup environment. Overall, it guides the recruitment specialist effectively towards generating high-quality responses.</p>
                     </div>
                   </div>
                 </div>
