@@ -431,7 +431,7 @@ export default function Home() {
           {/* Before/After Example */}
           <Card className="bg-white rounded-xl border border-gray-200 mb-6">
             <CardContent className="p-6 sm:p-8">
-              <h3 className="text-xl sm:text-2xl font-bold text-center text-gray-900 mb-6 sm:mb-8">See the Difference</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-center text-gray-900 mb-6 sm:mb-8">See What Happens When We Optimize</h3>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                 {/* Before */}
